@@ -1,2 +1,0 @@
-# jylietopup
-Website Jylie Shop
