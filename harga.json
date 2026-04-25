@@ -1,0 +1,31 @@
+{
+  "wa_number": "62895336789308",
+  "products": [
+    { "id": 1, "name": "50 Diamonds", "diamonds": 50, "price": 7000, "badge": "Termurah" },
+    { "id": 2, "name": "70 Diamonds", "diamonds": 70, "price": 10000 },
+    { "id": 3, "name": "100 Diamonds", "diamonds": 100, "price": 14000 },
+    { "id": 4, "name": "150 Diamonds", "diamonds": 150, "price": 20000 },
+    { "id": 5, "name": "355 Diamonds", "diamonds": 355, "price": 47000 },
+    { "id": 6, "name": "405 Diamonds", "diamonds": 405, "price": 54000 },
+    { "id": 7, "name": "475 Diamonds", "diamonds": 475, "price": 63000 },
+    { "id": 8, "name": "500 Diamonds", "diamonds": 500, "price": 66000 },
+    { "id": 9, "name": "510 Diamonds", "diamonds": 510, "price": 68000 },
+    { "id": 10, "name": "545 Diamonds", "diamonds": 545, "price": 73000 },
+    { "id": 11, "name": "565 Diamonds", "diamonds": 565, "price": 75000 },
+    { "id": 12, "name": "635 Diamonds", "diamonds": 635, "price": 84000 },
+    { "id": 13, "name": "720 Diamonds", "diamonds": 720, "price": 95000, "badge": "Best Deal" },
+    { "id": 14, "name": "770 Diamonds", "diamonds": 770, "price": 100000 },
+    { "id": 15, "name": "790 Diamonds", "diamonds": 790, "price": 102000 },
+    { "id": 16, "name": "800 Diamonds", "diamonds": 800, "price": 106000 },
+    { "id": 17, "name": "860 Diamonds", "diamonds": 860, "price": 111000 },
+    { "id": 18, "name": "930 Diamonds", "diamonds": 930, "price": 120000 },
+    { "id": 19, "name": "1000 Diamonds", "diamonds": 1000, "price": 132000, "badge": "Populer" },
+    { "id": 20, "name": "1050 Diamonds", "diamonds": 1050, "price": 137000 },
+    { "id": 21, "name": "1075 Diamonds", "diamonds": 1075, "price": 138000 },
+    { "id": 22, "name": "1080 Diamonds", "diamonds": 1080, "price": 140000 },
+    { "id": 23, "name": "1450 Diamonds", "diamonds": 1450, "price": 186000, "badge": "Hemat 14rb" },
+    { "id": 24, "name": "2000 Diamonds", "diamonds": 2000, "price": 264000 },
+    { "id": 25, "name": "2180 Diamonds", "diamonds": 2180, "price": 277000, "badge": "Hemat 13rb" },
+    { "id": 26, "name": "2200 Diamonds", "diamonds": 2200, "price": 284000 }
+  ]
+}
