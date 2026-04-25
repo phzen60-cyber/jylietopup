@@ -224,7 +224,7 @@
   }
 
   async function kirimKeTelegram(text) {
-    const FOTO_URL = "https://i.ibb.co.com/qFD2HBkx/IMG-20260426-WA0012.jpg"; // Ganti pake link direct image
+    const FOTO_URL = db.qris_url; // Pake QRIS yg udah pasti ada
     
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
     
@@ -239,11 +239,13 @@
         method: 'POST',
         body: formData
       });
-      return await response.json();
+      const result = await response.json();
+      console.log(result); // Biar ketauan errornya apa
+      return result;
     } catch (error) {
       console.error("Gagal kirim ke Telegram:", error);
     }
-                               }
+  }
   }
 
   backButton.addEventListener('click', () => {
