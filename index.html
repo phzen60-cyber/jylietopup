@@ -3,73 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jylie Topup - Top Up Game Murah</title>
+  <title>Jylie Topup</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Poppins:wght@400;600&display=swap');
-    body { font-family: 'Poppins', sans-serif; }
+    body { font-family: 'Poppins', sans-serif; background: #0B1120; }
     .font-gaming { font-family: 'Orbitron', sans-serif; }
-    .glow { box-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
-    .card:hover .glow-img { filter: drop-shadow(0 0 10px #22d3ee); }
+    .card-glow:hover { box-shadow: 0 0 20px rgba(6, 182, 212, 0.5); }
   </style>
 </head>
-<body class="bg-[#0F172A] text-gray-200 min-h-screen">
+<body class="bg-[#0B1120] text-slate-200">
 
-  <!-- Navbar -->
-  <nav class="bg-[#1E293B]/80 backdrop-blur-md sticky top-0 z-50 border-b border-cyan-500/20">
-    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-      <h1 class="font-gaming text-2xl text-cyan-400">
-        <i class="fa-solid fa-gamepad"></i> JYLIE TOPUP
-      </h1>
-      <a href="https://wa.me/62895336789308" class="bg-green-500 px-4 py-2 rounded-lg hover:bg-green-600">
-        <i class="fab fa-whatsapp"></i> CS
-      </a>
-    </div>
-  </nav>
+  <!-- HALAMAN 1: LIST GAME -->
+  <div id="page-game">
+    <nav class="bg-slate-900/70 backdrop-blur-lg sticky top-0 z-50 border-b border-cyan-500/30">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+        <h1 class="font-gaming text-2xl text-cyan-400"><i class="fa-solid fa-bolt"></i> JYLIE TOPUP</h1>
+        <a href="https://wa.me/62895336789308" class="bg-green-500 px-4 py-2 rounded-lg"><i class="fab fa-whatsapp"></i> CS</a>
+      </div>
+    </nav>
 
-  <!-- Hero -->
-  <section class="text-center py-12 px-4">
-    <h2 class="font-gaming text-4xl md:text-5xl mb-4">TOP UP <span class="text-cyan-400">INSTAN</span></h2>
-    <p class="text-gray-400">Proses cepat 1 detik. Harga paling murah se-Indonesia.</p>
-  </section>
+    <section class="max-w-6xl mx-auto text-center py-12 px-4">
+      <h2 class="font-gaming text-4xl mb-4">TOP UP <span class="text-cyan-400">INSTAN</span></h2>
+      <p class="text-slate-400">Proses cepat 1 detik. Harga paling murah.</p>
+    </section>
 
-  <!-- List Game -->
-  <section class="container mx-auto px-4 pb-16">
-    <h3 class="font-gaming text-2xl mb-6 border-l-4 border-cyan-400 pl-3">PILIH GAME</h3>
-    <div id="game-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-      <!-- Game muncul disini pake JS -->
-    </div>
-  </section>
+    <main class="max-w-6xl mx-auto px-4 pb-20">
+      <h3 class="font-gaming text-xl mb-6"><span class="w-1 h-6 bg-cyan-400 inline-block mr-2"></span>PILIH GAME</h3>
+      <div id="game-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+      <div id="loading" class="text-center py-20"><i class="fa-solid fa-spinner fa-spin text-4xl text-cyan-400"></i></div>
+    </main>
+  </div>
 
-  <!-- Loading -->
-  <div id="loading" class="text-center pb-16">
-    <i class="fa-solid fa-spinner fa-spin text-4xl text-cyan-400"></i>
-    <p class="mt-2 text-gray-400">Loading game...</p>
+  <!-- HALAMAN 2: LIST NOMINAL -->
+  <div id="page-nominal" class="hidden">
+    <nav class="bg-slate-900/70 backdrop-blur-lg sticky top-0 z-50 border-b border-cyan-500/30">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+        <button onclick="backToGame()" class="text-cyan-400"><i class="fa-solid fa-arrow-left text-xl"></i></button>
+        <h1 id="game-title" class="font-gaming text-xl text-cyan-400"></h1>
+      </div>
+    </nav>
+    
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <div class="bg-slate-900 p-4 rounded-lg mb-6">
+        <label class="text-sm text-slate-400">Masukkan ID Game</label>
+        <input id="user-id" type="text" placeholder="Contoh: 12345678" class="w-full bg-slate-800 mt-2 p-3 rounded-lg border border-slate-700 focus:border-cyan-400 outline-none">
+      </div>
+
+      <h3 class="font-gaming text-xl mb-4"><span class="w-1 h-6 bg-cyan-400 inline-block mr-2"></span>PILIH NOMINAL</h3>
+      <div id="nominal-list" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </main>
   </div>
 
 <script>
 const API_URL = 'https://jylietopup.vercel.app/api/getHarga';
+let DATA_PRODUK = [];
+let NOMOR_WA = '';
 
-fetch(API_URL)
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById('loading').style.display = 'none';
-    const list = document.getElementById('game-list');
-    
-    data.produk.forEach(game => {
-      list.innerHTML += `
-        <div class="card bg-[#1E293B] p-4 rounded-xl border border-slate-700 hover:border-cyan-400 hover:scale-105 transition-all cursor-pointer">
-          <img src="${game.logo}" alt="${game.nama}" 
-               class="glow-img w-20 h-20 mx-auto mb-3 object-contain transition">
-          <h4 class="font-semibold text-center text-sm truncate">${game.nama}</h4>
-        </div>
-      `;
-    });
-  })
-  .catch(err => {
-    document.getElementById('loading').innerHTML = '<p class="text-red-500">Gagal load data. Cek API lu bro.</p>';
-  });
-</script>
-</body>
-</html>
+fetch(API_URL).then(res => res.json()).then(data => {
+  DATA_PRODUK = data.produk;
+  NOMOR_WA = data.nomor_wa;
+  document.getElementById('loading').remove();
+  const list = document.getElementById('game-list');
+  
+  data.produk.forEach(game => {
+    list.innerHTML += `
+      <div onclick="bukaNominal('${game.id}')" class="card-glow bg-slate-900/60 p-4 rounded-xl border border-slate-800 hover:scale-105 transition cursor-pointer">
+        <img src="${game.logo}" class="w-16 h-16 mx-auto mb-3 object-contain">
+        <h4 class="font-semibold text-center
