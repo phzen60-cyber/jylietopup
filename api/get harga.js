@@ -1,28 +1,21 @@
-// Trigger rebuild 26 Apr 2026
-const { Octokit } = require("@octokit/rest");
+import { Octokit } from "@octokit/rest";
 
-exports.handler = async () => {
+export default async function handler(req, res) {
   const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-  const owner = "phzen60-cyber";
-  const repo = "jylietopup";
-  const path = "harga.json";
-
+  
   try {
-    const { data } = await octokit.rest.repos.getContent({ owner, repo, path });
+    const { data } = await octokit.rest.repos.getContent({
+      owner: "phzen60-cyber",
+      repo: "jylietopup", 
+      path: "harga.json"
+    });
+    
     const content = Buffer.from(data.content, 'base64').toString('utf-8');
     
-    return {
-      statusCode: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      },
-      body: content
-    };
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.status(200).send(content);
+    
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message })
-    };
+    res.status(500).json({ error: error.message });
   }
-};
+}
