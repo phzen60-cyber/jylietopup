@@ -8,8 +8,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         body { font-family: 'Poppins', sans-serif; }
-        .game-card:hover { transform: translateY(-5px); }
-        .modal { background: rgba(0,0,0,0.8); }
+       .game-card:hover { transform: translateY(-5px); }
+       .modal { background: rgba(0,0,0,0.8); }
     </style>
 </head>
 <body class="bg-slate-900 text-white">
@@ -42,29 +42,41 @@
         </div>
     </main>
 
-    <!-- MODAL QRIS + INPUT ID -->
+    <!-- MODAL CHECKOUT - INI DOANG YG NAMBAH -->
     <div id="qris-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
         <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm">
             <h3 class="text-xl font-bold mb-4 text-center">Checkout</h3>
             <div id="order-detail" class="bg-slate-700 p-3 rounded-lg mb-4 text-sm"></div>
-            
-            <label class="block mb-2 text-sm font-semibold">ID Game / UID</label>
-            <input id="player-id" type="number" placeholder="Masukkan 8-12 digit ID" 
-                   class="w-full bg-slate-700 p-3 rounded-lg mb-1 outline-none focus:ring-2 focus:ring-cyan-400">
-            <p id="id-error" class="text-red-400 text-xs mb-3 hidden">ID harus 8-12 angka!</p>
 
-            <p class="text-sm text-center mb-3">Scan QRIS untuk bayar:</p>
+            <div class="bg-yellow-500/20 border border-yellow-500 p-3 rounded-lg mb-4 text-xs">
+                <p class="font-bold text-yellow-400">PENTING!</p>
+                <p>Tulis kode <span id="kode-unik" class="font-bold text-white"></span> di berita transfer QRIS</p>
+            </div>
+
+            <label class="block mb-2 text-sm font-semibold">ID Game / UID</label>
+            <input id="player-id" type="number" placeholder="Masukkan 8-12 digit ID"
+                   class="w-full bg-slate-700 p-3 rounded-lg mb-1 outline-none focus:ring-2 focus:ring-cyan-400">
+
+            <label class="block mb-2 text-sm font-semibold mt-3">Nama Rekening Pengirim</label>
+            <input id="nama-pengirim" type="text" placeholder="Contoh: Budi Santoso"
+                   class="w-full bg-slate-700 p-3 rounded-lg mb-1 outline-none focus:ring-2 focus:ring-cyan-400">
+            <p id="id-error" class="text-red-400 text-xs mb-3 hidden"></p>
+
+            <p class="text-sm text-center mb-3 mt-4">Scan QRIS untuk bayar:</p>
             <img src="/images/qris.png" alt="QRIS" class="w-full rounded-lg mb-4 bg-white p-2">
-            
+
             <div class="flex gap-2">
                 <button id="cancel-btn" class="flex-1 bg-slate-600 hover:bg-slate-500 py-3 rounded-lg font-bold">Batal</button>
-                <button id="confirm-btn" class="flex-1 bg-cyan-500 hover:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold">Konfirmasi WA</button>
+                <button id="confirm-btn" class="flex-1 bg-cyan-500 hover:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold">Saya Sudah Bayar</button>
             </div>
-            <p class="text-xs text-slate-400 text-center mt-3">Setelah bayar, klik Konfirmasi WA untuk kirim bukti</p>
         </div>
     </div>
 
     <script>
+        // GANTI INI PAKE TOKEN + ID TELEGRAM LU
+        const TELEGRAM_BOT_TOKEN = 'GANTI_TOKEN_BOT_LU';
+        const TELEGRAM_CHAT_ID = 'GANTI_ID_TELEGRAM_LU';
+
         const gameListEl = document.getElementById('game-list');
         const mainMenuEl = document.getElementById('main-menu');
         const productListContainerEl = document.getElementById('product-list-container');
@@ -72,17 +84,22 @@
         const productTitleEl = document.getElementById('product-title');
         const backButton = document.getElementById('back-button');
         const csButton = document.getElementById('cs-button');
-        
-        // Modal elements
+
         const qrisModal = document.getElementById('qris-modal');
         const orderDetailEl = document.getElementById('order-detail');
         const playerIdInput = document.getElementById('player-id');
+        const namaPengirimInput = document.getElementById('nama-pengirim');
         const idError = document.getElementById('id-error');
         const cancelBtn = document.getElementById('cancel-btn');
         const confirmBtn = document.getElementById('confirm-btn');
-        
+        const kodeUnikEl = document.getElementById('kode-unik');
+
         let db = {};
         let currentOrder = {};
+
+        function generateKodeUnik() {
+            return 'JYLIE-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
 
         async function loadData() {
             try {
@@ -92,14 +109,14 @@
                 csButton.href = `https://wa.me/${db.nomor_wa}`;
                 renderGames();
             } catch (error) {
-                gameListEl.innerHTML = `<p class="text-red-500 col-span-full text-center">Gagal: ${error.message}. Cek file harga.json</p>`;
+                gameListEl.innerHTML = `<p class="text-red-500 col-span-full text-center">Gagal: ${error.message}</p>`;
             }
         }
 
         function renderGames() {
             gameListEl.innerHTML = '';
             if (!db.produk || db.produk.length === 0) {
-                 gameListEl.innerHTML = `<p class="text-yellow-500 col-span-full text-center">Belum ada produk di harga.json</p>`;
+                 gameListEl.innerHTML = `<p class="text-yellow-500 col-span-full text-center">Belum ada produk</p>`;
                  return;
             }
             db.produk.forEach(game => {
@@ -120,11 +137,6 @@
             productTitleEl.textContent = `Top Up ${game.nama}`;
             productListEl.innerHTML = '';
 
-            if (!game.nominal || game.nominal.length === 0) {
-                productListEl.innerHTML = `<p class="text-yellow-500 col-span-full text-center">List nominal kosong. Cek "nominal" di harga.json</p>`;
-                return;
-            }
-
             game.nominal.forEach(item => {
                 const productCard = document.createElement('div');
                 productCard.className = 'bg-slate-800 rounded-lg p-4 flex flex-col justify-between';
@@ -143,13 +155,16 @@
         }
 
         function openQrisModal(game, item) {
-            currentOrder = { game: game.nama, item: item.nama, harga: item.harga };
+            const kodeUnik = generateKodeUnik();
+            currentOrder = { game: game.nama, item: item.nama, harga: item.harga, kode: kodeUnik };
+            kodeUnikEl.textContent = kodeUnik;
             orderDetailEl.innerHTML = `
                 <p><span class="text-slate-400">Game:</span> ${game.nama}</p>
                 <p><span class="text-slate-400">Item:</span> ${item.nama}</p>
                 <p><span class="text-slate-400">Harga:</span> <span class="text-cyan-400 font-bold">Rp${item.harga.toLocaleString('id-ID')}</span></p>
             `;
             playerIdInput.value = '';
+            namaPengirimInput.value = '';
             idError.classList.add('hidden');
             qrisModal.classList.remove('hidden');
             qrisModal.classList.add('flex');
@@ -160,17 +175,39 @@
             qrisModal.classList.remove('flex');
         }
 
-        function validateAndCheckout() {
+        async function kirimKeTelegram(pesan) {
+            if(TELEGRAM_BOT_TOKEN === 'GANTI_TOKEN_BOT_LU') return;
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: pesan, parse_mode: 'HTML' })
+            });
+        }
+
+        async function validateAndCheckout() {
             const playerId = playerIdInput.value;
-            // Validasi 8-12 angka
+            const namaPengirim = namaPengirimInput.value.trim();
+
             if (!/^\d{8,12}$/.test(playerId)) {
+                idError.textContent = 'ID harus 8-12 angka!';
                 idError.classList.remove('hidden');
                 playerIdInput.focus();
                 return;
             }
-            
-            const text = `Halo min, mau order:\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}\n\nSaya sudah bayar via QRIS. Berikut buktinya:`;
-            window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(text)}`, '_blank');
+            if (namaPengirim.length < 3) {
+                idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
+                idError.classList.remove('hidden');
+                namaPengirimInput.focus();
+                return;
+            }
+
+            const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nA/N: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}\n\nMohon dicek. Berikut bukti TF:`;
+
+            const textTelegram = `<b>ORDER BARU MASUK</b>\n\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}\n\nCek mutasi dengan berita transfer: ${currentOrder.kode}`;
+
+            await kirimKeTelegram(textTelegram);
+            window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
             closeQrisModal();
         }
 
@@ -178,19 +215,14 @@
             productListContainerEl.classList.add('hidden');
             mainMenuEl.classList.remove('hidden');
         });
-        
+
         cancelBtn.addEventListener('click', closeQrisModal);
         confirmBtn.addEventListener('click', validateAndCheckout);
-        qrisModal.addEventListener('click', (e) => {
-            if (e.target === qrisModal) closeQrisModal();
-        });
-        
-        // Auto hide error pas ngetik
-        playerIdInput.addEventListener('input', () => {
-            idError.classList.add('hidden');
-        });
+        qrisModal.addEventListener('click', (e) => { if (e.target === qrisModal) closeQrisModal(); });
+        playerIdInput.addEventListener('input', () => idError.classList.add('hidden'));
+        namaPengirimInput.addEventListener('input', () => idError.classList.add('hidden'));
 
         loadData();
     </script>
 </body>
-    </html>
+</html>
