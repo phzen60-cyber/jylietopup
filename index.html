@@ -202,7 +202,7 @@
       return;
     }
 
-    // Ini buat display di modal QRIS biar font mono
+    // Bikin ID di modal jadi font mono
     document.getElementById('displayIdPlayer').classList.add('font-mono');
 
     const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}`;
@@ -221,6 +221,28 @@
     await kirimKeTelegram(textTelegram);
     window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
     closeQrisModal();
+  }
+
+  async function kirimKeTelegram(text) {
+    const FOTO_URL = db.qris_url; // Pake foto QRIS dari harga.json lu
+    
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+    
+    const formData = new FormData();
+    formData.append('chat_id', TELEGRAM_CHAT_ID);
+    formData.append('photo', FOTO_URL);
+    formData.append('caption', text);
+    formData.append('parse_mode', 'HTML');
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("Gagal kirim ke Telegram:", error);
+    }
   }
 
   backButton.addEventListener('click', () => {
