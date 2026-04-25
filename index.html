@@ -185,44 +185,53 @@
             });
         }
 
-        async function validateAndCheckout() {
-            const playerId = playerIdInput.value;
-            const namaPengirim = namaPengirimInput.value.trim();
+          async function validateAndCheckout() {
+    const playerId = playerIdInput.value;
+    const namaPengirim = namaPengirimInput.value.trim();
 
-            if (!/^\d{8,12}$/.test(playerId)) {
-                idError.textContent = 'ID harus 8-12 angka!';
-                idError.classList.remove('hidden');
-                playerIdInput.focus();
-                return;
-            }
-            if (namaPengirim.length < 3) {
-                idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
-                idError.classList.remove('hidden');
-                namaPengirimInput.focus();
-                return;
-            }
+    if (!/^\d{8,12}$/.test(playerId)) {
+      idError.textContent = 'ID harus 8-12 angka!';
+      idError.classList.remove('hidden');
+      playerIdInput.focus();
+      return;
+    }
+    if (namaPengirim.length < 3) {
+      idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
+      idError.classList.remove('hidden');
+      namaPengirimInput.focus();
+      return;
+    }
 
-            const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nA/N: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}\n\nMohon dicek. Berikut bukti TF:`;
+    const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}`;
+    
+    const textTelegram = `<b>🔥 ORDER BARU MASUK</b>
 
-            const textTelegram = `<b>ORDER BARU MASUK</b>\n\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}\n\nCek mutasi dengan berita transfer: ${currentOrder.kode}`;
+<b>Kode:</b> <code>${currentOrder.kode}</code>
+<b>Game:</b> ${currentOrder.game}
+<b>Item:</b> ${currentOrder.item}
+<b>ID Player:</b> <code>${playerId}</code>
+<b>Nama:</b> ${namaPengirim}
+<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}
 
-            await kirimKeTelegram(textTelegram);
-            window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
-            closeQrisModal();
-        }
+<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
 
-        backButton.addEventListener('click', () => {
-            productListContainerEl.classList.add('hidden');
-            mainMenuEl.classList.remove('hidden');
-        });
+    await kirimKeTelegram(textTelegram);
+    window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
+    closeQrisModal();
+  }
 
-        cancelBtn.addEventListener('click', closeQrisModal);
-        confirmBtn.addEventListener('click', validateAndCheckout);
-        qrisModal.addEventListener('click', (e) => { if (e.target === qrisModal) closeQrisModal(); });
-        playerIdInput.addEventListener('input', () => idError.classList.add('hidden'));
-        namaPengirimInput.addEventListener('input', () => idError.classList.add('hidden'));
+  backButton.addEventListener('click', () => {
+    productListContainerEl.classList.add('hidden');
+    mainMenuEl.classList.remove('hidden');
+  });
 
-        loadData();
-    </script>
+  cancelBtn.addEventListener('click', closeQrisModal);
+  confirmBtn.addEventListener('click', validateAndCheckout);
+  qrisModal.addEventListener('click', (e) => { if (e.target === qrisModal) closeQrisModal(); });
+  playerIdInput.addEventListener('input', () => idError.classList.add('hidden'));
+  namaPengirimInput.addEventListener('input', () => idError.classList.add('hidden'));
+
+  loadData();
+</script>
 </body>
 </html>
