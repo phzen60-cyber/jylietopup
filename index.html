@@ -185,7 +185,7 @@
             });
         }
 
-          async function validateAndCheckout() {
+            async function validateAndCheckout() {
     const playerId = playerIdInput.value;
     const namaPengirim = namaPengirimInput.value.trim();
 
@@ -201,6 +201,9 @@
       namaPengirimInput.focus();
       return;
     }
+
+    // Ini buat display di modal QRIS biar font mono
+    document.getElementById('displayIdPlayer').classList.add('font-mono');
 
     const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}`;
     
