@@ -1,3 +1,5 @@
+// Force rebuild 26-04-2026
+const { Octokit } = require("@octokit/rest");
 const { Octokit } = require("@octokit/rest");
 
 exports.handler = async () => {
