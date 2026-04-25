@@ -1,49 +1,265 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Jylie Shop</title>
-  <style>
-    body{font-family:sans-serif;background:#0f172a;color:#e2e8f0;padding:20px;max-width:900px;margin:auto}
-    input,button{padding:10px;margin:5px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#e2e8f0}
-    button{cursor:pointer;background:#3b82f6;border:none}
-    button.danger{background:#ef4444}
-    table{width:100%;border-collapse:collapse;margin-top:20px}
-    th,td{border:1px solid #334155;padding:8px;text-align:left}
-    th{background:#1e293b}
-    #adminBox{display:none}
-   .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
-   .loading{display:none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Jylie Topup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
 </head>
-<body>
-  <div id="loginBox">
-    <h2>Login Admin Jylie Shop</h2>
-    <input id="user" placeholder="Username"><br>
-    <input id="pass" type="password" placeholder="Password"><br>
-    <button onclick="login()">Masuk</button>
-    <p id="loginMsg" style="color:#ef4444"></p>
-  </div>
+<body class="bg-slate-900 text-white">
 
-  <div id="adminBox">
-    <h2>Panel Admin Jylie Shop</h2>
-    <p>IP lu: <span id="ipText"></span></p>
-
-    <h3>Setting Umum</h3>
-    <div class="row">
-      <label>Nomor WA:</label>
-      <input id="waNumber" placeholder="628xxx">
+    <!-- LOGIN -->
+    <div id="login-panel" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm">
+            <h1 class="text-2xl font-bold text-center mb-6 text-cyan-400">🔐 Admin Login</h1>
+            <input id="password" type="password" placeholder="Password Admin"
+                   class="w-full bg-slate-700 p-3 rounded-lg mb-3 outline-none focus:ring-2 focus:ring-cyan-400">
+            <button id="login-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold">Login</button>
+            <p id="login-error" class="text-red-400 text-sm mt-3 text-center hidden">Password salah!</p>
+        </div>
     </div>
 
-    <h3>Produk <button onclick="tambahProduk()">+ Tambah Produk</button></h3>
-    <div id="tableWrap">Loading...</div>
+    <!-- DASHBOARD -->
+    <div id="admin-panel" class="hidden">
+        <header class="bg-slate-800 shadow-lg">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <h1 class="text-xl font-bold text-cyan-400">🎮 Admin Jylie</h1>
+                <div class="text-xs text-slate-400">IP: <span id="user-ip">Loading...</span></div>
+            </div>
+        </header>
 
-    <br>
-    <button onclick="saveData()">💾 Simpan Perubahan</button>
-    <span class="loading" id="loadingSave">Menyimpan...</span>
-  </div>
+        <main class="container mx-auto px-4 py-8">
+            <!-- SETTING GITHUB -->
+            <div class="bg-slate-800 rounded-xl p-6 mb-6 border-2 border-yellow-500/50">
+                <h2 class="text-xl font-bold mb-4 border-l-4 border-yellow-400 pl-3">Setting GitHub - WAJIB ISI</h2>
+                <input id="gh-token" type="password" placeholder="GitHub Token"
+                       class="w-full bg-slate-700 p-3 rounded-lg mb-2 outline-none focus:ring-2 focus:ring-cyan-400">
+                <input id="gh-user" type="text" placeholder="Username GitHub"
+                       class="w-full bg-slate-700 p-3 rounded-lg mb-2 outline-none focus:ring-2 focus:ring-cyan-400">
+                <input id="gh-repo" type="text" placeholder="Nama Repo, contoh: jylie-topup"
+                       class="w-full bg-slate-700 p-3 rounded-lg mb-2 outline-none focus:ring-2 focus:ring-cyan-400">
+                <p class="text-xs text-slate-400">Token disimpan di browser lu doang. Aman.</p>
+            </div>
 
-  <script src="admin.js"></script>
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- INFO TOKO -->
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-4 border-l-4 border-cyan-400 pl-3">Setting Umum</h2>
+                    <label class="block mb-2 text-sm font-semibold">Nomor WhatsApp CS</label>
+                    <input id="nomor-wa" type="text" placeholder="628xxx"
+                           class="w-full bg-slate-700 p-3 rounded-lg mb-3 outline-none focus:ring-2 focus:ring-cyan-400">
+
+                    <label class="block mb-2 text-sm font-semibold">Link QRIS</label>
+                    <input id="qris-url" type="text" placeholder="https://i.ibb.co/xxx/qris.jpg"
+                           class="w-full bg-slate-700 p-3 rounded-lg mb-4 outline-none focus:ring-2 focus:ring-cyan-400">
+                </div>
+
+                <!-- TAMBAH GAME -->
+                <div class="bg-slate-800 rounded-xl p-6">
+                    <h2 class="text-xl font-bold mb-4 border-l-4 border-cyan-400 pl-3">Tambah Game Baru</h2>
+                    <input id="game-nama" type="text" placeholder="Nama Game"
+                           class="w-full bg-slate-700 p-3 rounded-lg mb-2 outline-none focus:ring-2 focus:ring-cyan-400">
+                    <input id="game-logo" type="text" placeholder="Link Logo Game"
+                           class="w-full bg-slate-700 p-3 rounded-lg mb-3 outline-none focus:ring-2 focus:ring-cyan-400">
+                    <button id="add-game" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold">
+                        + Tambah Game
+                    </button>
+                </div>
+            </div>
+
+            <!-- LIST GAME + PRODUK -->
+            <div class="bg-slate-800 rounded-xl p-6">
+                <h2 class="text-xl font-bold mb-4 border-l-4 border-cyan-400 pl-3">Kelola Produk</h2>
+                <div id="game-list-admin" class="space-y-4">Loading...</div>
+            </div>
+
+            <!-- SIMPAN -->
+            <button id="save-to-github" class="mt-6 w-full bg-green-500 hover:bg-green-600 py-4 rounded-lg font-bold text-lg disabled:bg-slate-600 disabled:cursor-not-allowed">
+                🔒 Simpan Perubahan ke Vercel
+            </button>
+            <p id="status-save" class="text-center text-sm mt-3 text-slate-400"></p>
+        </main>
+    </div>
+
+    <script>
+        const ADMIN_PASS = 'jylie123'; // GANTI PASSWORD ADMIN LU
+        let db = { nomor_wa: '', qris_url: '', produk: [] };
+        let fileSHA = null; // Buat update file di GitHub
+
+        // ELEMENTS
+        const loginPanel = document.getElementById('login-panel');
+        const adminPanel = document.getElementById('admin-panel');
+        const loginBtn = document.getElementById('login-btn');
+        const passwordInput = document.getElementById('password');
+        const loginError = document.getElementById('login-error');
+        const statusSave = document.getElementById('status-save');
+        const saveBtn = document.getElementById('save-to-github');
+
+        // GET IP
+        fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => {
+            document.getElementById('user-ip').textContent = d.ip;
+        });
+
+        // LOGIN
+        loginBtn.addEventListener('click', () => {
+            if (passwordInput.value === ADMIN_PASS) {
+                loginPanel.classList.add('hidden');
+                adminPanel.classList.remove('hidden');
+                loadGitHubData();
+                loadLocalSettings();
+            } else {
+                loginError.classList.remove('hidden');
+            }
+        });
+
+        passwordInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+
+        // LOAD SETTINGS DARI LOCALSTORAGE
+        function loadLocalSettings() {
+            document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+            document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
+            document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+        }
+
+        // LOAD DATA DARI GITHUB
+        async function loadGitHubData() {
+            try {
+                const res = await fetch('harga.json?v=' + Date.now());
+                db = await res.json();
+                renderAdmin();
+            } catch (e) {
+                db = { nomor_wa: '628123456789', qris_url: '', produk: [] };
+                renderAdmin();
+            }
+        }
+
+        function renderAdmin() {
+            document.getElementById('nomor-wa').value = db.nomor_wa || '';
+            document.getElementById('qris-url').value = db.qris_url || '';
+            renderGameList();
+        }
+
+        // ADD GAME
+        document.getElementById('add-game').addEventListener('click', () => {
+            const nama = document.getElementById('game-nama').value.trim();
+            const logo = document.getElementById('game-logo').value.trim();
+            if (!nama ||!logo) return alert('Isi nama & logo!');
+            db.produk.push({ nama, logo, nominal: [] });
+            document.getElementById('game-nama').value = '';
+            document.getElementById('game-logo').value = '';
+            renderGameList();
+        });
+
+        function renderGameList() {
+            const container = document.getElementById('game-list-admin');
+            if (db.produk.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-center">Belum ada game. Tambah di atas.</p>';
+                return;
+            }
+            container.innerHTML = '';
+            db.produk.forEach((game, gameIndex) => {
+                const gameDiv = document.createElement('div');
+                gameDiv.className = 'bg-slate-700 rounded-lg p-4';
+                gameDiv.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-3">
+                            <img src="${game.logo}" class="w-10 h-10 rounded object-cover bg-slate-600">
+                            <input value="${game.nama}" onchange="updateGame(${gameIndex}, this.value)" class="font-bold bg-transparent">
+                        </div>
+                        <button onclick="deleteGame(${gameIndex})" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm">Hapus</button>
+                    </div>
+                    <div class="space-y-2 mb-3">
+                        ${game.nominal.map((item, itemIndex) => `
+                            <div class="flex gap-2 items-center bg-slate-600 p-2 rounded">
+                                <input value="${item.nama}" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'nama', this.value)"
+                                       class="flex-1 bg-slate-800 p-2 rounded text-sm" placeholder="Nama Item">
+                                <input value="${item.harga}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga', this.value)"
+                                       class="w-32 bg-slate-800 p-2 rounded text-sm" placeholder="Harga">
+                                <button onclick="deleteNominal(${gameIndex}, ${itemIndex})" class="bg-red-500 px-2 py-2 rounded text-sm">X</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button onclick="addNominal(${gameIndex})" class="w-full bg-slate-600 hover:bg-slate-500 py-2 rounded text-sm">
+                        + Tambah Nominal
+                    </button>
+                `;
+                container.appendChild(gameDiv);
+            });
+        }
+
+        window.addNominal = (i) => { db.produk[i].nominal.push({ nama: 'Item Baru', harga: 10000 }); renderGameList(); }
+        window.deleteNominal = (i, j) => { db.produk[i].nominal.splice(j, 1); renderGameList(); }
+        window.deleteGame = (i) => { if (confirm('Hapus game ini?')) { db.produk.splice(i, 1); renderGameList(); } }
+        window.updateGame = (i, val) => { db.produk[i].nama = val; }
+        window.updateNominal = (i, j, field, val) => {
+            if (field === 'harga') val = parseInt(val) || 0;
+            db.produk[i].nominal[j][field] = val;
+        }
+
+        // SAVE KE GITHUB
+        saveBtn.addEventListener('click', async () => {
+            const token = document.getElementById('gh-token').value;
+            const user = document.getElementById('gh-user').value;
+            const repo = document.getElementById('gh-repo').value;
+
+            if (!token ||!user ||!repo) {
+                alert('Isi Setting GitHub dulu di atas!');
+                return;
+            }
+
+            // Simpan ke localStorage biar ga ngetik ulang
+            localStorage.setItem('gh_token', token);
+            localStorage.setItem('gh_user', user);
+            localStorage.setItem('gh_repo', repo);
+
+            saveBtn.disabled = true;
+            statusSave.textContent = 'Menyimpan ke GitHub...';
+            statusSave.className = 'text-center text-sm mt-3 text-yellow-400';
+
+            // Update db dari input
+            db.nomor_wa = document.getElementById('nomor-wa').value;
+            db.qris_url = document.getElementById('qris-url').value;
+
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
+            const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/harga.json`;
+
+            try {
+                // 1. Get SHA file lama
+                const getRes = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
+                if (getRes.ok) {
+                    const fileData = await getRes.json();
+                    fileSHA = fileData.sha;
+                }
+
+                // 2. Update file
+                const updateRes = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: 'Update harga.json dari Admin Panel',
+                        content: content,
+                        sha: fileSHA
+                    })
+                });
+
+                if (updateRes.ok) {
+                    statusSave.textContent = '✅ Sukses! Vercel bakal auto-deploy dalam 20 detik.';
+                    statusSave.className = 'text-center text-sm mt-3 text-green-400';
+                } else {
+                    const err = await updateRes.json();
+                    throw new Error(err.message);
+                }
+            } catch (error) {
+                statusSave.textContent = '❌ Gagal: ' + error.message;
+                statusSave.className = 'text-center text-sm mt-3 text-red-400';
+            } finally {
+                saveBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
-</html>
+                  </html>
