@@ -30,7 +30,7 @@
             </div>
             <h3 class="text-xl font-semibold mb-4 border-l-4 border-cyan-400 pl-3">PILIH GAME</h3>
             <div id="game-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <p class="text-slate-400 col-span-full text-center">Memuat game...</p>
+                <p id="status-text" class="text-slate-400 col-span-full text-center">Memuat game...</p>
             </div>
         </div>
 
@@ -42,7 +42,7 @@
         </div>
     </main>
 
-    <!-- MODAL CHECKOUT - INI DOANG YG NAMBAH -->
+    <!-- MODAL CHECKOUT -->
     <div id="qris-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
         <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm">
             <h3 class="text-xl font-bold mb-4 text-center">Checkout</h3>
@@ -73,8 +73,7 @@
     </div>
 
     <script>
-        // GANTI INI PAKE TOKEN + ID TELEGRAM LU
-           const TELEGRAM_BOT_TOKEN = '8670800551:AAFJJ6m-Y8njC1HUmlRZ2vNvsADFpSiZp5w';
+        const TELEGRAM_BOT_TOKEN = '8670800551:AAFJJ6m-Y8njC1HUmlRZ2vNvsADFpSiZp5w';
         const TELEGRAM_CHAT_ID = '6636537299';
 
         const gameListEl = document.getElementById('game-list');
@@ -84,6 +83,7 @@
         const productTitleEl = document.getElementById('product-title');
         const backButton = document.getElementById('back-button');
         const csButton = document.getElementById('cs-button');
+        const statusText = document.getElementById('status-text');
 
         const qrisModal = document.getElementById('qris-modal');
         const orderDetailEl = document.getElementById('order-detail');
@@ -105,11 +105,19 @@
             try {
                 const response = await fetch('harga.json?v=' + Date.now());
                 if (!response.ok) throw new Error('File harga.json tidak ditemukan');
-                db = await response.json();
+                
+                const text = await response.text();
+                db = JSON.parse(text);
+                
+                if (!db.produk || db.produk.length === 0) {
+                    throw new Error('harga.json kosong. Array "produk" ga ada.');
+                }
+
                 csButton.href = `https://wa.me/${db.nomor_wa}`;
                 renderGames();
             } catch (error) {
-                gameListEl.innerHTML = `<p class="text-red-500 col-span-full text-center">Gagal: ${error.message}</p>`;
+                console.error('ERROR DETAIL:', error);
+                statusText.innerHTML = `<span class="text-red-500">Gagal: ${error.message}</span>`;
             }
         }
 
@@ -175,144 +183,76 @@
             qrisModal.classList.remove('flex');
         }
 
-        async function kirimKeTelegram(pesan) {
-            if(TELEGRAM_BOT_TOKEN === 'GANTI_TOKEN_BOT_LU') return;
-            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-            await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: pesan, parse_mode: 'HTML' })
-            });
+        async function validateAndCheckout() {
+            const playerId = playerIdInput.value;
+            const namaPengirim = namaPengirimInput.value.trim();
+
+            if (!/^\d{8,12}$/.test(playerId)) {
+              idError.textContent = 'ID harus 8-12 angka!';
+              idError.classList.remove('hidden');
+              playerIdInput.focus();
+              return;
+            }
+            if (namaPengirim.length < 3) {
+              idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
+              idError.classList.remove('hidden');
+              namaPengirimInput.focus();
+              return;
+            }
+
+            const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}`;
+            
+            const textTelegram = `<b>🔥 ORDER BARU MASUK</b>
+
+<b>Kode:</b> <code>${currentOrder.kode}</code>
+<b>Game:</b> ${currentOrder.game}
+<b>Item:</b> ${currentOrder.item}
+<b>ID Player:</b> <code>${playerId}</code>
+<b>Nama:</b> ${namaPengirim}
+<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}
+
+<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
+
+            await kirimKeTelegram(textTelegram);
+            window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
+            closeQrisModal();
         }
 
-            async function validateAndCheckout() {
-    const playerId = playerIdInput.value;
-    const namaPengirim = namaPengirimInput.value.trim();
+        async function kirimKeTelegram(text) {
+            const FOTO_URL = "https://i.ibb.co/n8wKXrzR/IMG-20260426-WA0012.jpg";
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+            
+            const formData = new FormData();
+            formData.append('chat_id', TELEGRAM_CHAT_ID);
+            formData.append('photo', FOTO_URL);
+            formData.append('caption', text);
+            formData.append('parse_mode', 'HTML');
+            
+            try {
+              const response = await fetch(url, {
+                method: 'POST',
+                body: formData
+              });
+              const result = await response.json();
+              console.log("Hasil Telegram:", result);
+              return result;
+            } catch (error) {
+              console.error("Gagal kirim ke Telegram:", error);
+            }
+        }
 
-    if (!/^\d{8,12}$/.test(playerId)) {
-      idError.textContent = 'ID harus 8-12 angka!';
-      idError.classList.remove('hidden');
-      playerIdInput.focus();
-      return;
-    }
-    if (namaPengirim.length < 3) {
-      idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
-      idError.classList.remove('hidden');
-      namaPengirimInput.focus();
-      return;
-    }
+        backButton.addEventListener('click', () => {
+            productListContainerEl.classList.add('hidden');
+            mainMenuEl.classList.remove('hidden');
+        });
 
-    // Bikin ID di modal jadi font mono
-    document.getElementById('displayIdPlayer').classList.add('font-mono');
+        cancelBtn.addEventListener('click', closeQrisModal);
+        confirmBtn.addEventListener('click', validateAndCheckout);
+        qrisModal.addEventListener('click', (e) => { if (e.target === qrisModal) closeQrisModal(); });
+        playerIdInput.addEventListener('input', () => idError.classList.add('hidden'));
+        namaPengirimInput.addEventListener('input', () => idError.classList.add('hidden'));
 
-    const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}`;
-    
-    const textTelegram = `<b>🔥 ORDER BARU MASUK</b>
-
-<b>Kode:</b> <code>${currentOrder.kode}</code>
-<b>Game:</b> ${currentOrder.game}
-<b>Item:</b> ${currentOrder.item}
-<b>ID Player:</b> <code>${playerId}</code>
-<b>Nama:</b> ${namaPengirim}
-<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}
-
-<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
-
-    await kirimKeTelegram(textTelegram);
-    window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
-async function validateAndCheckout() {
-    const playerId = playerIdInput.value;
-    const namaPengirim = namaPengirimInput.value.trim();
-
-    if (!/^\d{8,12}$/.test(playerId)) {
-      idError.textContent = 'ID harus 8-12 angka!';
-      idError.classList.remove('hidden');
-      playerIdInput.focus();
-      return;
-    }
-    if (namaPengirim.length < 3) {
-      idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
-      idError.classList.remove('hidden');
-      namaPengirimInput.focus();
-      return;
-    }
-
-    const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}`;
-    
-    const textTelegram = `<b>🔥 ORDER BARU MASUK</b>
-
-<b>Kode:</b> <code>${currentOrder.kode}</code>
-<b>Game:</b> ${currentOrder.game}
-<b>Item:</b> ${currentOrder.item}
-<b>ID Player:</b> <code>${playerId}</code>
-<b>Nama:</b> ${namaPengirim}
-<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}
-
-<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
-
-    await kirimKeTelegram(textTelegram);
-    window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
-    closeQrisModal();
-  }
-
-  async function kirimKeTelegram(text) {
-    const FOTO_URL = "https://i.ibb.co/n8wKXrzR/IMG-20260426-WA0012.jpg";
-    
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-    
-    const formData = new FormData();
-    formData.append('chat_id', TELEGRAM_CHAT_ID);
-    formData.append('photo', FOTO_URL);
-    formData.append('caption', text);
-    formData.append('parse_mode', 'HTML');
-    
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData
-      });
-      const result = await response.json();
-      console.log("Hasil Telegram:", result);
-      return result;
-    } catch (error) {
-      console.error("Gagal kirim ke Telegram:", error);
-    }
-  }
-    
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-    
-    const formData = new FormData();
-    formData.append('chat_id', TELEGRAM_CHAT_ID);
-    formData.append('photo', FOTO_URL);
-    formData.append('caption', text);
-    formData.append('parse_mode', 'HTML');
-    
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData
-      });
-      const result = await response.json();
-      console.log("Hasil Telegram:", result); // WAJIB CEK INI
-      return result;
-    } catch (error) {
-      console.error("Gagal kirim ke Telegram:", error);
-    }
-  }
-  }
-
-  backButton.addEventListener('click', () => {
-    productListContainerEl.classList.add('hidden');
-    mainMenuEl.classList.remove('hidden');
-  });
-
-  cancelBtn.addEventListener('click', closeQrisModal);
-  confirmBtn.addEventListener('click', validateAndCheckout);
-  qrisModal.addEventListener('click', (e) => { if (e.target === qrisModal) closeQrisModal(); });
-  playerIdInput.addEventListener('input', () => idError.classList.add('hidden'));
-  namaPengirimInput.addEventListener('input', () => idError.classList.add('hidden'));
-
-  loadData();
-</script>
+        loadData();
+    </script>
 </body>
 </html>
