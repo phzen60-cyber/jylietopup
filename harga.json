@@ -1,35 +1,37 @@
 {
+  "last_update": "25 April 2026, 09:15",
   "wa_number": "62895336789308",
-  {
-  "last_update": "...",
-  "data": { ...isi produk... }
-}
-  "products": [
-    { "id": 1, "name": "50 Diamonds", "diamonds": 50, "price": 7000, "badge": "Termurah" },
-    { "id": 2, "name": "70 Diamonds", "diamonds": 70, "price": 10000 },
-    { "id": 3, "name": "100 Diamonds", "diamonds": 100, "price": 14000 },
-    { "id": 4, "name": "150 Diamonds", "diamonds": 150, "price": 20000 },
-    { "id": 5, "name": "355 Diamonds", "diamonds": 355, "price": 47000 },
-    { "id": 6, "name": "405 Diamonds", "diamonds": 405, "price": 54000 },
-    { "id": 7, "name": "475 Diamonds", "diamonds": 475, "price": 63000 },
-    { "id": 8, "name": "500 Diamonds", "diamonds": 500, "price": 66000 },
-    { "id": 9, "name": "510 Diamonds", "diamonds": 510, "price": 68000 },
-    { "id": 10, "name": "545 Diamonds", "diamonds": 545, "price": 73000 },
-    { "id": 11, "name": "565 Diamonds", "diamonds": 565, "price": 75000 },
-    { "id": 12, "name": "635 Diamonds", "diamonds": 635, "price": 84000 },
-    { "id": 13, "name": "720 Diamonds", "diamonds": 720, "price": 95000, "badge": "Best Deal" },
-    { "id": 14, "name": "770 Diamonds", "diamonds": 770, "price": 100000 },
-    { "id": 15, "name": "790 Diamonds", "diamonds": 790, "price": 102000 },
-    { "id": 16, "name": "800 Diamonds", "diamonds": 800, "price": 106000 },
-    { "id": 17, "name": "860 Diamonds", "diamonds": 860, "price": 111000 },
-    { "id": 18, "name": "930 Diamonds", "diamonds": 930, "price": 120000 },
-    { "id": 19, "name": "1000 Diamonds", "diamonds": 1000, "price": 132000, "badge": "Populer" },
-    { "id": 20, "name": "1050 Diamonds", "diamonds": 1050, "price": 137000 },
-    { "id": 21, "name": "1075 Diamonds", "diamonds": 1075, "price": 138000 },
-    { "id": 22, "name": "1080 Diamonds", "diamonds": 1080, "price": 140000 },
-    { "id": 23, "name": "1450 Diamonds", "diamonds": 1450, "price": 186000, "badge": "Hemat 14rb" },
-    { "id": 24, "name": "2000 Diamonds", "diamonds": 2000, "price": 264000 },
-    { "id": 25, "name": "2180 Diamonds", "diamonds": 2180, "price": 277000, "badge": "Hemat 13rb" },
-    { "id": 26, "name": "2200 Diamonds", "diamonds": 2200, "price": 284000 }
-  ]
+  "data": {
+    "epep": {
+      "nama": "Free Fire",
+      "produk": [
+        {"nama": "50 Diamonds", "harga": 7000},
+        {"nama": "70 Diamonds", "harga": 10000},
+        {"nama": "100 Diamonds", "harga": 14000},
+        {"nama": "150 Diamonds", "harga": 20000},
+        {"nama": "355 Diamonds", "harga": 47000},
+        {"nama": "405 Diamonds", "harga": 54000},
+        {"nama": "475 Diamonds", "harga": 63000},
+        {"nama": "500 Diamonds", "harga": 66000},
+        {"nama": "510 Diamonds", "harga": 68000},
+        {"nama": "545 Diamonds", "harga": 73000},
+        {"nama": "565 Diamonds", "harga": 75000},
+        {"nama": "635 Diamonds", "harga": 84000},
+        {"nama": "720 Diamonds", "harga": 95000},
+        {"nama": "770 Diamonds", "harga": 100000},
+        {"nama": "790 Diamonds", "harga": 102000},
+        {"nama": "800 Diamonds", "harga": 106000},
+        {"nama": "860 Diamonds", "harga": 111000},
+        {"nama": "930 Diamonds", "harga": 120000},
+        {"nama": "1000 Diamonds", "harga": 130000},
+        {"nama": "1050 Diamonds", "harga": 135000},
+        {"nama": "1075 Diamonds", "harga": 140000},
+        {"nama": "1080 Diamonds", "harga": 145000},
+        {"nama": "1450 Diamonds", "harga": 180000},
+        {"nama": "2000 Diamonds", "harga": 260000},
+        {"nama": "2180 Diamonds", "harga": 275000},
+        {"nama": "2200 Diamonds", "harga": 280000}
+      ]
+    }
+  }
 }
