@@ -4,7 +4,7 @@
     {
       "id": "freefire",
       "nama": "Free Fire",
-      "logo": "https://i.imgur.com/uE6i9bL.png",
+      "logo": "https://play-lh.googleusercontent.com/cGCoZZr1x4luHUNndupR7ms-F-9zLV5pIqzGZox2aVJN6XVUyY5fGNeUyxdKQ1XOV_4=w240-h480-rw",
       "nominal": [
         { "nama": "5 Diamond", "harga": 1000 },
         { "nama": "12 Diamond", "harga": 2000 },
@@ -19,7 +19,6 @@
         { "nama": "720 Diamond", "harga": 95000 },
         { "nama": "1000 Diamond", "harga": 132000 },
         { "nama": "1450 Diamond", "harga": 190000 },
-        { "nama": "2000 Diamond", "harga": 262000 },
         { "nama": "2180 Diamond", "harga": 285000 },
         { "nama": "3640 Diamond", "harga": 475000 },
         { "nama": "7290 Diamond", "harga": 950000 },
