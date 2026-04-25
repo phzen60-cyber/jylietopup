@@ -99,3 +99,154 @@ function saveData() {
     alert('File harga.json udah ke-download. Upload ke Netlify buat update harga.');
   }, 500);
 }
+let dataHarga = {};
+let lastUpdate = '';
+
+const notif = (msg, sukses = true) => {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.className = sukses? 'notif-sukses' : 'notif-gagal';
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+};
+
+async function loadData() {
+  try {
+    const res = await fetch('harga.json?' + Date.now());
+    const json = await res.json();
+
+    // Cek format baru: ada last_update + data
+    if(json.last_update && json.data) {
+      lastUpdate = json.last_update;
+      dataHarga = json.data;
+    } else {
+      // Format lama: langsung data aja
+      dataHarga = json;
+      lastUpdate = 'Belum ada data update';
+    }
+    renderProduk();
+    updateLastUpdateText();
+  } catch (e) {
+    notif('Gagal load harga.json', false);
+  }
+}
+
+function updateLastUpdateText() {
+  let el = document.getElementById('lastUpdate');
+  if(!el) {
+    // Bikin element kalo belum ada
+    const info = document.createElement('div');
+    info.id = 'lastUpdate';
+    info.style.cssText = 'opacity:.7;font-size:14px;margin-bottom:16px';
+    document.querySelector('.admin-wrap h1').after(info);
+    el = info;
+  }
+  el.textContent = `🕒 Last Update: ${lastUpdate}`;
+}
+
+function renderProduk() {
+  const wrap = document.getElementById('produkList');
+  wrap.innerHTML = '';
+
+  for (const [catId, catData] of Object.entries(dataHarga)) {
+    const catDiv = document.createElement('div');
+    catDiv.className = 'cat-wrap';
+    catDiv.innerHTML = `
+      <div class="cat-head">
+        <div class="cat-title">${catData.nama} <span style="opacity:.5;font-size:14px">${catId}</span></div>
+        <button onclick="hapusKategori('${catId}')" class="admin-btn btn-del">Hapus Kategori</button>
+      </div>
+      <div id="prod-${catId}"></div>
+      <button onclick="tambahProduk('${catId}')" class="admin-btn btn-add" style="margin-top:8px">+ Tambah Produk</button>
+    `;
+    wrap.appendChild(catDiv);
+
+    const prodWrap = document.getElementById(`prod-${catId}`);
+    catData.produk.forEach((p, i) => {
+      const row = document.createElement('div');
+      row.className = 'prod-row';
+      row.innerHTML = `
+        <input class="admin-input" value="${p.nama}" placeholder="Nama Produk" data-cat="${catId}" data-idx="${i}" data-field="nama">
+        <input class="admin-input" type="number" value="${p.harga}" placeholder="Harga" data-cat="${catId}" data-idx="${i}" data-field="harga" style="max-width:120px">
+        <button onclick="hapusProduk('${catId}', ${i})" class="admin-btn btn-del">X</button>
+      `;
+      prodWrap.appendChild(row);
+    });
+  }
+
+  document.querySelectorAll('.admin-input[data-idx]').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const {cat, idx, field} = e.target.dataset;
+      let val = e.target.value;
+      if(field === 'harga') val = parseInt(val) || 0;
+      dataHarga[cat].produk[idx][field] = val;
+    });
+  });
+}
+
+function tambahKategori() {
+  const id = document.getElementById('newCatId').value.trim();
+  const nama = document.getElementById('newCatName').value.trim();
+  if(!id ||!nama) return notif('ID dan Nama Kategori wajib diisi', false);
+  if(dataHarga[id]) return notif('ID Kategori udah ada', false);
+
+  dataHarga[id] = {nama: nama, produk: []};
+  document.getElementById('newCatId').value = '';
+  document.getElementById('newCatName').value = '';
+  renderProduk();
+  notif('Kategori ditambah. Jangan lupa Simpan!');
+}
+
+function hapusKategori(catId) {
+  if(!confirm(`Hapus kategori ${dataHarga[catId].nama}?`)) return;
+  delete dataHarga[catId];
+  renderProduk();
+  notif('Kategori dihapus. Jangan lupa Simpan!');
+}
+
+function tambahProduk(catId) {
+  dataHarga[catId].produk.push({nama: "Produk Baru", harga: 0});
+  renderProduk();
+  notif('Produk ditambah. Edit nama + harga, terus Simpan!');
+}
+
+function hapusProduk(catId, idx) {
+  dataHarga[catId].produk.splice(idx, 1);
+  renderProduk();
+  notif('Produk dihapus. Jangan lupa Simpan!');
+}
+
+async function simpanSemua() {
+  notif('Menyimpan ke GitHub...', true);
+
+  // Bikin format baru: last_update + data
+  const now = new Date().toLocaleString('id-ID', {
+    day: '2-digit', month: 'long', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+
+  const payload = {
+    last_update: now,
+    data: dataHarga
+  };
+
+  try {
+    const res = await fetch('/.netlify/functions/save-harga', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const hasil = await res.json();
+    if(res.ok) {
+      lastUpdate = now;
+      updateLastUpdateText();
+      notif('Berhasil save! Data + backup udah ke-commit ✅');
+    } else {
+      throw new Error(hasil.error || 'Gagal save');
+    }
+  } catch (e) {
+    notif('Error: ' + e.message, false);
+  }
+}
+
+loadData();
