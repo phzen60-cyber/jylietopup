@@ -1,5 +1,9 @@
 {
   "wa_number": "62895336789308",
+  {
+  "last_update": "...",
+  "data": { ...isi produk... }
+}
   "products": [
     { "id": 1, "name": "50 Diamonds", "diamonds": 50, "price": 7000, "badge": "Termurah" },
     { "id": 2, "name": "70 Diamonds", "diamonds": 70, "price": 10000 },
