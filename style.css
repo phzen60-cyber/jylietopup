@@ -1,0 +1,117 @@
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { 
+  background: #0f172a url('bg.jpg') no-repeat center center fixed; 
+  background-size: cover; color: #e2e8f0; padding: 20px; position: relative;
+}
+body::before {
+  content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.9); z-index: -1;
+}
+.container { max-width: 1200px; margin: auto; }
+.header { text-align: center; margin-bottom: 32px; }
+.logo { width: 80px; height: 80px; margin: 0 auto 12px; border-radius: 16px; object-fit: cover; }
+h1 { margin-bottom: 8px; color: #38bdf8; font-size: 32px; }
+.subtitle { color: #94a3b8; }
+.products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.card { 
+  background: rgba(30, 41, 59, 0.8); border: 1px solid #334155; border-radius: 12px; 
+  padding: 16px; position: relative; transition: 0.2s; backdrop-filter: blur(8px); 
+}
+.card:hover { border-color: #38bdf8; transform: translateY(-2px); }
+.badge { position: absolute; top: -8px; right: -8px; background: #f59e0b; color: #0f172a; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+.dm { font-size: 24px; font-weight: bold; color: #38bdf8; margin-bottom: 4px; }
+.price { font-size: 20px; font-weight: bold; margin: 8px 0; }
+.btn { width: 100%; background: #22c55e; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; text-decoration: none; display: block; text-align: center; }
+.btn:hover { background: #16a34a; }
+.note { text-align: center; margin-top: 32px; color: #94a3b8; font-size: 14px; }
+.modal { display: none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
+.modal-content { background: #1e293b; margin: 5% auto; padding: 24px; border-radius: 16px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #334155; }
+.modal h2 { color: #38bdf8; margin-bottom: 8px; }
+.modal .total { font-size: 24px; font-weight: bold; margin: 12px 0; color: #4ade80; }
+.modal img { width: 100%; max-width: 300px; border-radius: 8px; margin: 16px 0; background: white; padding: 8px; }
+.modal .btn-wa { background: #22c55e; margin-top: 12px; }
+.modal .btn-close { background: #475569; margin-top: 8px; }
+.close { color: #94a3b8; float: right; font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1; }
+.close:hover { color: #e2e8f0; }
+.input-group { margin: 16px 0; text-align: left; }
+.input-group label { 
+  display: block; 
+  margin-bottom: 6px; 
+  font-size: 14px; 
+  color: #cbd5e1; 
+  font-weight: 600;
+}
+.input-group input {
+  width: 100%; 
+  padding: 12px; 
+  border-radius: 8px; 
+  border: 1px solid #475569; 
+  background: #0f172a; 
+  color: #e2e8f0; 
+  font-size: 16px;
+}
+.input-group input:focus {
+  outline: none; 
+  border-color: #38bdf8;
+}
+/* Filter */
+.filters { 
+  display: flex; 
+  gap: 8px; 
+  flex-wrap: wrap; 
+  justify-content: center; 
+  margin-bottom: 24px; 
+}
+.filter-btn {
+  background: #334155; 
+  color: #cbd5e1; 
+  border: 1px solid #475569; 
+  padding: 8px 16px; 
+  border-radius: 20px; 
+  cursor: pointer; 
+  font-size: 14px;
+  transition: 0.2s;
+}
+.filter-btn:hover, .filter-btn.active { 
+  background: #38bdf8; 
+  color: #0f172a; 
+  border-color: #38bdf8; 
+}
+/* WA Melayang */
+.wa-float {
+  position: fixed; 
+  bottom: 20px; 
+  right: 20px; 
+  background: #22c55e; 
+  color: white; 
+  padding: 12px 16px; 
+  border-radius: 50px; 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  text-decoration: none; 
+  font-weight: bold; 
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+  z-index: 998;
+  transition: 0.2s;
+}
+.wa-float:hover { 
+  background: #16a34a; 
+  transform: translateY(-2px); 
+}
+/* Error ID */
+.error-msg { 
+  color: #f87171; 
+  font-size: 12px; 
+  margin-top: 4px; 
+  display: block; 
+  min-height: 16px; 
+}
+.input-group input.error { 
+  border-color: #f87171; 
+}
+/* Responsive */
+@media (max-width: 480px) {
+  .wa-float span { display: none; }
+  .wa-float { padding: 14px; border-radius: 50%; }
+}
