@@ -1,10 +1,11 @@
 {
-  "last_update": "25 April 2026, 09:15",
-  "wa_number": "62895336789308",
-  "data": {
-    "epep": {
+  "nomor_wa": "62895336789308",
+  "produk": [
+    {
+      "id": "freefire",
       "nama": "Free Fire",
-      "produk": [
+      "logo": "https://cdn-icons-png.flaticon.com/512/5969/5969285.png",
+      "nominal": [
         {"nama": "50 Diamonds", "harga": 7000},
         {"nama": "70 Diamonds", "harga": 10000},
         {"nama": "100 Diamonds", "harga": 14000},
@@ -33,5 +34,5 @@
         {"nama": "2200 Diamonds", "harga": 280000}
       ]
     }
-  }
+  ]
 }
