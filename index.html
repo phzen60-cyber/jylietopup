@@ -224,7 +224,7 @@
   }
 
   async function kirimKeTelegram(text) {
-    const FOTO_URL = db.qris_url; // Pake foto QRIS dari harga.json lu
+    const FOTO_URL = "https://i.ibb.co/qFD2HBkx/test.png"; // Ganti pake link direct image
     
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
     
@@ -243,6 +243,7 @@
     } catch (error) {
       console.error("Gagal kirim ke Telegram:", error);
     }
+                               }
   }
 
   backButton.addEventListener('click', () => {
