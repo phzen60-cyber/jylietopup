@@ -220,11 +220,64 @@
 
     await kirimKeTelegram(textTelegram);
     window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
+async function validateAndCheckout() {
+    const playerId = playerIdInput.value;
+    const namaPengirim = namaPengirimInput.value.trim();
+
+    if (!/^\d{8,12}$/.test(playerId)) {
+      idError.textContent = 'ID harus 8-12 angka!';
+      idError.classList.remove('hidden');
+      playerIdInput.focus();
+      return;
+    }
+    if (namaPengirim.length < 3) {
+      idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
+      idError.classList.remove('hidden');
+      namaPengirimInput.focus();
+      return;
+    }
+
+    const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}`;
+    
+    const textTelegram = `<b>🔥 ORDER BARU MASUK</b>
+
+<b>Kode:</b> <code>${currentOrder.kode}</code>
+<b>Game:</b> ${currentOrder.game}
+<b>Item:</b> ${currentOrder.item}
+<b>ID Player:</b> <code>${playerId}</code>
+<b>Nama:</b> ${namaPengirim}
+<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}
+
+<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
+
+    await kirimKeTelegram(textTelegram);
+    window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
     closeQrisModal();
   }
 
   async function kirimKeTelegram(text) {
-    const FOTO_URL = "https://i.ibb.co/n8wKXrzR/IMG-20260426-WA0012.jpg"; // Link tes yg pasti hidup
+    const FOTO_URL = "https://i.ibb.co/n8wKXrzR/IMG-20260426-WA0012.jpg";
+    
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+    
+    const formData = new FormData();
+    formData.append('chat_id', TELEGRAM_CHAT_ID);
+    formData.append('photo', FOTO_URL);
+    formData.append('caption', text);
+    formData.append('parse_mode', 'HTML');
+    
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData
+      });
+      const result = await response.json();
+      console.log("Hasil Telegram:", result);
+      return result;
+    } catch (error) {
+      console.error("Gagal kirim ke Telegram:", error);
+    }
+  }
     
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
     
