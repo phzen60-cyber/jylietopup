@@ -7,21 +7,21 @@ exports.handler = async () => {
   const path = "harga.json";
 
   try {
-    const { data } = await octokit.repos.getContent({ owner, repo, path });
+    const { data } = await octokit.rest.repos.getContent({ owner, repo, path });
     const content = Buffer.from(data.content, 'base64').toString('utf-8');
-    
+
     return {
       statusCode: 200,
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
       },
       body: content
     };
   } catch (error) {
-    return { 
-      statusCode: 500, 
-      body: JSON.stringify({ error: error.message }) 
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
     };
   }
 };
