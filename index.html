@@ -224,7 +224,7 @@
   }
 
   async function kirimKeTelegram(text) {
-    const FOTO_URL = db.qris_url; // Pake QRIS yg udah pasti ada
+    const FOTO_URL = "https://i.ibb.co/n8wKXrzR/IMG-20260426-WA0012.jpg"; // Link tes yg pasti hidup
     
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
     
@@ -240,7 +240,7 @@
         body: formData
       });
       const result = await response.json();
-      console.log(result); // Biar ketauan errornya apa
+      console.log("Hasil Telegram:", result); // WAJIB CEK INI
       return result;
     } catch (error) {
       console.error("Gagal kirim ke Telegram:", error);
