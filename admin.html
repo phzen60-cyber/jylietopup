@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Jylie Shop</title>
+  <style>
+    body{font-family:sans-serif;background:#0f172a;color:#e2e8f0;padding:20px;max-width:900px;margin:auto}
+    input,button{padding:10px;margin:5px;border-radius:6px;border:1px solid #334155;background:#1e293b;color:#e2e8f0}
+    button{cursor:pointer;background:#3b82f6;border:none}
+    button.danger{background:#ef4444}
+    table{width:100%;border-collapse:collapse;margin-top:20px}
+    th,td{border:1px solid #334155;padding:8px;text-align:left}
+    th{background:#1e293b}
+    #adminBox{display:none}
+   .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+   .loading{display:none}
+  </style>
+</head>
+<body>
+  <div id="loginBox">
+    <h2>Login Admin Jylie Shop</h2>
+    <input id="user" placeholder="Username"><br>
+    <input id="pass" type="password" placeholder="Password"><br>
+    <button onclick="login()">Masuk</button>
+    <p id="loginMsg" style="color:#ef4444"></p>
+  </div>
+
+  <div id="adminBox">
+    <h2>Panel Admin Jylie Shop</h2>
+    <p>IP lu: <span id="ipText"></span></p>
+
+    <h3>Setting Umum</h3>
+    <div class="row">
+      <label>Nomor WA:</label>
+      <input id="waNumber" placeholder="628xxx">
+    </div>
+
+    <h3>Produk <button onclick="tambahProduk()">+ Tambah Produk</button></h3>
+    <div id="tableWrap">Loading...</div>
+
+    <br>
+    <button onclick="saveData()">💾 Simpan Perubahan</button>
+    <span class="loading" id="loadingSave">Menyimpan...</span>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
