@@ -22,13 +22,15 @@
     </header>
 
     <main class="container mx-auto px-4 py-8">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold">TOP UP <span class="text-cyan-400">TERMURAH</span></h2>
-            <p class="text-slate-400 mt-2">Proses cepat 5 menit. Harga paling murah se-Indonesia.</p>
-        </div>
-
-        <h3 class="text-xl font-semibold mb-4 border-l-4 border-cyan-400 pl-3">PILIH GAME</h3>
-        <div id="game-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div id="main-menu">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold">TOP UP <span class="text-cyan-400">TERMURAH</span></h2>
+                <p class="text-slate-400 mt-2">Proses cepat 5 menit. Harga paling murah se-Indonesia.</p>
+            </div>
+            <h3 class="text-xl font-semibold mb-4 border-l-4 border-cyan-400 pl-3">PILIH GAME</h3>
+            <div id="game-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <p class="text-slate-400 col-span-full text-center">Memuat game...</p>
+            </div>
         </div>
 
         <div id="product-list-container" class="mt-10 hidden">
@@ -41,6 +43,7 @@
 
     <script>
         const gameListEl = document.getElementById('game-list');
+        const mainMenuEl = document.getElementById('main-menu');
         const productListContainerEl = document.getElementById('product-list-container');
         const productListEl = document.getElementById('product-list');
         const productTitleEl = document.getElementById('product-title');
@@ -50,23 +53,28 @@
 
         async function loadData() {
             try {
-                const response = await fetch('harga.json');
+                const response = await fetch('harga.json?v=' + Date.now());
+                if (!response.ok) throw new Error('File harga.json tidak ditemukan');
                 db = await response.json();
                 
                 csButton.href = `https://wa.me/${db.nomor_wa}`;
                 renderGames();
             } catch (error) {
-                gameListEl.innerHTML = `<p class="text-red-500 col-span-full text-center">Gagal memuat data. Cek file harga.json.</p>`;
+                gameListEl.innerHTML = `<p class="text-red-500 col-span-full text-center">Gagal: ${error.message}. Cek file harga.json</p>`;
             }
         }
 
         function renderGames() {
             gameListEl.innerHTML = '';
+            if (!db.produk || db.produk.length === 0) {
+                 gameListEl.innerHTML = `<p class="text-yellow-500 col-span-full text-center">Belum ada produk di harga.json</p>`;
+                 return;
+            }
             db.produk.forEach(game => {
                 const card = document.createElement('div');
                 card.className = 'game-card bg-slate-800 rounded-lg p-4 text-center cursor-pointer transition-transform duration-300';
                 card.innerHTML = `
-                    <img src="${game.logo}" alt="${game.nama}" class="w-16 h-16 mx-auto rounded-lg mb-2 object-cover">
+                    <img src="${game.logo}" alt="${game.nama}" class="w-16 h-16 mx-auto rounded-lg mb-2 object-cover bg-slate-700">
                     <p class="font-semibold text-sm">${game.nama}</p>
                 `;
                 card.addEventListener('click', () => showProducts(game));
@@ -75,18 +83,26 @@
         }
 
         function showProducts(game) {
-            gameListEl.parentElement.classList.add('hidden');
+            mainMenuEl.classList.add('hidden');
             productListContainerEl.classList.remove('hidden');
             productTitleEl.textContent = `Top Up ${game.nama}`;
             productListEl.innerHTML = '';
 
+            if (!game.nominal || game.nominal.length === 0) {
+                productListEl.innerHTML = `<p class="text-yellow-500 col-span-full text-center">List nominal kosong. Cek "nominal" di harga.json</p>`;
+                return;
+            }
+
             game.nominal.forEach(item => {
                 const productCard = document.createElement('div');
-                productCard.className = 'bg-slate-800 rounded-lg p-4';
+                productCard.className = 'bg-slate-800 rounded-lg p-4 flex flex-col justify-between';
+                const text = `Halo min, mau order ${game.nama} ${item.nama} Rp${item.harga.toLocaleString('id-ID')}`;
                 productCard.innerHTML = `
-                    <p class="font-bold">${item.nama}</p>
-                    <p class="text-cyan-400 font-semibold my-2">Rp${item.harga.toLocaleString('id-ID')}</p>
-                    <a href="https://wa.me/${db.nomor_wa}?text=Halo%20min,%20mau%20order%20${game.nama}%20${item.nama}%20Rp${item.harga.toLocaleString('id-ID')}" target="_blank" class="block text-center w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm mt-2">
+                    <div>
+                        <p class="font-bold">${item.nama}</p>
+                        <p class="text-cyan-400 font-semibold my-2">Rp${item.harga.toLocaleString('id-ID')}</p>
+                    </div>
+                    <a href="https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(text)}" target="_blank" class="block text-center w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm mt-2">
                         Beli
                     </a>
                 `;
@@ -96,7 +112,7 @@
 
         backButton.addEventListener('click', () => {
             productListContainerEl.classList.add('hidden');
-            gameListEl.parentElement.classList.remove('hidden');
+            mainMenuEl.classList.remove('hidden');
         });
 
         loadData();
