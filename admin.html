@@ -9,15 +9,15 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
   body { font-family: 'Poppins', sans-serif; }
- .admin-btn { transition: 0.2s; }
- .admin-btn:hover { transform: scale(1.02); }
- .admin-input { background: #1e293b; border: 1px solid #334155; }
- .admin-input:focus { outline: 2px solid #6366f1; border-color: #6366f1; }
- .notif-sukses { color: #4ade80; }
- .notif-gagal { color: #f87171; }
- .sidebar-link { transition:.2s; }
- .sidebar-link:hover,.sidebar-link.active { background: #1e293b; color: #e8eaf0; }
- .sidebar-link.active { border-left: 3px solid #6366f1; }
+.admin-btn { transition: 0.2s; }
+.admin-btn:hover { transform: scale(1.02); }
+.admin-input { background: #1e293b; border: 1px solid #334155; }
+.admin-input:focus { outline: 2px solid #6366f1; border-color: #6366f1; }
+.notif-sukses { color: #4ade80; }
+.notif-gagal { color: #f87171; }
+.sidebar-link { transition:.2s; cursor:pointer; }
+.sidebar-link:hover,.sidebar-link.active { background: #1e293b; color: #e8eaf0; }
+.sidebar-link.active { border-left: 3px solid #6366f1; }
 </style>
 </head>
 <body class="bg-slate-950 text-slate-200">
@@ -29,10 +29,8 @@
             <i class="ri-flashlight-fill text-3xl text-indigo-500"></i>
             <h1 class="text-2xl font-bold">Admin JylieTopup</h1>
         </div>
-        <input id="user" type="text" placeholder="Username"
-               class="w-full admin-input p-3 rounded-lg mb-3">
-        <input id="pass" type="password" placeholder="Password"
-               class="w-full admin-input p-3 rounded-lg mb-3">
+        <input id="user" type="text" placeholder="Username" class="w-full admin-input p-3 rounded-lg mb-3">
+        <input id="pass" type="password" placeholder="Password" class="w-full admin-input p-3 rounded-lg mb-3">
         <button onclick="login()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-3 rounded-lg font-bold admin-btn">Login</button>
         <p id="loginMsg" class="text-red-400 text-sm mt-3 text-center"></p>
     </div>
@@ -47,19 +45,19 @@
                 <i class="ri-flashlight-fill text-2xl text-indigo-500"></i>
                 <span class="text-lg font-bold">JylieTopup</span>
             </div>
-            <nav></nav> class="space-y-1">
-                <a href="javascript:void(0)" onclick="showPage('dashboard', this)" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg">
-    <i class="ri-dashboard-line text-xl"></i> Dashboard
-</a>
-<a href="javascript:void(0)" onclick="showPage('pesanan', this)" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
-    <i class="ri-shopping-bag-3-line text-xl"></i> Pesanan
-</a>
-<a href="javascript:void(0)" onclick="showPage('produk', this)" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
-    <i class="ri-gamepad-line text-xl"></i> Produk
-</a>
-<a href="javascript:void(0)" onclick="showPage('setting', this)" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
-    <i class="ri-settings-3-line text-xl"></i> Setting
-</a>
+            <nav class="space-y-1">
+                <a data-page="dashboard" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg">
+                    <i class="ri-dashboard-line text-xl"></i> Dashboard
+                </a>
+                <a data-page="pesanan" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+                    <i class="ri-shopping-bag-3-line text-xl"></i> Pesanan
+                </a>
+                <a data-page="produk" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+                    <i class="ri-gamepad-line text-xl"></i> Produk
+                </a>
+                <a data-page="setting" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+                    <i class="ri-settings-3-line text-xl"></i> Setting
+                </a>
             </nav>
             <button onclick="logout()" class="absolute bottom-4 left-4 right-4 bg-red-500/20 hover:bg-red-500/30 text-red-400 py-2 rounded-lg text-sm admin-btn">
                 <i class="ri-logout-box-r-line"></i> Logout
@@ -68,7 +66,6 @@
 
         <!-- MAIN -->
         <div class="ml-64 flex-1 p-6">
-            <!-- TOPBAR -->
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-bold" id="pageTitle">Dashboard</h1>
                 <div class="flex items-center gap-3">
@@ -113,7 +110,6 @@
                         <span class="text-xs text-slate-400">Atur di Setting</span>
                     </div>
                 </div>
-
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <h2 class="text-lg font-bold mb-4">Pesanan Terbaru</h2>
                     <div id="recentOrders" class="space-y-2">
@@ -132,9 +128,9 @@
                         </button>
                     </div>
                     <div class="flex gap-2 mb-4">
-                        <button onclick="filterOrder('all')" class="filter-btn bg-indigo-500 px-3 py-1.5 rounded-lg text-xs font-bold admin-btn">Semua</button>
-                        <button onclick="filterOrder('Diproses')" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn">Diproses</button>
-                        <button onclick="filterOrder('Selesai')" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn">Selesai</button>
+                        <button onclick="filterOrder('all', this)" class="filter-btn bg-indigo-500 px-3 py-1.5 rounded-lg text-xs font-bold admin-btn">Semua</button>
+                        <button onclick="filterOrder('Diproses', this)" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn">Diproses</button>
+                        <button onclick="filterOrder('Selesai', this)" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn">Selesai</button>
                     </div>
                     <div id="order-list" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                         <p class="text-slate-500 text-center py-8">Klik Refresh buat load order</p>
@@ -151,9 +147,7 @@
                         <input id="newGameName" type="text" placeholder="Nama: Free Fire" class="admin-input p-3 rounded-lg">
                         <input id="newGameLogo" type="text" placeholder="Link Logo" class="admin-input p-3 rounded-lg">
                     </div>
-                    <button onclick="tambahGame()" class="w-full mt-3 bg-indigo-500 hover:bg-indigo-600 py-3 rounded-lg font-bold admin-btn">
-                        + Tambah Game
-                    </button>
+                    <button onclick="tambahGame()" class="w-full mt-3 bg-indigo-500 hover:bg-indigo-600 py-3 rounded-lg font-bold admin-btn">+ Tambah Game</button>
                 </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <h2 class="text-lg font-bold mb-4">List Game & Produk</h2>
@@ -170,7 +164,6 @@
                     <input id="gh-repo" type="text" placeholder="Repo: jylietopup" class="w-full admin-input p-3 rounded-lg mb-2">
                     <p class="text-xs text-slate-400">Token disimpan di browser lu doang. Aman.</p>
                 </div>
-
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-4">
                     <h2 class="text-lg font-bold mb-4 border-l-4 border-indigo-500 pl-3">Setting Umum</h2>
                     <label class="block mb-2 text-sm font-semibold">Status Toko</label>
@@ -181,10 +174,7 @@
                     <label class="block mb-2 text-sm font-semibold">Username Telegram CS</label>
                     <input id="username-tele" type="text" placeholder="jyliestoreid" class="w-full admin-input p-3 rounded-lg">
                 </div>
-
-                <button onclick="simpanSemua()" class="w-full bg-green-500 hover:bg-green-600 py-4 rounded-lg font-bold text-lg admin-btn">
-                    🔒 Simpan Semua Perubahan ke GitHub
-                </button>
+                <button onclick="simpanSemua()" class="w-full bg-green-500 hover:bg-green-600 py-4 rounded-lg font-bold text-lg admin-btn">🔒 Simpan Semua Perubahan ke GitHub</button>
                 <p id="notif" class="text-center text-sm mt-3 hidden"></p>
             </div>
         </div>
@@ -196,6 +186,17 @@ const CONFIG = { USER: "ownerjylie", PASS: "jylie547" };
 let db = { username_tele: '', toko_buka: true, games: [] };
 let ALL_ORDERS = [];
 let CURRENT_FILTER = 'all';
+
+// EVENT SIDEBAR - INI KUNCINYA
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const page = this.getAttribute('data-page');
+      showPage(page, this);
+    });
+  });
+});
 
 const notif = (msg, sukses = true) => {
   const el = document.getElementById('notif');
@@ -373,5 +374,4 @@ async function simpanSemua() {
     if (getRes.ok) fileSHA = (await getRes.json()).sha;
     const updateRes = await fetch(apiUrl, {
       method: 'PUT',
-      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mess
+      headers: { 'Aut
