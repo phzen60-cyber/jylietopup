@@ -9,14 +9,19 @@
         body{background:#0f172a;color:#fff}
         button{cursor:pointer;border:0}
         input{outline:none}
-    .box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px}
-    .btn{background:#06b6d4;color:#0f172a;padding:12px;border-radius:8px;font-weight:700;width:100%}
-    .btn-green{background:#22c55e;color:#0f172a}
-    .btn-red{background:#ef4444;color:#fff}
-    .btn-gray{background:#475569;color:#fff}
-    .input{width:100%;background:#334155;border:1px solid #475569;padding:12px;border-radius:8px;color:#fff;margin-bottom:8px}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+   .box{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:16px}
+   .btn{background:#06b6d4;color:#0f172a;padding:12px;border-radius:8px;font-weight:700;width:100%}
+   .btn-green{background:#22c55e;color:#0f172a}
+   .btn-red{background:#ef4444;color:#fff}
+   .btn-gray{background:#475569;color:#fff}
+   .btn-purple{background:#a855f7;color:#fff}
+   .input{width:100%;background:#334155;border:1px solid #475569;padding:12px;border-radius:8px;color:#fff;margin-bottom:8px}
+   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+   .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+   .edit-harga{background:transparent;border:0;color:#fff;font-size:16px;width:100%;padding:4px}
+   .edit-harga:focus{background:#334155;border-radius:6px}
+   .bar{height:8px;background:#334155;border-radius:4px;overflow:hidden}
+   .bar-fill{height:100%;background:linear-gradient(90deg,#22d3ee 0%,#3b82f6 100%)}
     </style>
 </head>
 <body>
@@ -50,6 +55,13 @@
                 <div class="box"><p style="color:#94a3b8;font-size:14px">Status Toko</p><b style="font-size:24px" id="sttoko">-</b></div>
             </div>
 
+            <!-- GRAFIK 7 HARI -->
+            <div class="box">
+                <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">📊 Grafik Order 7 Hari Terakhir</h2>
+                <div id="grafik" style="display:flex;align-items:end;justify-content:space-between;height:120px;gap:8px;padding:12px 0"></div>
+                <div id="grafikLabel" style="display:flex;justify-content:space-between;font-size:12px;color:#94a3b8"></div>
+            </div>
+
             <!-- SETTING GITHUB -->
             <div class="box" style="border:2px solid #eab308">
                 <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">⚙️ Setting GitHub - WAJIB ISI</h2>
@@ -60,7 +72,7 @@
                 </div>
             </div>
 
-            <!-- SETTING UMUM - TOMBOL BUKA TUTUP GEDE BANGET -->
+            <!-- SETTING UMUM -->
             <div class="box">
                 <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">⚙️ Setting Umum</h2>
                 <label style="display:block;margin-bottom:12px;font-size:16px;font-weight:600">Status Toko</label>
@@ -72,20 +84,26 @@
                 <input id="username-tele" class="input" type="text" placeholder="jyliestoreid">
             </div>
 
-            <!-- TAMBAH GAME -->
+            <!-- TAMBAH GAME + UPLOAD LOGO -->
             <div class="box">
                 <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">🎮 Tambah Game Baru</h2>
                 <div class="grid3" style="margin-bottom:12px">
                     <input id="newGameId" class="input" type="text" placeholder="ID: freefire">
                     <input id="newGameName" class="input" type="text" placeholder="Nama: Free Fire">
-                    <input id="newGameLogo" class="input" type="text" placeholder="Link Logo">
+                    <input id="newGameLogo" class="input" type="text" placeholder="Link Logo / Klik Upload">
                 </div>
-                <button type="button" onclick="tambahGame()" class="btn" style="background:#a855f7;color:#fff">+ Tambah Game</button>
+                <div style="display:flex;gap:12px">
+                    <button type="button" onclick="tambahGame()" class="btn" style="background:#a855f7;color:#fff;flex:1">+ Tambah Game</button>
+                    <label class="btn-purple" style="flex:1;display:flex;align-items:center;justify-content:center;cursor:pointer">
+                        📤 Upload Logo
+                        <input type="file" id="uploadLogo" accept="image/*" style="display:none" onchange="uploadLogoGame(this)">
+                    </label>
+                </div>
             </div>
 
             <!-- LIST GAME -->
             <div class="box">
-                <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">📋 Kelola Game & Produk</h2>
+                <h2 style="font-size:18px;font-weight:700;margin-bottom:16px">📋 Kelola Game & Produk - Klik Harga Buat Edit</h2>
                 <div id="produkList">Loading...</div>
             </div>
 
@@ -189,7 +207,7 @@ function renderProduk() {
     var html = '<div style="background:#334155;border:1px solid #475569;border-radius:12px;padding:16px;margin-bottom:16px">'+
       '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">'+
         '<div style="display:flex;align-items:center;gap:16px">'+
-          '<img src="'+game.icon+'" style="width:56px;height:56px;border-radius:12px;object-fit:cover;background:#475569">'+
+          '<img src="'+game.icon+'" style="width:56px;height:56px;border-radius:12px;object-fit:cover;background:#475569" id="logo-'+i+'">'+
           '<div>'+
             '<input value="'+game.name+'" onchange="updateGame('+i+',\'name\',this.value)" style="font-weight:700;background:transparent;color:#fff;font-size:18px;border:0;outline:none">'+
             '<p style="color:#94a3b8;font-size:12px;margin-top:4px">ID: '+game.id+'</p>'+
@@ -197,7 +215,10 @@ function renderProduk() {
         '</div>'+
         '<button type="button" onclick="hapusGame('+i+')" style="background:#ef4444;color:#fff;padding:8px 12px;border-radius:8px">Hapus</button>'+
       '</div>'+
-      '<input value="'+game.icon+'" onchange="updateGame('+i+',\'icon\',this.value)" class="input" placeholder="Link Logo Game">'+
+      '<div style="display:flex;gap:8px;margin-bottom:16px">'+
+        '<input value="'+game.icon+'" onchange="updateGame('+i+',\'icon\',this.value)" class="input" style="flex:1;margin:0" placeholder="Link Logo" id="icon-'+i+'">'+
+        '<label class="btn-purple" style="padding:12px 16px;border-radius:8px;cursor:pointer;font-size:14px">📤<input type="file" accept="image/*" style="display:none" onchange="uploadLogoUpdate(this,'+i+')"></label>'+
+      '</div>'+
       '<div id="nominal-'+i+'" style="margin:16px 0"></div>'+
       '<button type="button" onclick="tambahNominal('+i+')" class="btn-gray" style="width:100%">+ Tambah Nominal</button>'+
     '</div>';
@@ -212,12 +233,93 @@ function renderProduk() {
           '<button type="button" onclick="hapusNominal('+i+','+j+')" style="background:#ef4444;color:#fff;padding:12px;border-radius:8px">X</button>'+
         '</div>'+
         '<div class="grid2">'+
-          '<input value="'+item.harga+'" type="number" onchange="updateNominal('+i+','+j+',\'harga\',this.value)" class="input" style="margin:0" placeholder="Harga Jual">'+
-          '<input value="'+(item.harga_asli||'')+'" type="number" onchange="updateNominal('+i+','+j+',\'harga_asli\',this.value)" class="input" style="margin:0" placeholder="Harga Asli">'+
+          '<div><label style="color:#94a3b8;font-size:12px">Harga Jual - Klik Edit</label><input value="'+item.harga+'" type="number" class="edit-harga" onchange="updateNominal('+i+','+j+',\'harga\',this.value)" onblur="simpanHargaLangsung('+i+','+j+')"></div>'+
+          '<div><label style="color:#94a3b8;font-size:12px">Harga Asli</label><input value="'+(item.harga_asli||'')+'" type="number" class="edit-harga" onchange="updateNominal('+i+','+j+',\'harga_asli\',this.value)" onblur="simpanHargaLangsung('+i+','+j+')"></div>'+
         '</div>'+
       '</div>';
     }
   }
+}
+
+// FITUR 1: UPLOAD LOGO GAME BARU
+function uploadLogoGame(input) {
+  var file = input.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var token = document.getElementById('gh-token').value;
+    var user = document.getElementById('gh-user').value;
+    var repo = document.getElementById('gh-repo').value;
+    if(!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
+
+    notif('Upload logo...');
+    var namaFile = 'logo-' + Date.now() + '.png';
+    var base64 = e.target.result.split(',')[1];
+
+    fetch('https://api.github.com/repos/'+user+'/'+repo+'/contents/images/'+namaFile, {
+      method: 'PUT',
+      headers: { 'Authorization': 'token '+token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Upload logo ' + namaFile,
+        content: base64
+      })
+    }).then(function(res){
+      if(res.ok) {
+        var link = 'https://raw.githubusercontent.com/'+user+'/'+repo+'/main/images/'+namaFile;
+        document.getElementById('newGameLogo').value = link;
+        notif('✅ Logo ke-upload! Link udah ke-isi');
+      } else {
+        throw new Error('Gagal upload');
+      }
+    }).catch(function(e){
+      notif('❌ Gagal upload: ' + e.message, false);
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+// FITUR 1B: UPLOAD LOGO UPDATE GAME
+function uploadLogoUpdate(input, i) {
+  var file = input.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var token = document.getElementById('gh-token').value;
+    var user = document.getElementById('gh-user').value;
+    var repo = document.getElementById('gh-repo').value;
+    if(!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
+
+    notif('Upload logo...');
+    var namaFile = 'logo-' + db.games[i].id + '-' + Date.now() + '.png';
+    var base64 = e.target.result.split(',')[1];
+
+    fetch('https://api.github.com/repos/'+user+'/'+repo+'/contents/images/'+namaFile, {
+      method: 'PUT',
+      headers: { 'Authorization': 'token '+token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Update logo ' + db.games[i].name,
+        content: base64
+      })
+    }).then(function(res){
+      if(res.ok) {
+        var link = 'https://raw.githubusercontent.com/'+user+'/'+repo+'/main/images/'+namaFile;
+        db.games[i].icon = link;
+        document.getElementById('icon-'+i).value = link;
+        document.getElementById('logo-'+i).src = link;
+        notif('✅ Logo ke-update! Jangan lupa Simpan');
+      } else {
+        throw new Error('Gagal upload');
+      }
+    }).catch(function(e){
+      notif('❌ Gagal upload: ' + e.message, false);
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+// FITUR 2: SIMPAN HARGA LANGSUNG
+function simpanHargaLangsung(i, j) {
+  notif('Harga ke-save. Jangan lupa Simpan ke GitHub ya!');
 }
 
 function tambahGame() {
@@ -302,95 +404,4 @@ function simpanSemua() {
 
 function loadOrders() {
   var listEl = document.getElementById('order-list');
-  listEl.innerHTML = '<p style="color:#facc15;text-align:center;padding:32px 0">Loading...</p>';
-  fetch('./orders.json?' + Date.now()).then(function(res){
-    return res.json();
-  }).then(function(data){
-    ALL_ORDERS = data.orders.reverse();
-    renderOrders();
-    document.getElementById('total').textContent = ALL_ORDERS.length;
-    var pending = 0; for(var i=0;i<ALL_ORDERS.length;i++){ if(ALL_ORDERS[i].status=='Diproses') pending++; }
-    document.getElementById('pending').textContent = pending;
-    var today = new Date().toISOString().split('T')[0];
-    var duit = 0; for(var i=0;i<ALL_ORDERS.length;i++){ if(ALL_ORDERS[i].waktu.indexOf(today)===0 && ALL_ORDERS[i].status=='Selesai') duit+=ALL_ORDERS[i].harga; }
-    document.getElementById('duit').textContent = 'Rp '+duit.toLocaleString('id-ID');
-  }).catch(function(e){
-    listEl.innerHTML = '<p style="color:#f87171;text-align:center;padding:32px 0">Gagal load orders.json</p>';
-  });
-}
-
-function filterOrder(status) {
-  CURRENT_FILTER = status;
-  renderOrders();
-}
-
-function renderOrders() {
-  var listEl = document.getElementById('order-list');
-  var filtered = [];
-  if(CURRENT_FILTER === 'all'){ filtered = ALL_ORDERS; }
-  else { for(var i=0;i<ALL_ORDERS.length;i++){ if(ALL_ORDERS[i].status === CURRENT_FILTER) filtered.push(ALL_ORDERS[i]); } }
-
-  if (filtered.length === 0) {
-    listEl.innerHTML = '<p style="color:#64748b;text-align:center;padding:32px 0">Ga ada order</p>';
-    return;
-  }
-  listEl.innerHTML = '';
-  for(var i=0;i<filtered.length;i++){
-    var order = filtered[i];
-    var isSelesai = order.status === 'Selesai';
-    var bgColor = isSelesai? '#16a34a' : '#eab308';
-    var html = '<div style="background:#334155;border:1px solid #475569;border-radius:12px;padding:16px;margin-bottom:12px">'+
-      '<div style="display:flex;justify-content:space-between;margin-bottom:12px">'+
-        '<div><b style="font-size:18px">'+order.kode+'</b><p style="color:#94a3b8;font-size:12px">'+order.waktu+'</p></div>'+
-        '<span style="background:'+bgColor+';color:#0f172a;padding:4px 12px;border-radius:9999px;font-size:12px;font-weight:700">'+order.status+'</span>'+
-      '</div>'+
-      '<p style="font-size:14px;margin-bottom:4px"><b>'+order.game+'</b> - '+order.item+'</p>'+
-      '<p style="color:#94a3b8;font-size:14px">ID: <code style="background:#1e293b;padding:2px 8px;border-radius:6px">'+order.playerId+'</code></p>'+
-      '<p style="color:#94a3b8;font-size:14px;margin-bottom:12px">'+order.namaPengirim+'</p>'+
-      '<p style="color:#22d3ee;font-weight:700;font-size:24px;margin-bottom:12px">Rp'+order.harga.toLocaleString('id-ID')+'</p>'+
-      (!isSelesai? '<button type="button" onclick="selesaiOrder(\''+order.kode+'\')" class="btn btn-green" style="width:100%">✓ Tandai Selesai</button>' : '')+
-    '</div>';
-    listEl.innerHTML += html;
-  }
-}
-
-function selesaiOrder(kode) {
-  if (!confirm('Yakin udah kirim diamond untuk '+kode+'?')) return;
-  var token = document.getElementById('gh-token').value;
-  var owner = document.getElementById('gh-user').value;
-  var repo = document.getElementById('gh-repo').value;
-  if (!token ||!owner ||!repo) return notif('Isi Setting GitHub dulu!', false);
-  notif('Update status order...');
-
-  var apiUrl = 'https://api.github.com/repos/'+owner+'/'+repo+'/contents/orders.json';
-  fetch(apiUrl, { headers: { 'Authorization': 'token '+token } }).then(function(res){
-    return res.json();
-  }).then(function(file){
-    var content = JSON.parse(decodeURIComponent(escape(atob(file.content))));
-    var index = -1;
-    for(var i=0;i<content.orders.length;i++){ if(content.orders[i].kode === kode){ index=i; break; } }
-    if (index === -1) throw new Error('Order ga ketemu');
-    content.orders[index].status = 'Selesai';
-    return fetch(apiUrl, {
-      method: 'PUT',
-      headers: { 'Authorization': 'token '+token, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: 'Order '+kode+' selesai',
-        content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
-        sha: file.sha
-      })
-    });
-  }).then(function(updateRes){
-    if (updateRes.ok) {
-      notif('✅ Status jadi Selesai!');
-      loadOrders();
-    } else {
-      throw new Error('Gagal update');
-    }
-  }).catch(function(e){
-    notif('❌ Error: ' + e.message, false);
-  });
-}
-</script>
-</body>
-    </html>
+  listEl.innerHTML = '<p style="color:#facc15;text-align:center;padding:32px 0">Lo
