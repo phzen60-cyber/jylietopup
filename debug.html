@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Debug</title>
+<style>
+body{margin:0;background:#0f172a;color:#fff;font-family:sans-serif;padding:16px}
+.box{background:#1e293b;padding:20px;border-radius:12px;margin-bottom:16px}
+.btn{width:100%;padding:14px;background:#06b6d4;color:#0f172a;font-weight:bold;border:0;border-radius:8px;margin:8px 0}
+.btn:active{background:#0891b2}
+.input{width:100%;padding:12px;margin:8px 0;background:#334155;border:1px solid #475569;border-radius:8px;color:#fff;box-sizing:border-box}
+#log{background:#000;color:#0f0;padding:12px;border-radius:8px;font-family:monospace;font-size:12px;white-space:pre-wrap;max-height:200px;overflow-y:auto}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>🔧 DEBUG MODE</h2>
+  <p id="status">Loading...</p>
+  <button class="btn" onclick="tesKlik()">KLIK GUE BUAT TEST</button>
+  <input id="u" class="input" placeholder="Username">
+  <input id="p" type="password" class="input" placeholder="Password">
+  <button class="btn" onclick="tesLogin()">TEST LOGIN</button>
+</div>
+<div class="box">
+  <b>📋 LOG ERROR:</b>
+  <div id="log">Menunggu...</div>
+</div>
+<script>
+window.onerror = function(msg, url, line) {
+  document.getElementById('log').innerText += '\n❌ ERROR: ' + msg + ' di baris ' + line;
+  return true;
+};
+document.getElementById('status').innerText = '✅ JavaScript KE-LOAD!';
+document.getElementById('log').innerText = '✅ Script jalan normal\n';
+function tesKlik(){
+  document.getElementById('log').innerText += '✅ Tombol KEPENCET!\n';
+  alert('TOMBOL BISA DIKLIK BRO!');
+}
+function tesLogin(){
+  document.getElementById('log').innerText += '✅ Fungsi login kepanggil\n';
+  if(u.value=='ownerjylie' && p.value=='jylie547'){
+    document.getElementById('log').innerText += '✅ LOGIN BERHASIL!\n';
+    alert('LOGIN BERHASIL BRO!');
+  }else{
+    document.getElementById('log').innerText += '❌ User/Pass salah\n';
+  }
+}
+setTimeout(function(){
+  document.getElementById('log').innerText += '✅ Timer jalan, JS ga ke-block\n';
+}, 1000);
+</script>
+</body>
+</html>
