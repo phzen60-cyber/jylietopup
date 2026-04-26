@@ -7,18 +7,18 @@
       "name": "Free Fire",
       "icon": "https://static.mocin.vip/cdn/game/freefire.jpg",
       "products": [
-        {"id": "ff_5", "name": "5 Diamonds", "harga": 1000},
-        {"id": "ff_12", "name": "12 Diamonds", "harga": 2000},
-        {"id": "ff_50", "name": "50 Diamonds", "harga": 7000},
-        {"id": "ff_70", "name": "70 Diamonds", "harga": 10000},
-        {"id": "ff_140", "name": "140 Diamonds", "harga": 19000},
-        {"id": "ff_355", "name": "355 Diamonds", "harga": 47000},
-        {"id": "ff_720", "name": "720 Diamonds", "harga": 93000},
-        {"id": "ff_1450", "name": "1450 Diamonds", "harga": 186000},
-        {"id": "ff_2180", "name": "2180 Diamonds", "harga": 279000},
-        {"id": "ff_3640", "name": "3640 Diamonds", "harga": 465000},
-        {"id": "ff_mw", "name": "Membership Mingguan", "harga": 30000},
-        {"id": "ff_mb", "name": "Membership Bulanan", "harga": 90000}
+        {"id": "ff_5", "name": "5 Diamonds", "harga": 900, "harga_asli": 1000},
+        {"id": "ff_12", "name": "12 Diamonds", "harga": 2000, "harga_asli": 3000},
+        {"id": "ff_50", "name": "50 Diamonds", "harga": 7000, "harga_asli": 8000},
+        {"id": "ff_70", "name": "70 Diamonds", "harga": 10000, "harga_asli": 12000},
+        {"id": "ff_140", "name": "140 Diamonds", "harga": 19000, "harga_asli": 20000},
+        {"id": "ff_355", "name": "355 Diamonds", "harga": 47000, "harga_asli": 50000},
+        {"id": "ff_720", "name": "720 Diamonds", "harga": 93000, "harga_asli": 100000},
+        {"id": "ff_1450", "name": "1450 Diamonds", "harga": 186000, "harga_asli": 200000},
+        {"id": "ff_2180", "name": "2180 Diamonds", "harga": 279000, "harga_asli": 300000},
+        {"id": "ff_3640", "name": "3640 Diamonds", "harga": 465000, "harga_asli": 500000},
+        {"id": "ff_mw", "name": "Membership Mingguan", "harga": 30000, "harga_asli": 33000},
+        {"id": "ff_mb", "name": "Membership Bulanan", "harga": 90000, "harga_asli": 100000}
       ]
     }
   ]
