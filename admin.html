@@ -8,14 +8,14 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         body { font-family: 'Poppins', sans-serif; }
-    .admin-btn { transition: 0.2s; }
-    .admin-btn:hover { transform: scale(1.02); }
-    .admin-input { background: #334155; }
-    .admin-input:focus { outline: 2px solid #06b6d4; }
-    .notif-sukses { color: #4ade80; }
-    .notif-gagal { color: #f87171; }
-    .edit-harga { background: transparent; border: 0; color: #fff; width: 100%; padding: 2px; border-bottom: 1px dashed #475569; }
-    .edit-harga:focus { background: #334155; border-radius: 4px; border-bottom: 1px solid #22d3ee; outline: none; }
+   .admin-btn { transition: 0.2s; }
+   .admin-btn:hover { transform: scale(1.02); }
+   .admin-input { background: #334155; }
+   .admin-input:focus { outline: 2px solid #06b6d4; }
+   .notif-sukses { color: #4ade80; }
+   .notif-gagal { color: #f87171; }
+   .edit-harga { background: transparent; border: 0; color: #fff; width: 100%; padding: 2px; border-bottom: 1px dashed #475569; }
+   .edit-harga:focus { background: #334155; border-radius: 4px; border-bottom: 1px solid #22d3ee; outline: none; }
     </style>
 </head>
 <body class="bg-slate-900 text-white">
@@ -246,23 +246,24 @@ function setToko(status) {
 
 function loadData() {
   fetch('db.json?' + Date.now())
-   .then(function(res) {
+  .then(function(res) {
       if(!res.ok) throw new Error('404');
       return res.json();
     })
-   .then(function(data) {
-      db = data;
+  .then(function(data) {
+      db = data || { games: [] };
+      if(!db.games) db.games = [];
       document.getElementById('username-tele').value = db.username_tele || '';
       document.getElementById('nomor-wa').value = db.nomor_wa || '';
       setToko(db.toko_buka!== false);
       renderProduk();
     })
-   .catch(function(e) {
+  .catch(function(e) {
       console.log('db.json error:', e);
       db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
       notif('db.json belum ada, pake data kosong', false);
       setToko(true);
-      renderProduk(); // TETEP RENDER WALAU ERROR
+      renderProduk();
     });
 }
 
@@ -278,6 +279,7 @@ function renderProduk() {
     }
 
     db.games.forEach(function(game, gameIndex) {
+      if(!game.products) game.products = [];
       const profitList = game.products.map(function(item, itemIndex) {
         const profit = (item.harga || 0) - (item.harga_asli || 0);
         return `
@@ -338,7 +340,6 @@ function renderProduk() {
   }
 }
 
-// FITUR 1: UPLOAD LOGO GAME BARU
 function uploadLogoGame(event) {
   try {
     const file = event.target.files[0];
@@ -378,7 +379,6 @@ function uploadLogoGame(event) {
   } catch(e) {}
 }
 
-// FITUR 1: UPLOAD LOGO UPDATE
 async function uploadLogoUpdate(input, gameIndex) {
   try {
     const file = input.files[0];
@@ -420,5 +420,6 @@ async function uploadLogoUpdate(input, gameIndex) {
   } catch(e) {}
 }
 
-// FITUR 2: AUTO SAVE HARGA
-async function autoSaveHarga
+async function autoSaveHarga(i, j, field, val) {
+  try {
+    va
