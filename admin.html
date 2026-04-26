@@ -8,19 +8,19 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         body { font-family: 'Poppins', sans-serif; }
-     .admin-btn { transition: 0.2s; }
-     .admin-btn:hover { transform: scale(1.02); }
-     .admin-input { background: #334155; }
-     .admin-input:focus { outline: 2px solid #06b6d4; }
-     .notif-sukses { color: #4ade80; }
-     .notif-gagal { color: #f87171; }
-     .edit-harga { background: transparent; border: 0; color: #fff; width: 100%; padding: 2px; border-bottom: 1px dashed #475569; }
-     .edit-harga:focus { background: #334155; border-radius: 4px; border-bottom: 1px solid #22d3ee; outline: none; }
+    .admin-btn { transition: 0.2s; }
+    .admin-btn:hover { transform: scale(1.02); }
+    .admin-input { background: #334155; }
+    .admin-input:focus { outline: 2px solid #06b6d4; }
+    .notif-sukses { color: #4ade80; }
+    .notif-gagal { color: #f87171; }
+    .edit-harga { background: transparent; border: 0; color: #fff; width: 100%; padding: 2px; border-bottom: 1px dashed #475569; }
+    .edit-harga:focus { background: #334155; border-radius: 4px; border-bottom: 1px solid #22d3ee; outline: none; }
     </style>
 </head>
 <body class="bg-slate-900 text-white">
 
-    <!-- LOGIN - GA DISENTUH -->
+    <!-- LOGIN -->
     <div id="loginBox" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm">
             <h1 class="text-2xl font-bold text-center mb-6 text-cyan-400">🔐 Admin Login</h1>
@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <!-- FITUR 4: NOTIF ORDER BARU -->
+            <!-- NOTIF ORDER BARU -->
             <div id="notifOrderBox" class="hidden bg-slate-800 rounded-xl p-4 mb-6 border-2 border-yellow-500">
                 <div class="flex justify-between items-center gap-3">
                     <div>
@@ -120,7 +120,6 @@
                        class="w-full admin-input p-3 rounded-lg mb-2">
                 <input id="newGameName" type="text" placeholder="Nama Game: Free Fire"
                        class="w-full admin-input p-3 rounded-lg mb-2">
-                <!-- FITUR 1: UPLOAD LOGO -->
                 <div class="flex gap-2 mb-3">
                     <input id="newGameLogo" type="text" placeholder="Link Logo: https://..."
                            class="flex-1 admin-input p-3 rounded-lg">
@@ -137,7 +136,9 @@
             <!-- LIST GAME + PRODUK -->
             <div class="bg-slate-800 rounded-xl p-6 mb-6">
                 <h2 class="text-xl font-bold mb-4 border-l-4 border-cyan-400 pl-3">Kelola Game & Produk - Klik Harga Buat Edit</h2>
-                <div id="produkList" class="space-y-4">Loading...</div>
+                <div id="produkList" class="space-y-4">
+                    <p class="text-slate-500 text-center py-8">Loading data...</p>
+                </div>
             </div>
 
             <!-- KELOLA ORDER MASUK -->
@@ -166,266 +167,258 @@
         </main>
     </div>
 
-<!-- SCRIPT 1: LOGIN - GA DISENTUH -->
+<!-- SCRIPT 1: LOGIN - ANTI MATI -->
 <script>
-const CONFIG = {
-  USER: "ownerjylie",
-  PASS: "jylie547"
-};
+const CONFIG = { USER: "ownerjylie", PASS: "jylie547" };
 
 function login() {
-  const loginMsg = document.getElementById('loginMsg');
-  const user = document.getElementById('user').value;
-  const pass = document.getElementById('pass').value;
-
-  if(user!== CONFIG.USER || pass!== CONFIG.PASS) {
-    loginMsg.innerText = 'Username atau Password salah!';
-    return;
+  try {
+    const loginMsg = document.getElementById('loginMsg');
+    const user = document.getElementById('user').value;
+    const pass = document.getElementById('pass').value;
+    if(user!== CONFIG.USER || pass!== CONFIG.PASS) {
+      loginMsg.innerText = 'Username atau Password salah!';
+      return;
+    }
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('adminBox').style.display = 'block';
+    if(typeof initDashboard === 'function') initDashboard();
+  } catch(e) {
+    alert('Error login: ' + e.message);
   }
-
-  document.getElementById('loginBox').style.display = 'none';
-  document.getElementById('adminBox').style.display = 'block';
-  initDashboard();
 }
 
 function logout() {
-  document.getElementById('adminBox').style.display = 'none';
-  document.getElementById('loginBox').style.display = 'flex';
-  document.getElementById('user').value = '';
-  document.getElementById('pass').value = '';
-  document.getElementById('loginMsg').innerText = '';
+  try {
+    document.getElementById('adminBox').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'flex';
+    document.getElementById('user').value = '';
+    document.getElementById('pass').value = '';
+    document.getElementById('loginMsg').innerText = '';
+  } catch(e) {}
 }
 </script>
 
-<!-- SCRIPT 2: FITUR LAIN -->
+<!-- SCRIPT 2: SEMUA FITUR - 1 ERROR GA BIKIN MATI TOTAL -->
 <script>
-let db = { username_tele: '', nomor_wa: '', toko_buka: true, games: [] };
-let ALL_ORDERS = [];
-let CURRENT_FILTER = 'all';
-let LAST_ORDER_COUNT = 0;
+var db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
+var ALL_ORDERS = [];
+var CURRENT_FILTER = 'all';
+var LAST_ORDER_COUNT = 0;
 
 function initDashboard() {
   try {
-    document.getElementById('btn-buka').onclick = () => setToko(true);
-    document.getElementById('btn-tutup').onclick = () => setToko(false);
-    document.getElementById('btnTambahGame').onclick = tambahGame;
-    document.getElementById('btnRefresh').onclick = loadOrders;
-    document.getElementById('btnSimpan').onclick = simpanSemua;
     document.getElementById('uploadLogo').onchange = uploadLogoGame;
-
     loadData();
     loadLocalSettings();
-    setTimeout(() => loadOrders(), 1000);
-    setInterval(() => cekOrderBaru(), 15000);
-  } catch(e) {
-    alert('Error init: ' + e.message);
-  }
+    setTimeout(function(){ loadOrders(); }, 1000);
+    setInterval(function(){ cekOrderBaru(); }, 15000);
+  } catch(e) { console.log('Init error:', e); }
 }
 
-const notif = (msg, sukses = true) => {
-  const el = document.getElementById('notif');
-  el.textContent = msg;
-  el.className = sukses? 'notif-sukses' : 'notif-gagal';
-  el.style.display = 'block';
-  setTimeout(() => el.style.display = 'none', 3000);
-};
+function notif(msg, sukses) {
+  try {
+    const el = document.getElementById('notif');
+    el.textContent = msg;
+    el.className = sukses===false? 'notif-gagal' : 'notif-sukses';
+    el.style.display = 'block';
+    setTimeout(function(){ el.style.display = 'none'; }, 3000);
+  } catch(e) {}
+}
 
 function loadLocalSettings() {
-  document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
-  document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
-  document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
-  document.getElementById('nomor-wa').value = localStorage.getItem('nomor_wa') || '';
+  try {
+    document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+    document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
+    document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+    document.getElementById('nomor-wa').value = localStorage.getItem('nomor_wa') || '';
+  } catch(e) {}
 }
 
 function setToko(status) {
-  db.toko_buka = status;
-  document.getElementById('btn-buka').className = status? 'flex-1 bg-green-600 ring-4 ring-green-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn';
-  document.getElementById('btn-tutup').className =!status? 'flex-1 bg-red-600 ring-4 ring-red-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn';
-  notif(status? 'Toko di-SET BUKA' : 'Toko di-SET TUTUP. Jangan lupa Simpan!');
-}
-
-async function loadData() {
   try {
-    const res = await fetch('db.json?' + Date.now());
-    db = await res.json();
-    document.getElementById('username-tele').value = db.username_tele || '';
-    document.getElementById('nomor-wa').value = db.nomor_wa || '';
-    setToko(db.toko_buka!== false);
-    renderProduk();
-  } catch (e) {
-    db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
-    notif('Gagal load db.json, bikin baru', false);
-    setToko(true);
-    renderProduk();
-  }
+    db.toko_buka = status;
+    document.getElementById('btn-buka').className = status? 'flex-1 bg-green-600 ring-4 ring-green-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn';
+    document.getElementById('btn-tutup').className =!status? 'flex-1 bg-red-600 ring-4 ring-red-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn';
+    notif(status? 'Toko di-SET BUKA' : 'Toko di-SET TUTUP');
+  } catch(e) { console.log(e); }
 }
 
-// FITUR 1 + 2 + 5: RENDER PRODUK + EDIT HARGA + PROFIT
-function renderProduk() {
-  const wrap = document.getElementById('produkList');
-  wrap.innerHTML = '';
-
-  if (db.games.length === 0) {
-    wrap.innerHTML = '<p class="text-slate-400 text-center">Belum ada game. Tambah di atas.</p>';
-    return;
-  }
-
-  db.games.forEach((game, gameIndex) => {
-    const gameDiv = document.createElement('div');
-    gameDiv.className = 'bg-slate-700 rounded-lg p-4';
-    gameDiv.innerHTML = `
-      <div class="flex justify-between items-center mb-3">
-        <div class="flex items-center gap-3">
-          <img src="${game.icon}" class="w-10 h-10 rounded object-cover bg-slate-600" id="logo-${gameIndex}">
-          <div>
-            <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)"
-                   class="font-bold bg-transparent text-white">
-            <p class="text-xs text-slate-400">ID: ${game.id}</p>
-          </div>
-        </div>
-        <button onclick="hapusGame(${gameIndex})" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm admin-btn">Hapus</button>
-      </div>
-      <div class="flex gap-2 mb-3">
-        <input value="${game.icon}" onchange="updateGame(${gameIndex}, 'icon', this.value)"
-               class="flex-1 admin-input text-xs p-2 rounded" placeholder="Link Logo" id="icon-${gameIndex}">
-        <label class="bg-purple-500 hover:bg-purple-600 px-3 py-2 rounded text-sm admin-btn cursor-pointer">
-          📤
-          <input type="file" accept="image/*" class="hidden" onchange="uploadLogoUpdate(this, ${gameIndex})">
-        </label>
-      </div>
-      <div id="nominal-${gameIndex}" class="space-y-2 mb-3"></div>
-      <button onclick="tambahNominal(${gameIndex})" class="w-full bg-slate-600 hover:bg-slate-500 py-2 rounded text-sm admin-btn">
-        + Tambah Nominal
-      </button>
-    `;
-    wrap.appendChild(gameDiv);
-
-    const nominalWrap = document.getElementById(`nominal-${gameIndex}`);
-    game.products.forEach((item, itemIndex) => {
-      const profit = (item.harga || 0) - (item.harga_asli || 0);
-      const row = document.createElement('div');
-      row.className = 'bg-slate-600 p-2 rounded';
-      row.innerHTML = `
-        <div class="flex gap-2 items-center mb-2">
-          <input value="${item.name}" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'name', this.value)"
-                 class="flex-1 admin-input p-2 rounded text-sm" placeholder="Nama Item">
-          <button onclick="hapusNominal(${gameIndex}, ${itemIndex})" class="bg-red-500 px-2 py-2 rounded text-sm admin-btn">X</button>
-        </div>
-        <div class="grid grid-cols-3 gap-2 text-xs">
-          <div>
-            <label class="text-slate-400">Jual</label>
-            <input value="${item.harga}" type="number" class="edit-harga"
-                   onblur="autoSaveHarga(${gameIndex}, ${itemIndex}, 'harga', this.value)" placeholder="Klik edit">
-          </div>
-          <div>
-            <label class="text-slate-400">Modal</label>
-            <input value="${item.harga_asli || ''}" type="number" class="edit-harga"
-                   onblur="autoSaveHarga(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)" placeholder="Modal">
-          </div>
-          <div>
-            <label class="text-slate-400">Profit</label>
-            <div class="text-green-400 font-bold">Rp ${profit.toLocaleString('id-ID')}</div>
-          </div>
-        </div>
-      `;
-      nominalWrap.appendChild(row);
+function loadData() {
+  fetch('db.json?' + Date.now())
+   .then(function(res) {
+      if(!res.ok) throw new Error('404');
+      return res.json();
+    })
+   .then(function(data) {
+      db = data;
+      document.getElementById('username-tele').value = db.username_tele || '';
+      document.getElementById('nomor-wa').value = db.nomor_wa || '';
+      setToko(db.toko_buka!== false);
+      renderProduk();
+    })
+   .catch(function(e) {
+      console.log('db.json error:', e);
+      db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
+      notif('db.json belum ada, pake data kosong', false);
+      setToko(true);
+      renderProduk(); // TETEP RENDER WALAU ERROR
     });
-  });
+}
+
+function renderProduk() {
+  try {
+    const wrap = document.getElementById('produkList');
+    if(!db ||!db.games) db = { games: [] };
+    wrap.innerHTML = '';
+
+    if (db.games.length === 0) {
+      wrap.innerHTML = '<p class="text-slate-400 text-center">Belum ada game. Tambah di atas.</p>';
+      return;
+    }
+
+    db.games.forEach(function(game, gameIndex) {
+      const profitList = game.products.map(function(item, itemIndex) {
+        const profit = (item.harga || 0) - (item.harga_asli || 0);
+        return `
+          <div class="bg-slate-600 p-2 rounded">
+            <div class="flex gap-2 items-center mb-2">
+              <input value="${item.name}" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'name', this.value)"
+                     class="flex-1 admin-input p-2 rounded text-sm" placeholder="Nama Item">
+              <button onclick="hapusNominal(${gameIndex}, ${itemIndex})" class="bg-red-500 px-2 py-2 rounded text-sm admin-btn">X</button>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-xs">
+              <div>
+                <label class="text-slate-400">Jual</label>
+                <input value="${item.harga}" type="number" class="edit-harga"
+                       onblur="autoSaveHarga(${gameIndex}, ${itemIndex}, 'harga', this.value)" placeholder="Klik edit">
+              </div>
+              <div>
+                <label class="text-slate-400">Modal</label>
+                <input value="${item.harga_asli || ''}" type="number" class="edit-harga"
+                       onblur="autoSaveHarga(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)" placeholder="Modal">
+              </div>
+              <div>
+                <label class="text-slate-400">Profit</label>
+                <div class="text-green-400 font-bold">Rp ${profit.toLocaleString('id-ID')}</div>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      wrap.innerHTML += `
+        <div class="bg-slate-700 rounded-lg p-4">
+          <div class="flex justify-between items-center mb-3">
+            <div class="flex items-center gap-3">
+              <img src="${game.icon}" class="w-10 h-10 rounded object-cover bg-slate-600" id="logo-${gameIndex}">
+              <div>
+                <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)"
+                       class="font-bold bg-transparent text-white">
+                <p class="text-xs text-slate-400">ID: ${game.id}</p>
+              </div>
+            <button onclick="hapusGame(${gameIndex})" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm admin-btn">Hapus</button>
+          </div>
+          <div class="flex gap-2 mb-3">
+            <input value="${game.icon}" onchange="updateGame(${gameIndex}, 'icon', this.value)"
+                   class="flex-1 admin-input text-xs p-2 rounded" placeholder="Link Logo" id="icon-${gameIndex}">
+            <label class="bg-purple-500 hover:bg-purple-600 px-3 py-2 rounded text-sm admin-btn cursor-pointer">
+              📤
+              <input type="file" accept="image/*" class="hidden" onchange="uploadLogoUpdate(this, ${gameIndex})">
+            </label>
+          </div>
+          <div class="space-y-2 mb-3">${profitList}</div>
+          <button onclick="tambahNominal(${gameIndex})" class="w-full bg-slate-600 hover:bg-slate-500 py-2 rounded text-sm admin-btn">
+            + Tambah Nominal
+          </button>
+        </div>`;
+    });
+  } catch(e) {
+    console.log('Render error:', e);
+    document.getElementById('produkList').innerHTML = '<p class="text-red-400 text-center">Error render: ' + e.message + '</p>';
+  }
 }
 
 // FITUR 1: UPLOAD LOGO GAME BARU
-async function uploadLogoGame(input) {
-  const file = input.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const token = document.getElementById('gh-token').value;
-    const user = document.getElementById('gh-user').value;
-    const repo = document.getElementById('gh-repo').value;
-    if(!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
+function uploadLogoGame(event) {
+  try {
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const token = document.getElementById('gh-token').value;
+      const user = document.getElementById('gh-user').value;
+      const repo = document.getElementById('gh-repo').value;
+      if(!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
 
-    notif('Upload logo...');
-    const namaFile = 'logo-' + Date.now() + '.png';
-    const base64 = e.target.result.split(',')[1];
+      notif('Upload logo...');
+      const namaFile = 'logo-' + Date.now() + '.png';
+      const base64 = e.target.result.split(',')[1];
 
-    try {
-      const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/images/${namaFile}`, {
-        method: 'PUT',
-        headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: `Upload logo ${namaFile}`,
-          content: base64
-        })
-      });
-      if(res.ok) {
-        const link = `https://raw.githubusercontent.com/${user}/${repo}/main/images/${namaFile}`;
-        document.getElementById('newGameLogo').value = link;
-        notif('✅ Logo ke-upload! Link udah ke-isi');
-      } else {
-        throw new Error('Gagal upload');
+      try {
+        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/images/${namaFile}`, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `Upload logo ${namaFile}`,
+            content: base64
+          })
+        });
+        if(res.ok) {
+          const link = `https://raw.githubusercontent.com/${user}/${repo}/main/images/${namaFile}`;
+          document.getElementById('newGameLogo').value = link;
+          notif('✅ Logo ke-upload!');
+        } else {
+          throw new Error('Gagal upload');
+        }
+      } catch(e) {
+        notif('❌ Gagal upload: ' + e.message, false);
       }
-    } catch(e) {
-      notif('❌ Gagal upload: ' + e.message, false);
-    }
-  };
-  reader.readAsDataURL(file);
+    };
+    reader.readAsDataURL(file);
+  } catch(e) {}
 }
 
 // FITUR 1: UPLOAD LOGO UPDATE
 async function uploadLogoUpdate(input, gameIndex) {
-  const file = input.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const token = document.getElementById('gh-token').value;
-    const user = document.getElementById('gh-user').value;
-    const repo = document.getElementById('gh-repo').value;
-    if(!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
+  try {
+    const file = input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const token = document.getElementById('gh-token').value;
+      const user = document.getElementById('gh-user').value;
+      const repo = document.getElementById('gh-repo').value;
+      if(!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
 
-    notif('Upload logo...');
-    const namaFile = 'logo-' + db.games[gameIndex].id + '-' + Date.now() + '.png';
-    const base64 = e.target.result.split(',')[1];
+      notif('Upload logo...');
+      const namaFile = 'logo-' + db.games[gameIndex].id + '-' + Date.now() + '.png';
+      const base64 = e.target.result.split(',')[1];
 
-    try {
-      const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/images/${namaFile}`, {
-        method: 'PUT',
-        headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: `Update logo ${db.games[gameIndex].name}`,
-          content: base64
-        })
-      });
-      if(res.ok) {
-        const link = `https://raw.githubusercontent.com/${user}/${repo}/main/images/${namaFile}`;
-        db.games[gameIndex].icon = link;
-        document.getElementById(`icon-${gameIndex}`).value = link;
-        document.getElementById(`logo-${gameIndex}`).src = link;
-        notif('✅ Logo ke-update! Jangan lupa Simpan');
-      } else {
-        throw new Error('Gagal upload');
+      try {
+        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/images/${namaFile}`, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `Update logo ${db.games[gameIndex].name}`,
+            content: base64
+          })
+        });
+        if(res.ok) {
+          const link = `https://raw.githubusercontent.com/${user}/${repo}/main/images/${namaFile}`;
+          db.games[gameIndex].icon = link;
+          document.getElementById(`icon-${gameIndex}`).value = link;
+          document.getElementById(`logo-${gameIndex}`).src = link;
+          notif('✅ Logo ke-update! Jangan lupa Simpan');
+        } else {
+          throw new Error('Gagal upload');
+        }
+      } catch(e) {
+        notif('❌ Gagal upload: ' + e.message, false);
       }
-    } catch(e) {
-      notif('❌ Gagal upload: ' + e.message, false);
-    }
-  };
-  reader.readAsDataURL(file);
+    };
+    reader.readAsDataURL(file);
+  } catch(e) {}
 }
 
 // FITUR 2: AUTO SAVE HARGA
-async function autoSaveHarga(i, j, field, val) {
-  val = parseInt(val) || 0;
-  if (field === 'harga_asli' && val === 0) {
-    delete db.games[i].products[j].harga_asli;
-  } else {
-    db.games[i].products[j][field] = val;
-  }
-  renderProduk();
-  notif('Auto-save...');
-
-  const token = document.getElementById('gh-token').value;
-  const user = document.getElementById('gh-user').value;
-  const repo = document.getElementById('gh-repo').value;
-  if (!token ||!user ||!repo) return;
-
-  try {
-    const content = btoa(
+async function autoSaveHarga
