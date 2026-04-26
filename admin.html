@@ -4,40 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
     <title>Admin Panel - Jylie Topup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        body{font-family:'Poppins',sans-serif;background:#0f172a;color:#fff}
-        button{cursor:pointer;border:0;font-family:inherit}
-       .container{max-width:1200px;margin:0 auto;padding:0 16px}
-       .admin-btn{transition:.2s}
-       .admin-btn:active{transform:scale(.96)}
-       .admin-input{background:#334155;border:0;color:#fff}
-       .admin-input:focus{outline:2px solid #06b6d4}
-       .notif-sukses{color:#4ade80}
-       .notif-gagal{color:#f87171}
-       .bg-slate-900{background:#0f172a}.bg-slate-800{background:#1e293b}.bg-slate-700{background:#334155}.bg-slate-600{background:#475569}
-       .text-white{color:#fff}.text-cyan-400{color:#22d3ee}.text-slate-400{color:#94a3b8}.text-red-400{color:#f87171}.text-yellow-400{color:#facc15}.text-green-400{color:#4ade80}
-       .bg-cyan-500{background:#06b6d4}.bg-cyan-600{background:#0891b2}.bg-red-500{background:#ef4444}.bg-red-600{background:#dc2626}.bg-green-500{background:#22c55e}.bg-green-600{background:#16a34a}.bg-green-700{background:#15803d}.bg-red-700{background:#b91c1c}
-       .text-slate-900{color:#0f172a}
-       .min-h-screen{min-height:100vh}.flex{display:flex}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.items-start{align-items:flex-start}
-       .p-4{padding:16px}.p-6{padding:24px}.p-3{padding:12px}.p-2{padding:8px}.py-3{padding:12px 0}.py-8{padding:32px 0}.py-4{padding:16px 0}.py-2{padding:8px 0}.px-4{padding:0 16px}.px-3{padding:0 12px}.px-1{padding:0 4px}.py-1{padding:4px 0}.pl-3{padding-left:12px}.pr-2{padding-right:8px}
-       .mb-6{margin-bottom:24px}.mb-4{margin-bottom:16px}.mb-3{margin-bottom:12px}.mb-2{margin-bottom:8px}.mt-6{margin-top:24px}.mt-3{margin-top:12px}.mt-1{margin-top:4px}
-       .w-full{width:100%}.max-w-sm{max-width:384px}.w-1/2{width:50%}.w-10{width:40px}.h-10{height:40px}.max-h-\[500px\]{max-height:500px}
-       .rounded-xl{border-radius:12px}.rounded-lg{border-radius:8px}.rounded{border-radius:4px}.rounded-full{border-radius:9999px}
-       .text-2xl{font-size:24px}.text-xl{font-size:20px}.text-base{font-size:16px}.text-sm{font-size:14px}.text-xs{font-size:12px}.text-lg{font-size:18px}
-       .font-bold{font-weight:700}.font-semibold{font-weight:600}
-       .text-center{text-align:center}
-       .outline-none{outline:0}.border-2{border:2px solid}.border-l-4{border-left:4px solid}.border-yellow-500\/50{border-color:#eab30880}.border-yellow-400{border-color:#facc15}.border-cyan-400{border-color:#22d3ee}.border-green-500{border-color:#22c55e}.border-yellow-500{border-color:#eab308}
-       .sticky{position:sticky}.top-0{top:0}.z-10{z-index:10}
-       .shadow-lg{box-shadow:0 10px 15px -3px #0000001a}
-       .space-y-4 > *+*{margin-top:16px}.space-y-3 > *+*{margin-top:12px}.space-y-2 > *+*{margin-top:8px}
-       .gap-3{gap:12px}.gap-2{gap:8px}
-       .flex-1{flex:1}.object-cover{object-fit:cover}
-       .overflow-y-auto{overflow-y:auto}
-       .ring-4{box-shadow:0 0 0 4px}.ring-green-400{--tw-ring-color:#4ade80}.ring-red-400{--tw-ring-color:#f87171}
-       .hidden{display:none}
-       .bg-green-500\/20{background:#22c55e33}.bg-yellow-500\/20{background:#eab30833}
+        body { font-family: 'Poppins', sans-serif; }
+     .admin-btn { transition: 0.2s; }
+     .admin-btn:active { transform: scale(0.96); }
+     .admin-input { background: #334155; }
+     .admin-input:focus { outline: 2px solid #06b6d4; }
+     .notif-sukses { color: #4ade80; }
+     .notif-gagal { color: #f87171; }
     </style>
 </head>
 <body class="bg-slate-900 text-white">
@@ -50,7 +26,7 @@
                    class="w-full bg-slate-700 p-3 rounded-lg mb-3 outline-none focus:ring-2 focus:ring-cyan-400">
             <input id="pass" type="password" placeholder="Password"
                    class="w-full bg-slate-700 p-3 rounded-lg mb-3 outline-none focus:ring-2 focus:ring-cyan-400">
-            <button type="button" onclick="login()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold admin-btn">Login</button>
+            <button type="button" id="btnLogin" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold admin-btn">Login</button>
             <p id="loginMsg" class="text-red-400 text-sm mt-3 text-center"></p>
         </div>
     </div>
@@ -138,6 +114,7 @@
         </main>
     </div>
 
+<!-- TARUH SCRIPT DI BAWAH BIAR PASTI KE-LOAD SETELAH HTML -->
 <script>
 const CONFIG = {
   USER: "ownerjylie",
@@ -154,7 +131,8 @@ const notif = (msg, sukses = true) => {
   setTimeout(() => el.style.display = 'none', 3000);
 };
 
-function login() {
+// PAKE addEventListener BIAR ANTI GAGAL
+document.getElementById('btnLogin').addEventListener('click', function() {
   const loginMsg = document.getElementById('loginMsg');
   const user = document.getElementById('user').value.trim();
   const pass = document.getElementById('pass').value.trim();
@@ -169,7 +147,7 @@ function login() {
   loadData();
   loadLocalSettings();
   setTimeout(loadOrders, 1000);
-}
+});
 
 function logout() {
   document.getElementById('adminBox').style.display = 'none';
@@ -299,8 +277,8 @@ function hapusNominal(gameIndex, itemIndex) {
   notif('Nominal dihapus. Jangan lupa Simpan!');
 }
 
-window.updateGame = (i, field, val) => { db.games[i][field] = val; }
-window.updateNominal = (i, j, field, val) => {
+function updateGame(i, field, val) { db.games[i][field] = val; }
+function updateNominal(i, j, field, val) {
   if (field === 'harga' || field === 'harga_asli') {
     val = parseInt(val) || 0;
     if (field === 'harga_asli' && val === 0) {
@@ -409,4 +387,61 @@ function renderOrders() {
         div.innerHTML = `
             <div class="flex justify-between items-start mb-2">
                 <div>
-                    <p c
+                    <p class="font-bold text-base">${order.kode}</p>
+                    <p class="text-xs text-slate-400">${order.waktu}</p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-bold ${badgeColor} text-slate-900">${order.status}</span>
+            </div>
+            <p class="text-sm"><b>${order.game}</b> - ${order.item}</p>
+            <p class="text-sm text-slate-400">ID: <code class="bg-slate-800 px-1 rounded">${order.playerId}</code> | ${order.namaPengirim}</p>
+            <p class="text-cyan-400 font-bold mt-1 text-lg">Rp${order.harga.toLocaleString('id-ID')}</p>
+            ${!isSelesai? `<button type="button" onclick="selesaiOrder('${order.kode}')" class="w-full mt-3 bg-green-500 hover:bg-green-600 py-2 rounded-lg font-bold text-sm admin-btn">✓ Tandai Selesai</button>` : ''}
+        `;
+        listEl.appendChild(div);
+    });
+}
+
+async function selesaiOrder(kode) {
+    if (!confirm(`Yakin udah kirim diamond untuk ${kode}?`)) return;
+
+    const token = document.getElementById('gh-token').value;
+    const owner = document.getElementById('gh-user').value;
+    const repo = document.getElementById('gh-repo').value;
+
+    if (!token ||!owner ||!repo) return notif('Isi Setting GitHub dulu!', false);
+
+    notif('Update status order...', true);
+
+    try {
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/orders.json`;
+        const res = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
+        const file = await res.json();
+        const content = JSON.parse(decodeURIComponent(escape(atob(file.content))));
+
+        const index = content.orders.findIndex(o => o.kode === kode);
+        if (index === -1) return notif('Order ga ketemu', false);
+        content.orders[index].status = 'Selesai';
+
+        const updateRes = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: `Order ${kode} selesai`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+                sha: file.sha
+            })
+        });
+
+        if (updateRes.ok) {
+            notif('✅ Status jadi Selesai! User bisa cek di web');
+            loadOrders();
+        } else {
+            throw new Error('Gagal update Github');
+        }
+    } catch(e) {
+        notif('❌ Error: ' + e.message, false);
+    }
+}
+</script>
+</body>
+                        </html>
