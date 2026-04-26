@@ -4,9 +4,7 @@ const CONFIG = {
   WHITELIST_IP: ["175.158.55.141"] // GANTI IP lu dari whatismyip.com
 };
 
-let dataAdmin = {};
-let dataHarga = {};
-let lastUpdate = '';
+let db = { nomor_wa: '', qris_url: '', produk: [] };
 
 const notif = (msg, sukses = true) => {
   const el = document.getElementById('notif');
@@ -15,147 +13,6 @@ const notif = (msg, sukses = true) => {
   el.style.display = 'block';
   setTimeout(() => el.style.display = 'none', 3000);
 };
-
-async function loadData() {
-  try {
-    const res = await fetch('harga.json?' + Date.now());
-    const json = await res.json();
-
-    // Cek format baru: ada last_update + data
-    if(json.last_update && json.data) {
-      lastUpdate = json.last_update;
-      dataHarga = json.data;
-    } else {
-      // Format lama: langsung data aja
-      dataHarga = json;
-      lastUpdate = 'Belum ada data update';
-    }
-    renderProduk();
-    updateLastUpdateText();
-  } catch (e) {
-    notif('Gagal load harga.json', false);
-  }
-}
-
-function updateLastUpdateText() {
-  let el = document.getElementById('lastUpdate');
-  if(!el) {
-    // Bikin element kalo belum ada
-    const info = document.createElement('div');
-    info.id = 'lastUpdate';
-    info.style.cssText = 'opacity:.7;font-size:14px;margin-bottom:16px';
-    document.querySelector('.admin-wrap h1').after(info);
-    el = info;
-  }
-  el.textContent = `🕒 Last Update: ${lastUpdate}`;
-}
-
-function renderProduk() {
-  const wrap = document.getElementById('produkList');
-  wrap.innerHTML = '';
-
-  for (const [catId, catData] of Object.entries(dataHarga)) {
-    const catDiv = document.createElement('div');
-    catDiv.className = 'cat-wrap';
-    catDiv.innerHTML = `
-      <div class="cat-head">
-        <div class="cat-title">${catData.nama} <span style="opacity:.5;font-size:14px">${catId}</span></div>
-        <button onclick="hapusKategori('${catId}')" class="admin-btn btn-del">Hapus Kategori</button>
-      </div>
-      <div id="prod-${catId}"></div>
-      <button onclick="tambahProduk('${catId}')" class="admin-btn btn-add" style="margin-top:8px">+ Tambah Produk</button>
-    `;
-    wrap.appendChild(catDiv);
-
-    const prodWrap = document.getElementById(`prod-${catId}`);
-    catData.produk.forEach((p, i) => {
-      const row = document.createElement('div');
-      row.className = 'prod-row';
-      row.innerHTML = `
-        <input class="admin-input" value="${p.nama}" placeholder="Nama Produk" data-cat="${catId}" data-idx="${i}" data-field="nama">
-        <input class="admin-input" type="number" value="${p.harga}" placeholder="Harga" data-cat="${catId}" data-idx="${i}" data-field="harga" style="max-width:120px">
-        <button onclick="hapusProduk('${catId}', ${i})" class="admin-btn btn-del">X</button>
-      `;
-      prodWrap.appendChild(row);
-    });
-  }
-
-  document.querySelectorAll('.admin-input[data-idx]').forEach(input => {
-    input.addEventListener('input', (e) => {
-      const {cat, idx, field} = e.target.dataset;
-      let val = e.target.value;
-      if(field === 'harga') val = parseInt(val) || 0;
-      dataHarga[cat].produk[idx][field] = val;
-    });
-  });
-}
-
-function tambahKategori() {
-  const id = document.getElementById('newCatId').value.trim();
-  const nama = document.getElementById('newCatName').value.trim();
-  if(!id ||!nama) return notif('ID dan Nama Kategori wajib diisi', false);
-  if(dataHarga[id]) return notif('ID Kategori udah ada', false);
-
-  dataHarga[id] = {nama: nama, produk: []};
-  document.getElementById('newCatId').value = '';
-  document.getElementById('newCatName').value = '';
-  renderProduk();
-  notif('Kategori ditambah. Jangan lupa Simpan!');
-}
-
-function hapusKategori(catId) {
-  if(!confirm(`Hapus kategori ${dataHarga[catId].nama}?`)) return;
-  delete dataHarga[catId];
-  renderProduk();
-  notif('Kategori dihapus. Jangan lupa Simpan!');
-}
-
-function tambahProduk(catId) {
-  dataHarga[catId].produk.push({nama: "Produk Baru", harga: 0});
-  renderProduk();
-  notif('Produk ditambah. Edit nama + harga, terus Simpan!');
-}
-
-function hapusProduk(catId, idx) {
-  dataHarga[catId].produk.splice(idx, 1);
-  renderProduk();
-  notif('Produk dihapus. Jangan lupa Simpan!');
-}
-
-async function simpanSemua() {
-  notif('Menyimpan ke GitHub...', true);
-
-  // Bikin format baru: last_update + data
-  const now = new Date().toLocaleString('id-ID', {
-    day: '2-digit', month: 'long', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
-
-  const payload = {
-    last_update: now,
-    data: dataHarga
-  };
-
-  try {
-    const res = await fetch('/.netlify/functions/save-harga', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
-    });
-    const hasil = await res.json();
-    if(res.ok) {
-      lastUpdate = now;
-      updateLastUpdateText();
-      notif('Berhasil save! Data + backup udah ke-commit ✅');
-    } else {
-      throw new Error(hasil.error || 'Gagal save');
-    }
-  } catch (e) {
-    notif('Error: ' + e.message, false);
-  }
-}
-
-loadData();
 
 async function login() {
   const loginMsg = document.getElementById('loginMsg');
@@ -186,128 +43,132 @@ async function login() {
 
   document.getElementById('loginBox').style.display = 'none';
   document.getElementById('adminBox').style.display = 'block';
-
-  const res = await fetch('harga.json');
-  dataAdmin = await res.json();
-  document.getElementById('waNumber').value = dataAdmin.wa_number || '';
-  loadTable();
+  loadData();
 }
 
-function loadTable() {
-  let html = '<table><tr><th>ID</th><th>Nama</th><th>DM</th><th>Harga</th><th>Badge</th><th>Aksi</th></tr>';
-  dataAdmin.products.forEach((p, i) => {
-    html += `<tr>
-      <td><input value="${p.id}" onchange="updateData(${i}, 'id', this.value)" style="width:60px"></td>
-      <td><input value="${p.name}" onchange="updateData(${i}, 'name', this.value)"></td>
-      <td><input type="number" value="${p.diamonds}" onchange="updateData(${i}, 'diamonds', this.value)" style="width:80px"></td>
-      <td><input type="number" value="${p.price}" onchange="updateData(${i}, 'price', this.value)" style="width:100px"></td>
-      <td><input value="${p.badge || ''}" onchange="updateData(${i}, 'badge', this.value)" style="width:80px"></td>
-      <td><button class="danger" onclick="hapusProduk(${i})">Hapus</button></td>
-    </tr>`;
-  });
-  html += '</table>';
-  document.getElementById('tableWrap').innerHTML = html;
-}
-
-function updateData(index, key, value) {
-  if(key === 'diamonds' || key === 'price') value = parseInt(value) || 0;
-  if(key === 'badge' && value === '') delete dataAdmin.products[index][key];
-  else dataAdmin.products[index][key] = value;
-}
-
-function tambahProduk() {
-  dataAdmin.products.push({
-    id: Date.now(),
-    name: "Produk Baru",
-    diamonds: 0,
-    price: 0,
-    badge: ""
-  });
-  loadTable();
-}
-
-function hapusProduk(index) {
-  if(confirm('Yakin hapus produk ini?')) {
-    dataAdmin.products.splice(index, 1);
-    loadTable();
+async function loadData() {
+  try {
+    const res = await fetch('harga.json?' + Date.now());
+    db = await res.json();
+    document.getElementById('nomor-wa').value = db.nomor_wa || '';
+    renderProduk();
+  } catch (e) {
+    db = { nomor_wa: '62895336789308', produk: [] };
+    notif('Gagal load harga.json, bikin baru', false);
+    renderProduk();
   }
 }
 
-function saveData() {
-  document.getElementById('loadingSave').style.display = 'inline';
-  dataAdmin.wa_number = document.getElementById('waNumber').value;
+function renderProduk() {
+  const wrap = document.getElementById('produkList');
+  wrap.innerHTML = '';
 
-  // Sementara masih download manual. Nanti pake Netlify Function auto save
-  const blob = new Blob([JSON.stringify(dataAdmin, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'harga.json';
-  a.click();
+  db.produk.forEach((game, gameIndex) => {
+    const gameDiv = document.createElement('div');
+    gameDiv.className = 'game-wrap';
+    gameDiv.innerHTML = `
+      <div class="game-head">
+        <div class="flex items-center gap-3">
+          <img src="${game.logo}" class="w-10 h-10 rounded object-cover bg-slate-600">
+          <div>
+            <input value="${game.nama}" onchange="updateGame(${gameIndex}, 'nama', this.value)" class="font-bold bg-transparent text-white">
+            <p class="text-xs text-slate-400">ID: ${game.id}</p>
+          </div>
+        </div>
+        <button onclick="hapusGame(${gameIndex})" class="admin-btn btn-del">Hapus Game</button>
+      </div>
+      <div class="ml-4 mb-3">
+        <input value="${game.logo}" onchange="updateGame(${gameIndex}, 'logo', this.value)"
+               class="admin-input text-xs" placeholder="Link Logo Game">
+      </div>
+      <div id="nominal-${gameIndex}" class="space-y-2 mb-3"></div>
+      <button onclick="tambahNominal(${gameIndex})" class="admin-btn btn-add w-full">
+        + Tambah Nominal
+      </button>
+    `;
+    wrap.appendChild(gameDiv);
 
-  setTimeout(() => {
-    document.getElementById('loadingSave').style.display = 'none';
-    alert('File harga.json udah ke-download. Upload ke Netlify buat update harga.');
-  }, 500);
+    const nominalWrap = document.getElementById(`nominal-${gameIndex}`);
+    game.nominal.forEach((item, itemIndex) => {
+      const row = document.createElement('div');
+      row.className = 'bg-slate-700 p-2 rounded';
+      row.innerHTML = `
+        <div class="flex gap-2 items-center mb-2">
+          <input value="${item.name}" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'name', this.value)"
+                 class="flex-1 bg-slate-800 p-2 rounded text-sm" placeholder="Nama Item">
+          <button onclick="hapusNominal(${gameIndex}, ${itemIndex})" class="bg-red-500 px-2 py-2 rounded text-sm">X</button>
+        </div>
+        <div class="flex gap-2 items-center">
+          <input value="${item.harga}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga', this.value)"
+                 class="w-1/2 bg-slate-800 p-2 rounded text-sm" placeholder="Harga Jual">
+          <input value="${item.harga_asli || ''}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)"
+                 class="w-1/2 bg-slate-800 p-2 rounded text-sm" placeholder="Harga Asli (Diskon)">
+        </div>
+      `;
+      nominalWrap.appendChild(row);
+    });
+  });
 }
 
-function tambahKategori() {
-  const id = document.getElementById('newCatId').value.trim();
-  const nama = document.getElementById('newCatName').value.trim();
-  if(!id ||!nama) return notif('ID dan Nama Kategori wajib diisi', false);
-  if(dataHarga[id]) return notif('ID Kategori udah ada', false);
+function tambahGame() {
+  const id = document.getElementById('newGameId').value.trim().toLowerCase().replace(/\s+/g, '');
+  const nama = document.getElementById('newGameName').value.trim();
+  const logo = document.getElementById('newGameLogo').value.trim();
+  if(!id ||!nama ||!logo) return notif('ID, Nama & Logo wajib diisi', false);
+  if(db.produk.find(g => g.id === id)) return notif('ID Game udah ada', false);
 
-  dataHarga[id] = {nama: nama, produk: []};
-  document.getElementById('newCatId').value = '';
-  document.getElementById('newCatName').value = '';
+  db.produk.push({ id, nama, logo, nominal: [] });
+  document.getElementById('newGameId').value = '';
+  document.getElementById('newGameName').value = '';
+  document.getElementById('newGameLogo').value = '';
   renderProduk();
-  notif('Kategori ditambah. Jangan lupa Simpan!');
+  notif('Game ditambah. Jangan lupa Simpan!');
 }
 
-function hapusKategori(catId) {
-  if(!confirm(`Hapus kategori ${dataHarga[catId].nama}?`)) return;
-  delete dataHarga[catId];
+function hapusGame(gameIndex) {
+  if(!confirm(`Hapus game ${db.produk[gameIndex].nama}?`)) return;
+  db.produk.splice(gameIndex, 1);
   renderProduk();
-  notif('Kategori dihapus. Jangan lupa Simpan!');
+  notif('Game dihapus. Jangan lupa Simpan!');
 }
 
-function tambahProduk(catId) {
-  dataHarga[catId].produk.push({nama: "Produk Baru", harga: 0});
+function tambahNominal(gameIndex) {
+  db.produk[gameIndex].nominal.push({ name: "Item Baru", harga: 10000 });
   renderProduk();
-  notif('Produk ditambah. Edit nama + harga, terus Simpan!');
+  notif('Nominal ditambah. Edit nama + harga, terus Simpan!');
 }
 
-function hapusProduk(catId, idx) {
-  dataHarga[catId].produk.splice(idx, 1);
+function hapusNominal(gameIndex, itemIndex) {
+  db.produk[gameIndex].nominal.splice(itemIndex, 1);
   renderProduk();
-  notif('Produk dihapus. Jangan lupa Simpan!');
+  notif('Nominal dihapus. Jangan lupa Simpan!');
+}
+
+window.updateGame = (i, field, val) => { db.produk[i][field] = val; }
+window.updateNominal = (i, j, field, val) => {
+  if (field === 'harga' || field === 'harga_asli') {
+    val = parseInt(val) || 0;
+    if (field === 'harga_asli' && val === 0) {
+      delete db.produk[i].nominal[j].harga_asli;
+      return;
+    }
+  }
+  db.produk[i].nominal[j][field] = val;
 }
 
 async function simpanSemua() {
-  notif('Menyimpan ke GitHub...', true);
-
-  // Bikin format baru: last_update + data
-  const now = new Date().toLocaleString('id-ID', {
-    day: '2-digit', month: 'long', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
-
-  const payload = {
-    last_update: now,
-    data: dataHarga
-  };
+  notif('Menyimpan...', true);
+  db.nomor_wa = document.getElementById('nomor-wa').value;
 
   try {
     const res = await fetch('/.netlify/functions/save-harga', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(payload)
+      body: JSON.stringify(db)
     });
     const hasil = await res.json();
     if(res.ok) {
-      lastUpdate = now;
-      updateLastUpdateText();
-      notif('Berhasil save! Data + backup udah ke-commit ✅');
+      notif('Berhasil save! Vercel auto-deploy 20 detik ✅');
     } else {
       throw new Error(hasil.error || 'Gagal save');
     }
@@ -315,5 +176,3 @@ async function simpanSemua() {
     notif('Error: ' + e.message, false);
   }
 }
-
-loadData();
