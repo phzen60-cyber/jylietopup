@@ -10,15 +10,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         *{font-family:'Poppins',sans-serif;-webkit-tap-highlight-color:transparent}
         body{background:#0f172a}
-       .glass{background:rgba(30,41,59,0.8);backdrop-filter:blur(12px);border:1px solid rgba(51,65,85,0.5)}
-       .admin-btn{transition:all.2s}
-       .admin-btn:active{transform:scale(.97)}
-       .card-hover{transition:all.3s}
-       .card-hover:hover{transform:translateY(-2px);box-shadow:0 20px 25px -5px rgba(0,0,0,0.3)}
-       .toast{position:fixed;top:20px;right:20px;z-index:9999;animation:slideIn.3s}
+      .glass{background:rgba(30,41,59,0.8);backdrop-filter:blur(12px);border:1px solid rgba(51,65,85,0.5)}
+      .admin-btn{transition:all.2s}
+      .admin-btn:active{transform:scale(.97)}
+      .card-hover{transition:all.3s}
+      .card-hover:hover{transform:translateY(-2px);box-shadow:0 20px 25px -5px rgba(0,0,0,0.3)}
+      .toast{position:fixed;top:20px;right:20px;z-index:9999;animation:slideIn.3s}
         @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
-       .spinner{border:3px solid #334155;border-top:3px solid #06b6d4;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite}
-        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
     </style>
 </head>
 <body class="text-white">
@@ -42,7 +40,7 @@
                     <i class="ri-lock-line absolute left-3 top-3.5 text-slate-400"></i>
                     <input id="pass" type="password" placeholder="Password" class="w-full bg-slate-700/50 border border-slate-600 p-3 pl-10 rounded-xl outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent transition">
                 </div>
-                <button type="button" id="btnLogin" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-slate-900 py-3 rounded-xl font-bold admin-btn flex items-center justify-center gap-2">
+                <button type="button" onclick="login()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-slate-900 py-3 rounded-xl font-bold admin-btn flex items-center justify-center gap-2">
                     <i class="ri-login-box-line"></i> Login
                 </button>
                 <p id="loginMsg" class="text-red-400 text-sm text-center h-5"></p>
@@ -62,7 +60,6 @@
                         <h1 class="text-lg font-bold">JylieTopup</h1>
                         <p class="text-xs text-slate-400">Admin Panel</p>
                     </div>
-                </div>
                 <button type="button" onclick="logout()" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-4 py-2 rounded-xl text-sm admin-btn flex items-center gap-2">
                     <i class="ri-logout-box-line"></i> Logout
                 </button>
@@ -112,7 +109,6 @@
                         <h2 class="text-xl font-bold">Setting GitHub</h2>
                         <p class="text-slate-400 text-sm">Wajib isi buat simpan data</p>
                     </div>
-                </div>
                 <div class="grid md:grid-cols-3 gap-3">
                     <input id="gh-token" type="password" placeholder="Token: ghp_xxx" class="bg-slate-700/50 border border-slate-600 p-3 rounded-xl outline-none focus:ring-2 focus:ring-yellow-400">
                     <input id="gh-user" type="text" placeholder="Username: phzen60-cyber" class="bg-slate-700/50 border border-slate-600 p-3 rounded-xl outline-none focus:ring-2 focus:ring-yellow-400">
@@ -208,7 +204,7 @@
 
     <div id="toast"></div>
 
-<!-- TARUH SCRIPT DI BAWAH BIAR PASTI KE-LOAD SETELAH HTML -->
+<!-- SCRIPT DI BAWAH + PAKE window.function BIAR GLOBAL -->
 <script>
 const CONFIG = {
   USER: "ownerjylie",
@@ -217,29 +213,22 @@ const CONFIG = {
 
 let db = { username_tele: '', toko_buka: true, games: [] };
 
-const showToast = (msg, sukses = true) => {
+function showToast(msg, sukses = true) {
   const toast = document.createElement('div');
   toast.className = `toast glass rounded-xl p-4 flex items-center gap-3 ${sukses? 'border-l-4 border-green-400' : 'border-l-4 border-red-400'}`;
   toast.innerHTML = `<i class="ri-${sukses? 'checkbox-circle' : 'error-warning'}-line text-2xl ${sukses? 'text-green-400' : 'text-red-400'}"></i><span>${msg}</span>`;
   document.getElementById('toast').appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
-};
+}
 
-document.getElementById('btnLogin').addEventListener('click', async function() {
-  const btn = this;
+// BALIKIN PAKE ONCLICK TAPI DIBUAT GLOBAL
+window.login = function() {
   const loginMsg = document.getElementById('loginMsg');
   const user = document.getElementById('user').value.trim();
   const pass = document.getElementById('pass').value.trim();
 
-  btn.innerHTML = '<div class="spinner"></div> Loading...';
-  btn.disabled = true;
-
-  await new Promise(r => setTimeout(r, 500));
-
   if(user!== CONFIG.USER || pass!== CONFIG.PASS) {
     loginMsg.innerText = 'Username atau Password salah!';
-    btn.innerHTML = '<i class="ri-login-box-line"></i> Login';
-    btn.disabled = false;
     return;
   }
 
@@ -248,9 +237,9 @@ document.getElementById('btnLogin').addEventListener('click', async function() {
   loadData();
   loadLocalSettings();
   setTimeout(loadOrders, 1000);
-});
+}
 
-function logout() {
+window.logout = function() {
   document.getElementById('adminBox').style.display = 'none';
   document.getElementById('loginBox').style.display = 'flex';
   document.getElementById('user').value = '';
@@ -264,7 +253,7 @@ function loadLocalSettings() {
   document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
 }
 
-function setToko(status) {
+window.setToko = function(status) {
   db.toko_buka = status;
   document.getElementById('btn-buka').className = status? 'flex-1 bg-green-600 ring-4 ring-green-400/50 py-3 rounded-xl font-bold admin-btn flex items-center justify-center gap-2' : 'flex-1 bg-slate-700 hover:bg-green-600 py-3 rounded-xl font-bold admin-btn flex items-center justify-center gap-2';
   document.getElementById('btn-tutup').className =!status? 'flex-1 bg-red-600 ring-4 ring-red-400/50 py-3 rounded-xl font-bold admin-btn flex items-center justify-center gap-2' : 'flex-1 bg-slate-700 hover:bg-red-600 py-3 rounded-xl font-bold admin-btn flex items-center justify-center gap-2';
@@ -334,4 +323,16 @@ function renderProduk() {
           </div>
           <div>
             <label class="text-xs text-slate-400 mb-1 block">Harga Asli</label>
-            <input value="${item.harga_asli || ''}" type="number" onchange="updateNominal(${gameIndex}, ${itemInd
+            <input value="${item.harga_asli || ''}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)" class="w-full bg-slate-700/50 border border-slate-600 p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-yellow-400" placeholder="9000">
+          </div>
+        </div>
+      `;
+      nominalWrap.appendChild(row);
+    });
+  });
+}
+
+window.tambahGame = function() {
+  const id = document.getElementById('newGameId').value.trim().toLowerCase().replace(/\s+/g, '');
+  const name = document.getElementById('newGameName').value.trim();
+  const icon = document.getElementById('newGam
