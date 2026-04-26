@@ -14,7 +14,6 @@
 .btn-green{background:#22c55e;color:#0f172a}
 .btn-red{background:#ef4444;color:#fff}
 .btn-gray{background:#475569;color:#fff}
-.btn-purple{background:#a855f7;color:#fff}
 .input{width:100%;background:#334155;border:1px solid #475569;padding:14px;border-radius:8px;color:#fff;margin-bottom:12px;font-size:16px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
@@ -146,32 +145,22 @@
         </div>
     </div>
 
+<!-- SCRIPT 1: OTAK LOGIN - INI GA BOLEH MATI -->
 <script>
-// ANTI-MATI: SEMUA DIBUNGKUS TRY-CATCH
-try {
+// INI DIJALANKAN PERTAMA & DIISOLASI. KALO ERROR, FITUR LAIN MATI TAPI LOGIN TETEP JALAN.
 var CONFIG = { USER: "ownerjylie", PASS: "jylie547" };
-var db = { username_tele: '', nomor_wa: '', toko_buka: true, games: [] };
-var ALL_ORDERS = [];
-var CURRENT_FILTER = 'all';
-var LAST_ORDER_COUNT = 0;
 
 document.getElementById('btnLogin').onclick = function() {
-  try {
-    var user = document.getElementById('user').value.trim().toLowerCase();
-    var pass = document.getElementById('pass').value.trim();
-    var msg = document.getElementById('loginMsg');
-    if(user === CONFIG.USER && pass === CONFIG.PASS) {
-      document.getElementById('loginBox').style.display = 'none';
-      document.getElementById('adminBox').style.display = 'block';
-      loadData(); // Ini kalo error, di-catch di dalem
-      loadLocalSettings();
-      setTimeout(function(){ try { loadOrders(); } catch(e){} }, 1000);
-      setInterval(function(){ try { cekOrderBaru(); } catch(e){} }, 15000);
-    } else {
-      msg.innerHTML = 'Username/Password salah!';
-    }
-  } catch(e) {
-    document.getElementById('loginMsg').innerHTML = 'Error: ' + e.message;
+  var user = document.getElementById('user').value.trim().toLowerCase();
+  var pass = document.getElementById('pass').value.trim();
+  var msg = document.getElementById('loginMsg');
+  if(user === CONFIG.USER && pass === CONFIG.PASS) {
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('adminBox').style.display = 'block';
+    // Panggil fitur lain setelah login sukses
+    if(typeof initDashboard === 'function') initDashboard();
+  } else {
+    msg.innerHTML = 'Username/Password salah!';
   }
 };
 
@@ -182,15 +171,35 @@ document.getElementById('btnLogout').onclick = function() {
   document.getElementById('pass').value = '';
   document.getElementById('loginMsg').innerHTML = '';
 };
+</script>
 
-document.getElementById('btn-buka').onclick = function() { setToko(true); };
-document.getElementById('btn-tutup').onclick = function() { setToko(false); };
-document.getElementById('btnTambahGame').onclick = tambahGame;
-document.getElementById('btnRefresh').onclick = loadOrders;
-document.getElementById('filterAll').onclick = function() { filterOrder('all'); };
-document.getElementById('filterDiproses').onclick = function() { filterOrder('Diproses'); };
-document.getElementById('filterSelesai').onclick = function() { filterOrder('Selesai'); };
-document.getElementById('btnSimpan').onclick = simpanSemua;
+<!-- SCRIPT 2: FITUR LAIN - KALO INI ERROR, LOGIN TETEP JALAN -->
+<script>
+var db = { username_tele: '', nomor_wa: '', toko_buka: true, games: [] };
+var ALL_ORDERS = [];
+var CURRENT_FILTER = 'all';
+var LAST_ORDER_COUNT = 0;
+
+// FUNGSI INI DIPANGGIL SETELAH LOGIN SUKSES
+function initDashboard() {
+  try {
+    document.getElementById('btn-buka').onclick = function() { setToko(true); };
+    document.getElementById('btn-tutup').onclick = function() { setToko(false); };
+    document.getElementById('btnTambahGame').onclick = tambahGame;
+    document.getElementById('btnRefresh').onclick = loadOrders;
+    document.getElementById('filterAll').onclick = function() { filterOrder('all'); };
+    document.getElementById('filterDiproses').onclick = function() { filterOrder('Diproses'); };
+    document.getElementById('filterSelesai').onclick = function() { filterOrder('Selesai'); };
+    document.getElementById('btnSimpan').onclick = simpanSemua;
+
+    loadData();
+    loadLocalSettings();
+    setTimeout(function(){ loadOrders(); }, 1000);
+    setInterval(function(){ cekOrderBaru(); }, 15000);
+  } catch(e) {
+    alert('Error init dashboard: ' + e.message);
+  }
+}
 
 function notif(msg, sukses) {
   try {
@@ -219,29 +228,23 @@ function setToko(status) {
   } catch(e) {}
 }
 
-// FIX UTAMA: FETCH ERROR GA BIKIN SCRIPT MATI
+// ANTI-MATI: FETCH ERROR DI-CATCH
 function loadData() {
-  try {
-    fetch('db.json?' + Date.now()).then(function(res){
-      if(!res.ok) throw new Error('db.json ga ada');
-      return res.json();
-    }).then(function(data){
-      db = data;
-      document.getElementById('username-tele').value = db.username_tele || '';
-      document.getElementById('nomor-wa').value = db.nomor_wa || '';
-      setToko(db.toko_buka!== false);
-      renderProduk();
-    }).catch(function(e){
-      // ERROR DI-CATCH, SCRIPT GA MATI
-      db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
-      notif('db.json belum ada, pake data kosong', false);
-      setToko(true);
-      renderProduk();
-    });
-  } catch(e) {
-    // JAGA-JAGA KALO FETCH AJA ERROR
+  fetch('db.json?' + Date.now()).then(function(res){
+    if(!res.ok) throw new Error('db.json ga ada');
+    return res.json();
+  }).then(function(data){
+    db = data;
+    document.getElementById('username-tele').value = db.username_tele || '';
+    document.getElementById('nomor-wa').value = db.nomor_wa || '';
+    setToko(db.toko_buka!== false);
     renderProduk();
-  }
+  }).catch(function(e){
+    db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
+    notif('db.json belum ada, pake data kosong', false);
+    setToko(true);
+    renderProduk();
+  });
 }
 
 function renderProduk() {
@@ -288,9 +291,10 @@ function renderProduk() {
         '</div>';
       }
     }
-  } catch(e) {}
+  } catch(e) { console.log(e); }
 }
 
+// FITUR 2: AUTO SAVE
 function autoSaveHarga(i, j, field, val) {
   try {
     val = parseInt(val) || 0;
@@ -396,6 +400,4 @@ function simpanSemua() {
     var user = document.getElementById('gh-user').value;
     var repo = document.getElementById('gh-repo').value;
     if (!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
-    localStorage.setItem('gh_token', token);
-    localStorage.setItem('gh_user', user);
-    localStora
+    
