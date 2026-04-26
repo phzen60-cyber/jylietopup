@@ -97,6 +97,19 @@
         const cancelBtn = document.getElementById('cancel-btn');
         const confirmBtn = document.getElementById('confirm-btn');
         const kodeUnikEl = document.getElementById('kode-unik');
+        const suksesModal = document.getElementById('sukses-modal');
+const kodeSuksesEl = document.getElementById('kode-sukses');
+
+function closeSuksesModal() {
+    suksesModal.classList.add('hidden');
+    suksesModal.classList.remove('flex');
+}
+
+function showSuksesModal(kode) {
+    kodeSuksesEl.textContent = kode;
+    suksesModal.classList.remove('hidden');
+    suksesModal.classList.add('flex');
+}
 
         let db = {};
         let currentOrder = {};
@@ -216,43 +229,33 @@
         }
 
         async function validateAndCheckout() {
-            if (db.toko_buka === false) {
-                alert('Toko sedang tutup bro. Coba lagi nanti ya');
-                return;
-            }
+    if (db.toko_buka === false) {
+        alert('Toko sedang tutup bro. Coba lagi nanti ya');
+        return;
+    }
 
-            const playerId = playerIdInput.value;
-            const namaPengirim = namaPengirimInput.value.trim();
+    const playerId = playerIdInput.value;
+    const namaPengirim = namaPengirimInput.value.trim();
 
-            if (!/^\d{8,12}$/.test(playerId)) {
-                idError.textContent = 'ID harus 8-12 angka!';
-                idError.classList.remove('hidden');
-                playerIdInput.focus();
-                return;
-            }
-            if (namaPengirim.length < 3) {
-                idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
-                idError.classList.remove('hidden');
-                namaPengirimInput.focus();
-                return;
-            }
-            
-            const textTelegram = `<b>🔥 ORDER BARU MASUK</b>
+    if (!/^\d{8,12}$/.test(playerId)) {
+        idError.textContent = 'ID harus 8-12 angka!';
+        idError.classList.remove('hidden');
+        playerIdInput.focus();
+        return;
+    }
+    if (namaPengirim.length < 3) {
+        idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
+        idError.classList.remove('hidden');
+        namaPengirimInput.focus();
+        return;
+    }
+    
+    const textTelegram = `<b>🔥 ORDER BARU MASUK</b>\n\n<b>Kode:</b> <code>${currentOrder.kode}</code>\n<b>Game:</b> ${currentOrder.game}\n<b>Item:</b> ${currentOrder.item}\n<b>ID Player:</b> <code>${playerId}</code>\n<b>Nama:</b> ${namaPengirim}\n<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}\n\n<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
 
-<b>Kode:</b> <code>${currentOrder.kode}</code>
-<b>Game:</b> ${currentOrder.game}
-<b>Item:</b> ${currentOrder.item}
-<b>ID Player:</b> <code>${playerId}</code>
-<b>Nama:</b> ${namaPengirim}
-<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}
-
-<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
-
-            await kirimKeTelegram(textTelegram);
-            alert('Order berhasil dikirim ke admin via Telegram. Tunggu konfirmasi ya!');
-            closeQrisModal();
+    await kirimKeTelegram(textTelegram);
+    closeQrisModal();
+    showSuksesModal(currentOrder.kode); // Ganti alert() jelek jadi modal cakep
         }
-
         async function kirimKeTelegram(text) {
             const FOTO_URL = "https://i.ibb.co/n8wKXrzR/IMG-20260426-WA0012.jpg";
             const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
