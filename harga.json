@@ -6,24 +6,22 @@
       "nama": "Free Fire",
       "logo": "/images/ff.png",
       "nominal": [
-  { "name": "50 Diamond", "harga": 7000 },
-  { "name": "70 Diamond", "harga": 10000 },
-  { "name": "100 Diamond", "harga": 14000 },
-  { "name": "140 Diamond", "harga": 20000 },
-  { "name": "210 Diamond", "harga": 30000 },
-  { "name": "280 Diamond", "harga": 40000 },
-  { "name": "355 Diamond", "harga": 47500, "harga_asli": 50000 },
-  { "name": "500 Diamond", "harga": 67000, "harga_asli": 70000 },
-  { "name": "720 Diamond", "harga": 95000, "harga_asli": 100000 },
-  { "name": "1000 Diamond", "harga": 132000, "harga_asli": 140000 },
-  { "name": "1450 Diamond", "harga": 190000, "harga_asli": 200000 },
-  { "name": "2180 Diamond", "harga": 285000, "harga_asli": 300000 },
-  { "name": "3640 Diamond", "harga": 475000, "harga_asli": 500000 },
-  { "name": "7290 Diamond", "harga": 950000, "harga_asli": 1000000 },
-  { "name": "Member Mingguan", "harga": 30000, "harga_asli": 33000 },
-  { "name": "Member Bulanan", "harga": 90000, "harga_asli": 100000 }
-      ]
-        }
+        { "name": "50 Diamond", "harga": 7000 },
+        { "name": "70 Diamond", "harga": 10000 },
+        { "name": "100 Diamond", "harga": 14000 },
+        { "name": "140 Diamond", "harga": 20000 },
+        { "name": "210 Diamond", "harga": 30000 },
+        { "name": "280 Diamond", "harga": 40000 },
+        { "name": "355 Diamond", "harga": 47500, "harga_asli": 50000 },
+        { "name": "500 Diamond", "harga": 67000, "harga_asli": 70000 },
+        { "name": "720 Diamond", "harga": 95000, "harga_asli": 100000 },
+        { "name": "1000 Diamond", "harga": 132000, "harga_asli": 140000 },
+        { "name": "1450 Diamond", "harga": 190000, "harga_asli": 200000 },
+        { "name": "2180 Diamond", "harga": 285000, "harga_asli": 300000 },
+        { "name": "3640 Diamond", "harga": 475000, "harga_asli": 500000 },
+        { "name": "7290 Diamond", "harga": 950000, "harga_asli": 1000000 },
+        { "name": "Member Mingguan", "harga": 30000, "harga_asli": 33000 },
+        { "name": "Member Bulanan", "harga": 90000, "harga_asli": 100000 }
       ]
     }
   ],
