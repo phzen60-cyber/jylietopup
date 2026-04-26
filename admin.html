@@ -8,14 +8,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         body { font-family: 'Poppins', sans-serif; }
-   .admin-btn { transition: 0.2s; }
-   .admin-btn:hover { transform: scale(1.02); }
-   .admin-input { background: #334155; }
-   .admin-input:focus { outline: 2px solid #06b6d4; }
-   .notif-sukses { color: #4ade80; }
-   .notif-gagal { color: #f87171; }
-   .edit-harga { background: transparent; border: 0; color: #fff; width: 100%; padding: 2px; border-bottom: 1px dashed #475569; }
-   .edit-harga:focus { background: #334155; border-radius: 4px; border-bottom: 1px solid #22d3ee; outline: none; }
+      .admin-btn { transition: 0.2s; }
+      .admin-btn:hover { transform: scale(1.02); }
+      .admin-input { background: #334155; }
+      .admin-input:focus { outline: 2px solid #06b6d4; }
+      .notif-sukses { color: #4ade80; }
+      .notif-gagal { color: #f87171; }
     </style>
 </head>
 <body class="bg-slate-900 text-white">
@@ -43,40 +41,6 @@
         </header>
 
         <main class="container mx-auto px-4 py-8">
-            <!-- STATS + PROFIT -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-slate-400 text-sm">Pendapatan</p>
-                    <b class="text-xl text-green-400" id="duit">Rp 0</b>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-slate-400 text-sm">Profit Hari Ini</p>
-                    <b class="text-xl text-yellow-400" id="profit">Rp 0</b>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-slate-400 text-sm">Total Order</p>
-                    <b class="text-xl text-cyan-400" id="total">0</b>
-                </div>
-                <div class="bg-slate-800 rounded-xl p-4">
-                    <p class="text-slate-400 text-sm">Pending</p>
-                    <b class="text-xl text-red-400" id="pending">0</b>
-                </div>
-            </div>
-
-            <!-- NOTIF ORDER BARU -->
-            <div id="notifOrderBox" class="hidden bg-slate-800 rounded-xl p-4 mb-6 border-2 border-yellow-500">
-                <div class="flex justify-between items-center gap-3">
-                    <div>
-                        <h2 class="text-lg font-bold">🔔 Order Baru Masuk!</h2>
-                        <p id="notifOrderText" class="text-slate-400 text-sm mt-1"></p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button id="btnNotifWA" class="bg-green-500 hover:bg-green-600 px-3 py-2 rounded-lg text-sm font-bold admin-btn">WA</button>
-                        <button id="btnNotifTele" class="bg-sky-500 hover:bg-sky-600 px-3 py-2 rounded-lg text-sm font-bold admin-btn">Tele</button>
-                    </div>
-                </div>
-            </div>
-
             <!-- SETTING GITHUB -->
             <div class="bg-slate-800 rounded-xl p-6 mb-6 border-2 border-yellow-500/50">
                 <h2 class="text-xl font-bold mb-4 border-l-4 border-yellow-400 pl-3">Setting GitHub - WAJIB ISI</h2>
@@ -99,18 +63,9 @@
                     <button onclick="setToko(false)" id="btn-tutup" class="flex-1 bg-slate-600 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn">🔴 TUTUP</button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block mb-2 text-sm font-semibold">Username Telegram CS</label>
-                        <input id="username-tele" type="text" placeholder="jyliestoreid"
-                               class="w-full admin-input p-3 rounded-lg">
-                    </div>
-                    <div>
-                        <label class="block mb-2 text-sm font-semibold">Nomor WA Notif</label>
-                        <input id="nomor-wa" type="text" placeholder="628123456789"
-                               class="w-full admin-input p-3 rounded-lg">
-                    </div>
-                </div>
+                <label class="block mb-2 text-sm font-semibold">Username Telegram CS</label>
+                <input id="username-tele" type="text" placeholder="jyliestoreid"
+                       class="w-full admin-input p-3 rounded-lg mb-3">
             </div>
 
             <!-- TAMBAH GAME -->
@@ -120,14 +75,8 @@
                        class="w-full admin-input p-3 rounded-lg mb-2">
                 <input id="newGameName" type="text" placeholder="Nama Game: Free Fire"
                        class="w-full admin-input p-3 rounded-lg mb-2">
-                <div class="flex gap-2 mb-3">
-                    <input id="newGameLogo" type="text" placeholder="Link Logo: https://..."
-                           class="flex-1 admin-input p-3 rounded-lg">
-                    <label class="bg-purple-500 hover:bg-purple-600 px-4 py-3 rounded-lg font-bold text-sm admin-btn cursor-pointer">
-                        📤 Upload
-                        <input type="file" id="uploadLogo" accept="image/*" class="hidden">
-                    </label>
-                </div>
+                <input id="newGameLogo" type="text" placeholder="Link Logo: https://..."
+                       class="w-full admin-input p-3 rounded-lg mb-3">
                 <button onclick="tambahGame()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold admin-btn">
                     + Tambah Game
                 </button>
@@ -135,10 +84,8 @@
 
             <!-- LIST GAME + PRODUK -->
             <div class="bg-slate-800 rounded-xl p-6 mb-6">
-                <h2 class="text-xl font-bold mb-4 border-l-4 border-cyan-400 pl-3">Kelola Game & Produk - Klik Harga Buat Edit</h2>
-                <div id="produkList" class="space-y-4">
-                    <p class="text-slate-500 text-center py-8">Loading data...</p>
-                </div>
+                <h2 class="text-xl font-bold mb-4 border-l-4 border-cyan-400 pl-3">Kelola Game & Produk</h2>
+                <div id="produkList" class="space-y-4">Loading...</div>
             </div>
 
             <!-- KELOLA ORDER MASUK -->
@@ -167,259 +114,332 @@
         </main>
     </div>
 
-<!-- SCRIPT 1: LOGIN - ANTI MATI -->
 <script>
-const CONFIG = { USER: "ownerjylie", PASS: "jylie547" };
+const CONFIG = {
+  USER: "ownerjylie",
+  PASS: "jylie547"
+};
+
+let db = { username_tele: '', toko_buka: true, games: [] };
+
+const notif = (msg, sukses = true) => {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.className = sukses? 'notif-sukses' : 'notif-gagal';
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+};
 
 function login() {
-  try {
-    const loginMsg = document.getElementById('loginMsg');
-    const user = document.getElementById('user').value;
-    const pass = document.getElementById('pass').value;
-    if(user!== CONFIG.USER || pass!== CONFIG.PASS) {
-      loginMsg.innerText = 'Username atau Password salah!';
-      return;
-    }
-    document.getElementById('loginBox').style.display = 'none';
-    document.getElementById('adminBox').style.display = 'block';
-    if(typeof initDashboard === 'function') initDashboard();
-  } catch(e) {
-    alert('Error login: ' + e.message);
+  const loginMsg = document.getElementById('loginMsg');
+  const user = document.getElementById('user').value;
+  const pass = document.getElementById('pass').value;
+
+  if(user!== CONFIG.USER || pass!== CONFIG.PASS) {
+    loginMsg.innerText = 'Username atau Password salah!';
+    return;
   }
+
+  document.getElementById('loginBox').style.display = 'none';
+  document.getElementById('adminBox').style.display = 'block';
+  loadData();
+  loadLocalSettings();
+  setTimeout(loadOrders, 1000);
 }
 
 function logout() {
-  try {
-    document.getElementById('adminBox').style.display = 'none';
-    document.getElementById('loginBox').style.display = 'flex';
-    document.getElementById('user').value = '';
-    document.getElementById('pass').value = '';
-    document.getElementById('loginMsg').innerText = '';
-  } catch(e) {}
-}
-</script>
-
-<!-- SCRIPT 2: SEMUA FITUR - 1 ERROR GA BIKIN MATI TOTAL -->
-<script>
-var db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
-var ALL_ORDERS = [];
-var CURRENT_FILTER = 'all';
-var LAST_ORDER_COUNT = 0;
-
-function initDashboard() {
-  try {
-    document.getElementById('uploadLogo').onchange = uploadLogoGame;
-    loadData();
-    loadLocalSettings();
-    setTimeout(function(){ loadOrders(); }, 1000);
-    setInterval(function(){ cekOrderBaru(); }, 15000);
-  } catch(e) { console.log('Init error:', e); }
-}
-
-function notif(msg, sukses) {
-  try {
-    const el = document.getElementById('notif');
-    el.textContent = msg;
-    el.className = sukses===false? 'notif-gagal' : 'notif-sukses';
-    el.style.display = 'block';
-    setTimeout(function(){ el.style.display = 'none'; }, 3000);
-  } catch(e) {}
+  document.getElementById('adminBox').style.display = 'none';
+  document.getElementById('loginBox').style.display = 'flex';
+  document.getElementById('user').value = '';
+  document.getElementById('pass').value = '';
+  document.getElementById('loginMsg').innerText = '';
 }
 
 function loadLocalSettings() {
-  try {
-    document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
-    document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
-    document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
-    document.getElementById('nomor-wa').value = localStorage.getItem('nomor_wa') || '';
-  } catch(e) {}
+  document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+  document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
+  document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
 }
 
 function setToko(status) {
-  try {
-    db.toko_buka = status;
-    document.getElementById('btn-buka').className = status? 'flex-1 bg-green-600 ring-4 ring-green-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn';
-    document.getElementById('btn-tutup').className =!status? 'flex-1 bg-red-600 ring-4 ring-red-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn';
-    notif(status? 'Toko di-SET BUKA' : 'Toko di-SET TUTUP');
-  } catch(e) { console.log(e); }
+  db.toko_buka = status;
+  document.getElementById('btn-buka').className = status? 'flex-1 bg-green-600 ring-4 ring-green-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn';
+  document.getElementById('btn-tutup').className =!status? 'flex-1 bg-red-600 ring-4 ring-red-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn';
+  notif(status? 'Toko di-SET BUKA' : 'Toko di-SET TUTUP. Jangan lupa Simpan!');
 }
 
-function loadData() {
-  fetch('db.json?' + Date.now())
-  .then(function(res) {
-      if(!res.ok) throw new Error('404');
-      return res.json();
-    })
-  .then(function(data) {
-      db = data || { games: [] };
-      if(!db.games) db.games = [];
-      document.getElementById('username-tele').value = db.username_tele || '';
-      document.getElementById('nomor-wa').value = db.nomor_wa || '';
-      setToko(db.toko_buka!== false);
-      renderProduk();
-    })
-  .catch(function(e) {
-      console.log('db.json error:', e);
-      db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
-      notif('db.json belum ada, pake data kosong', false);
-      setToko(true);
-      renderProduk();
-    });
-}
-
-function renderProduk() {
+async function loadData() {
   try {
-    const wrap = document.getElementById('produkList');
-    if(!db ||!db.games) db = { games: [] };
-    wrap.innerHTML = '';
-
-    if (db.games.length === 0) {
-      wrap.innerHTML = '<p class="text-slate-400 text-center">Belum ada game. Tambah di atas.</p>';
-      return;
-    }
-
-    db.games.forEach(function(game, gameIndex) {
-      if(!game.products) game.products = [];
-      const profitList = game.products.map(function(item, itemIndex) {
-        const profit = (item.harga || 0) - (item.harga_asli || 0);
-        return `
-          <div class="bg-slate-600 p-2 rounded">
-            <div class="flex gap-2 items-center mb-2">
-              <input value="${item.name}" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'name', this.value)"
-                     class="flex-1 admin-input p-2 rounded text-sm" placeholder="Nama Item">
-              <button onclick="hapusNominal(${gameIndex}, ${itemIndex})" class="bg-red-500 px-2 py-2 rounded text-sm admin-btn">X</button>
-            </div>
-            <div class="grid grid-cols-3 gap-2 text-xs">
-              <div>
-                <label class="text-slate-400">Jual</label>
-                <input value="${item.harga}" type="number" class="edit-harga"
-                       onblur="autoSaveHarga(${gameIndex}, ${itemIndex}, 'harga', this.value)" placeholder="Klik edit">
-              </div>
-              <div>
-                <label class="text-slate-400">Modal</label>
-                <input value="${item.harga_asli || ''}" type="number" class="edit-harga"
-                       onblur="autoSaveHarga(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)" placeholder="Modal">
-              </div>
-              <div>
-                <label class="text-slate-400">Profit</label>
-                <div class="text-green-400 font-bold">Rp ${profit.toLocaleString('id-ID')}</div>
-              </div>
-            </div>
-          </div>`;
-      }).join('');
-
-      wrap.innerHTML += `
-        <div class="bg-slate-700 rounded-lg p-4">
-          <div class="flex justify-between items-center mb-3">
-            <div class="flex items-center gap-3">
-              <img src="${game.icon}" class="w-10 h-10 rounded object-cover bg-slate-600" id="logo-${gameIndex}">
-              <div>
-                <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)"
-                       class="font-bold bg-transparent text-white">
-                <p class="text-xs text-slate-400">ID: ${game.id}</p>
-              </div>
-            <button onclick="hapusGame(${gameIndex})" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm admin-btn">Hapus</button>
-          </div>
-          <div class="flex gap-2 mb-3">
-            <input value="${game.icon}" onchange="updateGame(${gameIndex}, 'icon', this.value)"
-                   class="flex-1 admin-input text-xs p-2 rounded" placeholder="Link Logo" id="icon-${gameIndex}">
-            <label class="bg-purple-500 hover:bg-purple-600 px-3 py-2 rounded text-sm admin-btn cursor-pointer">
-              📤
-              <input type="file" accept="image/*" class="hidden" onchange="uploadLogoUpdate(this, ${gameIndex})">
-            </label>
-          </div>
-          <div class="space-y-2 mb-3">${profitList}</div>
-          <button onclick="tambahNominal(${gameIndex})" class="w-full bg-slate-600 hover:bg-slate-500 py-2 rounded text-sm admin-btn">
-            + Tambah Nominal
-          </button>
-        </div>`;
-    });
-  } catch(e) {
-    console.log('Render error:', e);
-    document.getElementById('produkList').innerHTML = '<p class="text-red-400 text-center">Error render: ' + e.message + '</p>';
+    const res = await fetch('db.json?' + Date.now());
+    db = await res.json();
+    document.getElementById('username-tele').value = db.username_tele || '';
+    setToko(db.toko_buka!== false);
+    renderProduk();
+  } catch (e) {
+    db = { username_tele: 'jyliestoreid', toko_buka: true, games: [] };
+    notif('Gagal load db.json, bikin baru', false);
+    setToko(true);
+    renderProduk();
   }
 }
 
-function uploadLogoGame(event) {
-  try {
-    const file = event.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-      const token = document.getElementById('gh-token').value;
-      const user = document.getElementById('gh-user').value;
-      const repo = document.getElementById('gh-repo').value;
-      if(!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
+function renderProduk() {
+  const wrap = document.getElementById('produkList');
+  wrap.innerHTML = '';
 
-      notif('Upload logo...');
-      const namaFile = 'logo-' + Date.now() + '.png';
-      const base64 = e.target.result.split(',')[1];
+  if (db.games.length === 0) {
+    wrap.innerHTML = '<p class="text-slate-400 text-center">Belum ada game. Tambah di atas.</p>';
+    return;
+  }
 
-      try {
-        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/images/${namaFile}`, {
-          method: 'PUT',
-          headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: `Upload logo ${namaFile}`,
-            content: base64
-          })
-        });
-        if(res.ok) {
-          const link = `https://raw.githubusercontent.com/${user}/${repo}/main/images/${namaFile}`;
-          document.getElementById('newGameLogo').value = link;
-          notif('✅ Logo ke-upload!');
-        } else {
-          throw new Error('Gagal upload');
-        }
-      } catch(e) {
-        notif('❌ Gagal upload: ' + e.message, false);
-      }
-    };
-    reader.readAsDataURL(file);
-  } catch(e) {}
+  db.games.forEach((game, gameIndex) => {
+    const gameDiv = document.createElement('div');
+    gameDiv.className = 'bg-slate-700 rounded-lg p-4';
+    gameDiv.innerHTML = `
+      <div class="flex justify-between items-center mb-3">
+        <div class="flex items-center gap-3">
+          <img src="${game.icon}" class="w-10 h-10 rounded object-cover bg-slate-600">
+          <div>
+            <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)"
+                   class="font-bold bg-transparent text-white">
+            <p class="text-xs text-slate-400">ID: ${game.id}</p>
+          </div>
+        </div>
+        <button onclick="hapusGame(${gameIndex})" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm admin-btn">Hapus</button>
+      </div>
+      <div class="ml-4 mb-3">
+        <input value="${game.icon}" onchange="updateGame(${gameIndex}, 'icon', this.value)"
+               class="admin-input text-xs w-full p-2 rounded" placeholder="Link Logo Game">
+      </div>
+      <div id="nominal-${gameIndex}" class="space-y-2 mb-3"></div>
+      <button onclick="tambahNominal(${gameIndex})" class="w-full bg-slate-600 hover:bg-slate-500 py-2 rounded text-sm admin-btn">
+        + Tambah Nominal
+      </button>
+    `;
+    wrap.appendChild(gameDiv);
+
+    const nominalWrap = document.getElementById(`nominal-${gameIndex}`);
+    game.products.forEach((item, itemIndex) => {
+      const row = document.createElement('div');
+      row.className = 'bg-slate-600 p-2 rounded';
+      row.innerHTML = `
+        <div class="flex gap-2 items-center mb-2">
+          <input value="${item.name}" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'name', this.value)"
+                 class="flex-1 admin-input p-2 rounded text-sm" placeholder="Nama Item">
+          <button onclick="hapusNominal(${gameIndex}, ${itemIndex})" class="bg-red-500 px-2 py-2 rounded text-sm admin-btn">X</button>
+        </div>
+        <div class="flex gap-2 items-center">
+          <input value="${item.harga}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga', this.value)"
+                 class="w-1/2 admin-input p-2 rounded text-sm" placeholder="Harga Jual">
+          <input value="${item.harga_asli || ''}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)"
+                 class="w-1/2 admin-input p-2 rounded text-sm" placeholder="Harga Asli">
+        </div>
+      `;
+      nominalWrap.appendChild(row);
+    });
+  });
 }
 
-async function uploadLogoUpdate(input, gameIndex) {
-  try {
-    const file = input.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-      const token = document.getElementById('gh-token').value;
-      const user = document.getElementById('gh-user').value;
-      const repo = document.getElementById('gh-repo').value;
-      if(!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
+function tambahGame() {
+  const id = document.getElementById('newGameId').value.trim().toLowerCase().replace(/\s+/g, '');
+  const name = document.getElementById('newGameName').value.trim();
+  const icon = document.getElementById('newGameLogo').value.trim();
+  if(!id ||!name ||!icon) return notif('ID, Nama & Logo wajib diisi', false);
+  if(db.games.find(g => g.id === id)) return notif('ID Game udah ada', false);
 
-      notif('Upload logo...');
-      const namaFile = 'logo-' + db.games[gameIndex].id + '-' + Date.now() + '.png';
-      const base64 = e.target.result.split(',')[1];
-
-      try {
-        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/images/${namaFile}`, {
-          method: 'PUT',
-          headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: `Update logo ${db.games[gameIndex].name}`,
-            content: base64
-          })
-        });
-        if(res.ok) {
-          const link = `https://raw.githubusercontent.com/${user}/${repo}/main/images/${namaFile}`;
-          db.games[gameIndex].icon = link;
-          document.getElementById(`icon-${gameIndex}`).value = link;
-          document.getElementById(`logo-${gameIndex}`).src = link;
-          notif('✅ Logo ke-update! Jangan lupa Simpan');
-        } else {
-          throw new Error('Gagal upload');
-        }
-      } catch(e) {
-        notif('❌ Gagal upload: ' + e.message, false);
-      }
-    };
-    reader.readAsDataURL(file);
-  } catch(e) {}
+  db.games.push({ id, name, icon, products: [] });
+  document.getElementById('newGameId').value = '';
+  document.getElementById('newGameName').value = '';
+  document.getElementById('newGameLogo').value = '';
+  renderProduk();
+  notif('Game ditambah. Jangan lupa Simpan!');
 }
 
-async function autoSaveHarga(i, j, field, val) {
+function hapusGame(gameIndex) {
+  if(!confirm(`Hapus game ${db.games[gameIndex].name}?`)) return;
+  db.games.splice(gameIndex, 1);
+  renderProduk();
+  notif('Game dihapus. Jangan lupa Simpan!');
+}
+
+function tambahNominal(gameIndex) {
+  const newId = 'item_' + Date.now();
+  db.games[gameIndex].products.push({ id: newId, name: "Item Baru", harga: 10000 });
+  renderProduk();
+  notif('Nominal ditambah. Edit nama + harga, terus Simpan!');
+}
+
+function hapusNominal(gameIndex, itemIndex) {
+  db.games[gameIndex].products.splice(itemIndex, 1);
+  renderProduk();
+  notif('Nominal dihapus. Jangan lupa Simpan!');
+}
+
+window.updateGame = (i, field, val) => { db.games[i][field] = val; }
+window.updateNominal = (i, j, field, val) => {
+  if (field === 'harga' || field === 'harga_asli') {
+    val = parseInt(val) || 0;
+    if (field === 'harga_asli' && val === 0) {
+      delete db.games[i].products[j].harga_asli;
+      return;
+    }
+  }
+  db.games[i].products[j][field] = val;
+}
+
+async function simpanSemua() {
+  const token = document.getElementById('gh-token').value;
+  const user = document.getElementById('gh-user').value;
+  const repo = document.getElementById('gh-repo').value;
+
+  if (!token ||!user ||!repo) {
+    notif('Isi Setting GitHub dulu di atas!', false);
+    return;
+  }
+
+  localStorage.setItem('gh_token', token);
+  localStorage.setItem('gh_user', user);
+  localStorage.setItem('gh_repo', repo);
+
+  notif('Menyimpan ke GitHub...', true);
+  db.username_tele = document.getElementById('username-tele').value;
+
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
+  const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/db.json`;
+
   try {
-    va
+    let fileSHA = null;
+    const getRes = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
+    if (getRes.ok) {
+      const fileData = await getRes.json();
+      fileSHA = fileData.sha;
+    }
+
+    const updateRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: 'Update db.json dari Admin Panel',
+        content: content,
+        sha: fileSHA
+      })
+    });
+
+    if (updateRes.ok) {
+      notif('✅ Sukses! Vercel auto-deploy 20 detik');
+    } else {
+      const err = await updateRes.json();
+      throw new Error(err.message);
+    }
+  } catch (error) {
+    notif('❌ Gagal: ' + error.message, false);
+  }
+}
+
+// === KELOLA ORDER ===
+let ALL_ORDERS = [];
+let CURRENT_FILTER = 'all';
+
+async function loadOrders() {
+    const listEl = document.getElementById('order-list');
+    listEl.innerHTML = '<p class="text-yellow-400 text-center py-8">Loading order...</p>';
+
+    try {
+        const res = await fetch('./orders.json?' + Date.now());
+        const data = await res.json();
+        ALL_ORDERS = data.orders.reverse();
+        renderOrders();
+    } catch(e) {
+        listEl.innerHTML = '<p class="text-red-400 text-center py-8">Gagal load orders.json. Upload file {"orders":[]} dulu ke repo</p>';
+    }
+}
+
+function filterOrder(status) {
+    CURRENT_FILTER = status;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-cyan-500');
+        btn.classList.add('bg-slate-700');
+    });
+    event.target.classList.remove('bg-slate-700');
+    event.target.classList.add('bg-cyan-500');
+    renderOrders();
+}
+
+function renderOrders() {
+    const listEl = document.getElementById('order-list');
+    let filtered = CURRENT_FILTER === 'all'? ALL_ORDERS : ALL_ORDERS.filter(o => o.status === CURRENT_FILTER);
+
+    if (filtered.length === 0) {
+        listEl.innerHTML = '<p class="text-slate-500 text-center py-8">Ga ada order</p>';
+        return;
+    }
+
+    listEl.innerHTML = '';
+    filtered.forEach((order) => {
+        const isSelesai = order.status === 'Selesai';
+        const statusColor = isSelesai? 'bg-green-500/20 border-green-500' : 'bg-yellow-500/20 border-yellow-500';
+        const badgeColor = isSelesai? 'bg-green-500' : 'bg-yellow-500';
+
+        const div = document.createElement('div');
+        div.className = `bg-slate-900 border-l-4 ${statusColor} p-4 rounded-lg`;
+        div.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <p class="font-bold text-base">${order.kode}</p>
+                    <p class="text-xs text-slate-400">${order.waktu}</p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-bold ${badgeColor} text-slate-900">${order.status}</span>
+            </div>
+            <p class="text-sm"><b>${order.game}</b> - ${order.item}</p>
+            <p class="text-sm text-slate-400">ID: <code class="bg-slate-800 px-1 rounded">${order.playerId}</code> | ${order.namaPengirim}</p>
+            <p class="text-cyan-400 font-bold mt-1 text-lg">Rp${order.harga.toLocaleString('id-ID')}</p>
+            ${!isSelesai? `<button onclick="selesaiOrder('${order.kode}')" class="w-full mt-3 bg-green-500 hover:bg-green-600 py-2 rounded-lg font-bold text-sm admin-btn">✓ Tandai Selesai</button>` : ''}
+        `;
+        listEl.appendChild(div);
+    });
+}
+
+async function selesaiOrder(kode) {
+    if (!confirm(`Yakin udah kirim diamond untuk ${kode}?`)) return;
+
+    const token = document.getElementById('gh-token').value;
+    const owner = document.getElementById('gh-user').value;
+    const repo = document.getElementById('gh-repo').value;
+
+    if (!token ||!owner ||!repo) return notif('Isi Setting GitHub dulu!', false);
+
+    notif('Update status order...', true);
+
+    try {
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/orders.json`;
+        const res = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
+        const file = await res.json();
+        const content = JSON.parse(decodeURIComponent(escape(atob(file.content))));
+
+        const index = content.orders.findIndex(o => o.kode === kode);
+        if (index === -1) return notif('Order ga ketemu', false);
+        content.orders[index].status = 'Selesai';
+
+        const updateRes = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: `Order ${kode} selesai`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+                sha: file.sha
+            })
+        });
+
+        if (updateRes.ok) {
+            notif('✅ Status jadi Selesai! User bisa cek di web');
+            loadOrders();
+        } else {
+            throw new Error('Gagal update Github');
+        }
+    } catch(e) {
+        notif('❌ Error: ' + e.message, false);
+    }
+}
+</script>
+</body>
+                        </html>
