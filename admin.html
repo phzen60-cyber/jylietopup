@@ -5,18 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Jylie Topup</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-       .glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-       .admin-btn { transition: all 0.2s ease; }
-       .admin-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3); }
-       .admin-input { background: #1e293b; border: 1px solid #334155; }
-       .admin-input:focus { outline: none; border-color: #06b6d4; box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); }
-       .notif-sukses { color: #4ade80; }
-       .notif-gagal { color: #f87171; }
-       .menu-active { background: linear-gradient(90deg, #06b6d4, #0891b2); color: #0f172a; font-weight: 700; }
+     .glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+     .admin-btn { transition: all 0.2s ease; }
+     .admin-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(6, 182, 212, 0.3); }
+     .admin-input { background: #1e293b; border: 1px solid #334155; }
+     .admin-input:focus { outline: none; border-color: #06b6d4; box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); }
+     .notif-sukses { color: #4ade80; }
+     .notif-gagal { color: #f87171; }
+     .menu-active { background: linear-gradient(90deg, #06b6d4, #0891b2); color: #0f172a; font-weight: 700; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
@@ -28,7 +27,7 @@
         <div class="glass rounded-2xl p-8 w-full max-w-sm">
             <div class="text-center mb-8">
                 <div class="w-16 h-16 bg-cyan-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="shield-check" class="w-8 h-8 text-cyan-400"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
                 </div>
                 <h1 class="text-3xl font-extrabold text-white">Admin Jylie</h1>
                 <p class="text-slate-400 text-sm mt-1">Topup Dashboard</p>
@@ -37,8 +36,8 @@
                    class="w-full admin-input p-3.5 rounded-xl mb-3 text-sm">
             <input id="pass" type="password" placeholder="Password"
                    class="w-full admin-input p-3.5 rounded-xl mb-4 text-sm">
-            <button onclick="login()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-900 py-3.5 rounded-xl font-bold admin-btn flex items-center justify-center gap-2">
-                <i data-lucide="log-in" class="w-5 h-5"></i> Masuk
+            <button onclick="login()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-900 py-3.5 rounded-xl font-bold admin-btn">
+                Masuk
             </button>
             <p id="loginMsg" class="text-red-400 text-sm mt-4 text-center"></p>
         </div>
@@ -50,34 +49,33 @@
         <aside class="w-64 bg-slate-900 border-r border-slate-800 p-5 hidden md:block">
             <div class="flex items-center gap-3 mb-10">
                 <div class="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center">
-                    <i data-lucide="gem" class="w-6 h-6 text-cyan-400"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M6 3h12l4 6-10 13L2 9l4-6z"></path><path d="M11 3 8 9l4 13 4-13-3-6"></path><path d="M2 9h20"></path></svg>
                 </div>
                 <h1 class="text-xl font-extrabold">Jylie Panel</h1>
             </div>
             <nav class="space-y-2">
                 <button onclick="showSection('dashboard')" class="menu-btn menu-active w-full text-left px-4 py-3 rounded-xl flex items-center gap-3">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                    Dashboard
                 </button>
                 <button onclick="showSection('game')" class="menu-btn w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-slate-300 hover:bg-slate-800">
-                    <i data-lucide="gamepad-2" class="w-5 h-5"></i> Game & Produk
+                    Game & Produk
                 </button>
                 <button onclick="showSection('order')" class="menu-btn w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-slate-300 hover:bg-slate-800">
-                    <i data-lucide="shopping-cart" class="w-5 h-5"></i> Kelola Order
+                    Kelola Order
                 </button>
                 <button onclick="showSection('setting')" class="menu-btn w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-slate-300 hover:bg-slate-800">
-                    <i data-lucide="settings" class="w-5 h-5"></i> Setting
+                    Setting
                 </button>
             </nav>
             <div class="absolute bottom-5 left-5 right-5">
-                <button onclick="logout()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 py-3 rounded-xl font-bold flex items-center justify-center gap-2">
-                    <i data-lucide="log-out" class="w-5 h-5"></i> Logout
+                <button onclick="logout()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 py-3 rounded-xl font-bold">
+                    Logout
                 </button>
             </div>
         </aside>
 
         <!-- MAIN CONTENT -->
         <main class="flex-1 p-4 md:p-8 overflow-y-auto">
-            <!-- MOBILE HEADER -->
             <div class="md:hidden flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-extrabold">🎮 Admin Jylie</h1>
                 <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded-lg text-sm">Logout</button>
@@ -88,36 +86,16 @@
                 <h2 class="text-3xl font-extrabold">Dashboard</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div class="glass rounded-2xl p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-slate-400 text-sm">Total Order</p>
-                                <p id="total-order" class="text-3xl font-extrabold mt-1">0</p>
-                            </div>
-                            <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                                <i data-lucide="package" class="w-6 h-6 text-blue-400"></i>
-                            </div>
-                        </div>
-                    <div class="glass rounded-2xl p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-slate-400 text-sm">Order Diproses</p>
-                                <p id="total-proses" class="text-3xl font-extrabold mt-1 text-yellow-400">0</p>
-                            </div>
-                            <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
-                                <i data-lucide="clock" class="w-6 h-6 text-yellow-400"></i>
-                            </div>
-                        </div>
+                        <p class="text-slate-400 text-sm">Total Order</p>
+                        <p id="total-order" class="text-3xl font-extrabold mt-1">0</p>
                     </div>
                     <div class="glass rounded-2xl p-6">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <p class="text-slate-400 text-sm">Status Toko</p>
-                                <p id="status-toko" class="text-3xl font-extrabold mt-1 text-green-400">BUKA</p>
-                            </div>
-                            <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
-                                <i data-lucide="store" class="w-6 h-6 text-green-400"></i>
-                            </div>
-                        </div>
+                        <p class="text-slate-400 text-sm">Order Diproses</p>
+                        <p id="total-proses" class="text-3xl font-extrabold mt-1 text-yellow-400">0</p>
+                    </div>
+                    <div class="glass rounded-2xl p-6">
+                        <p class="text-slate-400 text-sm">Status Toko</p>
+                        <p id="status-toko" class="text-3xl font-extrabold mt-1 text-green-400">BUKA</p>
                     </div>
                 </div>
             </section>
@@ -126,7 +104,7 @@
             <section id="section-game" class="hidden space-y-6">
                 <h2 class="text-3xl font-extrabold">Kelola Game & Produk</h2>
                 <div class="glass rounded-2xl p-6">
-                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-cyan-400"></i> Tambah Game Baru</h3>
+                    <h3 class="text-lg font-bold mb-4">+ Tambah Game Baru</h3>
                     <div class="grid md:grid-cols-3 gap-3">
                         <input id="newGameId" type="text" placeholder="ID: freefire" class="admin-input p-3 rounded-xl text-sm">
                         <input id="newGameName" type="text" placeholder="Nama: Free Fire" class="admin-input p-3 rounded-xl text-sm">
@@ -141,9 +119,7 @@
             <section id="section-order" class="hidden space-y-6">
                 <div class="flex justify-between items-center">
                     <h2 class="text-3xl font-extrabold">Kelola Order Masuk</h2>
-                    <button onclick="loadOrders()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl text-sm admin-btn flex items-center gap-2">
-                        <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh
-                    </button>
+                    <button onclick="loadOrders()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl text-sm admin-btn">🔄 Refresh</button>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="filterOrder('all')" class="filter-btn bg-cyan-500 text-slate-900 px-4 py-2 rounded-xl text-sm font-bold">Semua</button>
@@ -157,13 +133,13 @@
             <section id="section-setting" class="hidden space-y-6">
                 <h2 class="text-3xl font-extrabold">Setting</h2>
                 <div class="glass rounded-2xl p-6 border-2 border-yellow-500/30">
-                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i data-lucide="github" class="w-5 h-5 text-yellow-400"></i> GitHub - WAJIB ISI</h3>
+                    <h3 class="text-lg font-bold mb-4">GitHub - WAJIB ISI</h3>
                     <input id="gh-token" type="password" placeholder="GitHub Token: ghp_xxx" class="w-full admin-input p-3 rounded-xl mb-3 text-sm">
                     <input id="gh-user" type="text" placeholder="Username: phzen60-cyber" class="w-full admin-input p-3 rounded-xl mb-3 text-sm">
                     <input id="gh-repo" type="text" placeholder="Repo: jylietopup" class="w-full admin-input p-3 rounded-xl mb-3 text-sm">
                 </div>
                 <div class="glass rounded-2xl p-6">
-                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2"><i data-lucide="wrench" class="w-5 h-5 text-cyan-400"></i> Setting Umum</h3>
+                    <h3 class="text-lg font-bold mb-4">Setting Umum</h3>
                     <label class="block mb-2 text-sm font-semibold">Status Toko</label>
                     <div class="flex gap-3 mb-4">
                         <button onclick="setToko(true)" id="btn-buka" class="flex-1 bg-slate-800 hover:bg-green-600/30 py-3 rounded-xl font-bold admin-btn">🟢 BUKA</button>
@@ -172,8 +148,8 @@
                     <label class="block mb-2 text-sm font-semibold">Username Telegram CS</label>
                     <input id="username-tele" type="text" placeholder="jyliestoreid" class="w-full admin-input p-3 rounded-xl text-sm">
                 </div>
-                <button onclick="simpanSemua()" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 py-4 rounded-xl font-extrabold text-lg admin-btn flex items-center justify-center gap-2">
-                    <i data-lucide="save" class="w-6 h-6"></i> Simpan Semua Perubahan
+                <button onclick="simpanSemua()" class="w-full bg-green-500 hover:bg-green-400 text-slate-900 py-4 rounded-xl font-extrabold text-lg admin-btn">
+                    💾 Simpan Semua Perubahan
                 </button>
             </section>
 
@@ -182,8 +158,6 @@
     </div>
 
 <script>
-lucide.createIcons();
-
 const CONFIG = { USER: "ownerjylie", PASS: "jylie547" };
 let db = { username_tele: '', toko_buka: true, games: [] };
 
@@ -213,7 +187,7 @@ function login() {
   document.getElementById('adminBox').style.display = 'flex';
   loadData();
   loadLocalSettings();
-  setTimeout(loadOrders, 1000);
+  loadOrders();
 }
 
 function logout() {
@@ -273,14 +247,13 @@ function renderProduk() {
                    class="font-bold text-lg bg-transparent text-white w-full">
             <p class="text-xs text-slate-400">ID: ${game.id}</p>
           </div>
-        </div>
-        <button onclick="hapusGame(${gameIndex})" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-3 py-2 rounded-xl text-sm admin-btn"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        <button onclick="hapusGame(${gameIndex})" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-3 py-2 rounded-xl text-sm">Hapus</button>
       </div>
       <input value="${game.icon}" onchange="updateGame(${gameIndex}, 'icon', this.value)"
              class="admin-input text-xs w-full p-2.5 rounded-xl mb-4" placeholder="Link Logo Game">
       <div id="nominal-${gameIndex}" class="space-y-2 mb-3"></div>
-      <button onclick="tambahNominal(${gameIndex})" class="w-full bg-slate-800 hover:bg-slate-700 py-2.5 rounded-xl text-sm admin-btn flex items-center justify-center gap-2">
-        <i data-lucide="plus" class="w-4 h-4"></i> Tambah Nominal
+      <button onclick="tambahNominal(${gameIndex})" class="w-full bg-slate-800 hover:bg-slate-700 py-2.5 rounded-xl text-sm admin-btn">
+        + Tambah Nominal
       </button>
     `;
     wrap.appendChild(gameDiv);
@@ -292,7 +265,7 @@ function renderProduk() {
         <div class="flex gap-2 items-center mb-2">
           <input value="${item.name}" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'name', this.value)"
                  class="flex-1 admin-input p-2 rounded-lg text-sm" placeholder="Nama Item">
-          <button onclick="hapusNominal(${gameIndex}, ${itemIndex})" class="bg-red-500/20 text-red-400 px-2.5 py-2 rounded-lg text-sm admin-btn"><i data-lucide="x" class="w-4 h-4"></i></button>
+          <button onclick="hapusNominal(${gameIndex}, ${itemIndex})" class="bg-red-500/20 text-red-400 px-2.5 py-2 rounded-lg text-sm">X</button>
         </div>
         <div class="grid grid-cols-2 gap-2">
           <input value="${item.harga}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga', this.value)"
@@ -304,7 +277,6 @@ function renderProduk() {
       nominalWrap.appendChild(row);
     });
   });
-  lucide.createIcons();
 }
 
 function tambahGame() {
@@ -359,4 +331,49 @@ async function simpanSemua() {
   const repo = document.getElementById('gh-repo').value;
   if (!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
   localStorage.setItem('gh_token', token);
-  localStorage.set
+  localStorage.setItem('gh_user', user);
+  localStorage.setItem('gh_repo', repo);
+  notif('Menyimpan ke GitHub...', true);
+  db.username_tele = document.getElementById('username-tele').value;
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
+  const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/db.json`;
+  try {
+    let fileSHA = null;
+    const getRes = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
+    if (getRes.ok) {
+      const fileData = await getRes.json();
+      fileSHA = fileData.sha;
+    }
+    const updateRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: 'Update db.json dari Admin Panel', content: content, sha: fileSHA })
+    });
+    if (updateRes.ok) notif('✅ Sukses! Vercel auto-deploy 20 detik');
+    else throw new Error((await updateRes.json()).message);
+  } catch (error) {
+    notif('❌ Gagal: ' + error.message, false);
+  }
+}
+
+// === KELOLA ORDER ===
+let ALL_ORDERS = [];
+let CURRENT_FILTER = 'all';
+
+async function loadOrders() {
+    const listEl = document.getElementById('order-list');
+    listEl.innerHTML = '<div class="col-span-2 text-center py-10 text-slate-400">Loading order...</div>';
+    try {
+        const res = await fetch('./orders.json?' + Date.now());
+        const data = await res.json();
+        ALL_ORDERS = data.orders.reverse();
+        document.getElementById('total-order').innerText = ALL_ORDERS.length;
+        document.getElementById('total-proses').innerText = ALL_ORDERS.filter(o => o.status === 'Diproses').length;
+        renderOrders();
+    } catch(e) {
+        listEl.innerHTML = '<div class="col-span-2 glass rounded-2xl p-8 text-center text-red-400">Gagal load orders.json. Upload file {"orders":[]} dulu ke repo</div>';
+    }
+}
+
+function filterOrder(status) {
+    CURRENT_FILTER = status;
