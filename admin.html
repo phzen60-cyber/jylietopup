@@ -7,17 +7,22 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         *{font-family:'Poppins',sans-serif;-webkit-tap-highlight-color:transparent;box-sizing:border-box;margin:0;padding:0}
-        body{background:#0f172a;color:#fff;position:relative;z-index:1}
-      .glass{background:rgba(30,41,59,0.8);backdrop-filter:blur(12px);border:1px solid rgba(51,65,85,0.5)}
-      button{cursor:pointer;border:0;position:relative;z-index:9999!important;pointer-events:auto!important}
-      input{position:relative;z-index:9999!important;pointer-events:auto!important}
-      .admin-btn:active{transform:scale(.97)}
+        body{background:#0f172a;color:#fff}
+        button{cursor:pointer;border:0;position:relative;z-index:9999!important;pointer-events:auto!important}
+        input,select,textarea{position:relative;z-index:9999!important;pointer-events:auto!important}
+       .glass{background:rgba(30,41,59,0.8);backdrop-filter:blur(12px);border:1px solid rgba(51,65,85,0.5)}
+       .admin-btn:active{transform:scale(.97)}
+       .card-hover:hover{transform:translateY(-2px);box-shadow:0 20px 25px -5px rgba(0,0,0,0.3)}
+       .toast{position:fixed;top:20px;right:20px;z-index:99999;padding:16px;border-radius:12px;display:flex;align-items:center;gap:12px;animation:slideIn.3s}
+        @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+       .spinner{border:3px solid #334155;border-top:3px solid #06b6d4;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite}
+        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
     </style>
 </head>
 <body>
 
     <!-- LOGIN -->
-    <div id="loginBox" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);position:relative;z-index:10">
+    <div id="loginBox" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%)">
         <div class="glass" style="border-radius:16px;padding:32px;width:100%;max-width:384px">
             <div style="text-align:center;margin-bottom:32px">
                 <div style="width:64px;height:64px;background:linear-gradient(135deg,#22d3ee 0%,#3b82f6 100%);border-radius:16px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center">
@@ -27,9 +32,9 @@
                 <p style="color:#94a3b8;font-size:14px;margin-top:4px">Masuk ke dashboard</p>
             </div>
             <div style="display:flex;flex-direction:column;gap:16px">
-                <input id="user" type="text" placeholder="Username" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px 12px 12px 40px;border-radius:12px;outline:none;color:#fff">
-                <input id="pass" type="password" placeholder="Password" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px 12px 40px;border-radius:12px;outline:none;color:#fff">
-                <button type="button" onclick="cekLogin()" style="width:100%;background:linear-gradient(90deg,#06b6d4 0%,#3b82f6 100%);color:#0f172a;padding:12px;border-radius:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px">
+                <input id="user" type="text" placeholder="Username" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px 12px 12px 16px;border-radius:12px;outline:none;color:#fff">
+                <input id="pass" type="password" placeholder="Password" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px 12px 12px 16px;border-radius:12px;outline:none;color:#fff">
+                <button type="button" onclick="cekLogin()" style="width:100%;background:linear-gradient(90deg,#06b6d4 0%,#3b82f6 100%);color:#0f172a;padding:12px;border-radius:12px;font-weight:700">
                     Login
                 </button>
                 <p id="loginMsg" style="color:#f87171;font-size:14px;text-align:center;height:20px"></p>
@@ -39,29 +44,142 @@
 
     <!-- DASHBOARD -->
     <div id="adminBox" style="display:none">
-        <div style="padding:32px;text-align:center">
-            <h1 style="font-size:32px;font-weight:700;color:#4ade80">LOGIN BERHASIL BRO! 🔥</h1>
-            <p style="color:#94a3b8;margin-top:8px">Tombol bisa di-klik kan? Kalo ini muncul berarti dah bener.</p>
-            <button type="button" onclick="logout()" style="margin-top:24px;background:#ef4444;color:#fff;padding:12px 24px;border-radius:12px;font-weight:700">Logout Test</button>
-        </div>
+        <header class="glass" style="box-shadow:0 10px 15px -3px rgba(0,0,0,0.3);position:sticky;top:0;z-index:50">
+            <div style="max-width:1200px;margin:0 auto;padding:16px;display:flex;justify-content:space-between;align-items:center">
+                <div style="display:flex;align-items:center;gap:12px">
+                    <div style="width:40px;height:40px;background:linear-gradient(135deg,#22d3ee 0%,#3b82f6 100%);border-radius:12px;display:flex;align-items:center;justify-content:center">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="#0f172a"><path d="M21 6H3c-1.1 0-2.9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H17v-2h-1.5v2z"/></svg>
+                    </div>
+                    <div>
+                        <h1 style="font-size:18px;font-weight:700">JylieTopup</h1>
+                        <p style="color:#94a3b8;font-size:12px">Admin Panel</p>
+                    </div>
+                <button type="button" onclick="logout()" style="background:rgba(239,68,68,0.2);color:#f87171;padding:8px 16px;border-radius:12px;font-size:14px">Logout</button>
+            </div>
+        </header>
+
+        <main style="max-width:1200px;margin:0 auto;padding:32px 16px">
+            <!-- STATS -->
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:32px">
+                <div class="glass card-hover" style="border-radius:16px;padding:20px">
+                    <p style="color:#94a3b8;font-size:14px;margin-bottom:8px">Pendapatan</p>
+                    <b style="font-size:24px;color:#4ade80" id="duit">Rp 0</b>
+                </div>
+                <div class="glass card-hover" style="border-radius:16px;padding:20px">
+                    <p style="color:#94a3b8;font-size:14px;margin-bottom:8px">Total Order</p>
+                    <b style="font-size:24px;color:#22d3ee" id="total">0</b>
+                </div>
+                <div class="glass card-hover" style="border-radius:16px;padding:20px">
+                    <p style="color:#94a3b8;font-size:14px;margin-bottom:8px">Pending</p>
+                    <b style="font-size:24px;color:#facc15" id="pending">0</b>
+                </div>
+                <div class="glass card-hover" style="border-radius:16px;padding:20px">
+                    <p style="color:#94a3b8;font-size:14px;margin-bottom:8px">Status Toko</p>
+                    <b style="font-size:24px" id="sttoko">-</b>
+                </div>
+            </div>
+
+            <!-- SETTING GITHUB -->
+            <div class="glass card-hover" style="border-radius:16px;padding:24px;margin-bottom:24px;border:2px solid rgba(234,179,8,0.3)">
+                <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Setting GitHub - WAJIB ISI</h2>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+                    <input id="gh-token" type="password" placeholder="Token: ghp_xxx" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
+                    <input id="gh-user" type="text" placeholder="Username: phzen60-cyber" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
+                    <input id="gh-repo" type="text" placeholder="Repo: jylietopup" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
+                </div>
+            </div>
+
+            <!-- SETTING UMUM -->
+            <div class="glass card-hover" style="border-radius:16px;padding:24px;margin-bottom:24px">
+                <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Setting Umum</h2>
+                <div style="display:flex;flex-direction:column;gap:16px">
+                    <div>
+                        <label style="display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:#cbd5e1">Status Toko</label>
+                        <div style="display:flex;gap:12px">
+                            <button type="button" onclick="setToko(true)" id="btn-buka" style="flex:1;background:#475569;padding:12px;border-radius:12px;font-weight:700">🟢 BUKA</button>
+                            <button type="button" onclick="setToko(false)" id="btn-tutup" style="flex:1;background:#475569;padding:12px;border-radius:12px;font-weight:700">🔴 TUTUP</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label style="display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:#cbd5e1">Username Telegram CS</label>
+                        <input id="username-tele" type="text" placeholder="jyliestoreid" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAMBAH GAME -->
+            <div class="glass card-hover" style="border-radius:16px;padding:24px;margin-bottom:24px">
+                <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Tambah Game Baru</h2>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px">
+                    <input id="newGameId" type="text" placeholder="ID: freefire" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
+                    <input id="newGameName" type="text" placeholder="Nama: Free Fire" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
+                    <input id="newGameLogo" type="text" placeholder="Link Logo" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
+                </div>
+                <button type="button" onclick="tambahGame()" style="width:100%;background:linear-gradient(90deg,#a855f7 0%,#ec4899 100%);color:#fff;padding:12px;border-radius:12px;font-weight:700">
+                    + Tambah Game
+                </button>
+            </div>
+
+            <!-- LIST GAME -->
+            <div class="glass card-hover" style="border-radius:16px;padding:24px;margin-bottom:24px">
+                <h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Kelola Game & Produk</h2>
+                <div id="produkList" style="display:flex;flex-direction:column;gap:16px">Loading...</div>
+            </div>
+
+            <!-- ORDER -->
+            <div class="glass card-hover" style="border-radius:16px;padding:24px;margin-bottom:24px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+                    <h2 style="font-size:20px;font-weight:700">Kelola Order</h2>
+                    <button type="button" onclick="loadOrders()" style="background:#475569;padding:8px 16px;border-radius:12px;font-size:14px">🔄 Refresh</button>
+                </div>
+                <div style="display:flex;gap:8px;margin-bottom:16px;overflow-x:auto">
+                    <button type="button" onclick="filterOrder('all',this)" style="background:#06b6d4;color:#0f172a;padding:8px 16px;border-radius:12px;font-size:14px;font-weight:700;white-space:nowrap">Semua</button>
+                    <button type="button" onclick="filterOrder('Diproses',this)" style="background:#475569;padding:8px 16px;border-radius:12px;font-size:14px;white-space:nowrap">Diproses</button>
+                    <button type="button" onclick="filterOrder('Selesai',this)" style="background:#475569;padding:8px 16px;border-radius:12px;font-size:14px;white-space:nowrap">Selesai</button>
+                </div>
+                <div id="order-list" style="display:flex;flex-direction:column;gap:12px;max-height:500px;overflow-y:auto;padding-right:8px">
+                    <p style="color:#64748b;text-align:center;padding:32px 0">Klik Refresh buat load order</p>
+                </div>
+            </div>
+
+            <!-- SIMPAN -->
+            <button type="button" onclick="simpanSemua()" style="width:100%;background:linear-gradient(90deg,#22c55e 0%,#10b981 100%);padding:16px;border-radius:12px;font-weight:700;font-size:18px;box-shadow:0 10px 15px -3px rgba(34,197,94,0.2)">
+                🔒 Simpan ke GitHub
+            </button>
+        </main>
     </div>
 
+    <div id="toast"></div>
+
 <script>
-// DEBUG: PASTIIN JS JALAN
-alert('JS NYALA BRO ✅\n\nKalo popup ini muncul, tombol login pasti bisa di-klik.\n\nKlik OK terus coba login.');
+var CONFIG = { USER: "ownerjylie", PASS: "jylie547" };
+var db = { username_tele: '', toko_buka: true, games: [] };
+var ALL_ORDERS = [];
+var CURRENT_FILTER = 'all';
+
+function showToast(msg, sukses) {
+  sukses = sukses!== false;
+  var toast = document.createElement('div');
+  toast.className = 'toast glass';
+  toast.style.borderLeft = sukses? '4px solid #4ade80' : '4px solid #f87171';
+  toast.innerHTML = '<span style="font-size:24px">'+(sukses?'✅':'❌')+'</span><span>'+msg+'</span>';
+  document.getElementById('toast').appendChild(toast);
+  setTimeout(function(){ toast.remove() }, 3000);
+}
 
 function cekLogin() {
-  alert('TOMBOL KE-KLIK! Function jalan!');
   var user = document.getElementById('user').value.trim().toLowerCase();
   var pass = document.getElementById('pass').value.trim();
   var msg = document.getElementById('loginMsg');
-  
-  if(user === 'ownerjylie' && pass === 'jylie547') {
-    alert('LOGIN SUKSES BRO!');
+
+  if(user === CONFIG.USER && pass === CONFIG.PASS) {
     document.getElementById('loginBox').style.display = 'none';
     document.getElementById('adminBox').style.display = 'block';
+    loadData();
+    loadLocalSettings();
+    setTimeout(loadOrders, 1000);
   } else {
-    msg.innerHTML = 'Username/Password salah! Kamu ketik: ' + user;
+    msg.innerHTML = 'Username/Password salah!';
   }
 }
 
@@ -72,6 +190,134 @@ function logout() {
   document.getElementById('pass').value = '';
   document.getElementById('loginMsg').innerHTML = '';
 }
-</script>
-</body>
-</html>
+
+function loadLocalSettings() {
+  document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+  document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
+  document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+}
+
+function setToko(status) {
+  db.toko_buka = status;
+  var buka = document.getElementById('btn-buka');
+  var tutup = document.getElementById('btn-tutup');
+  var st = document.getElementById('sttoko');
+  if(status){
+    buka.style.background = '#16a34a';
+    tutup.style.background = '#475569';
+    st.innerHTML = '<span style="color:#4ade80">BUKA</span>';
+  } else {
+    tutup.style.background = '#dc2626';
+    buka.style.background = '#475569';
+    st.innerHTML = '<span style="color:#f87171">TUTUP</span>';
+  }
+  showToast(status? 'Toko dibuka' : 'Toko ditutup');
+}
+
+async function loadData() {
+  try {
+    var res = await fetch('db.json?' + Date.now());
+    db = await res.json();
+    document.getElementById('username-tele').value = db.username_tele || '';
+    setToko(db.toko_buka!== false);
+    renderProduk();
+  } catch (e) {
+    db = { username_tele: 'jyliestoreid', toko_buka: true, games: [] };
+    showToast('Gagal load db.json, bikin baru', false);
+    setToko(true);
+    renderProduk();
+  }
+}
+
+function renderProduk() {
+  var wrap = document.getElementById('produkList');
+  wrap.innerHTML = '';
+  if (db.games.length === 0) {
+    wrap.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:32px 0">Belum ada game. Tambah di atas.</p>';
+    return;
+  }
+  for(var i=0;i<db.games.length;i++){
+    var game = db.games[i];
+    var gameDiv = document.createElement('div');
+    gameDiv.style.background = 'rgba(51,65,85,0.5)';
+    gameDiv.style.border = '1px solid #475569';
+    gameDiv.style.borderRadius = '12px';
+    gameDiv.style.padding = '20px';
+    gameDiv.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">'+
+      '<div style="display:flex;align-items:center;gap:16px">'+
+        '<img src="'+game.icon+'" style="width:56px;height:56px;border-radius:12px;object-fit:cover;background:#475569;border:2px solid #64748b">'+
+        '<div>'+
+          '<input value="'+game.name+'" onchange="updateGame('+i+', \'name\', this.value)" style="font-weight:700;background:transparent;color:#fff;font-size:18px;outline:none;border:0">'+
+          '<p style="color:#94a3b8;font-size:12px;margin-top:4px">ID: '+game.id+'</p>'+
+        '</div>'+
+      '</div>'+
+      '<button type="button" onclick="hapusGame('+i+')" style="background:rgba(239,68,68,0.2);color:#f87171;padding:8px 12px;border-radius:12px">Hapus</button>'+
+    '</div>'+
+    '<div style="margin-bottom:16px">'+
+      '<input value="'+game.icon+'" onchange="updateGame('+i+', \'icon\', this.value)" style="background:rgba(30,41,59,0.5);border:1px solid #475569;font-size:12px;width:100%;padding:12px;border-radius:12px;outline:none;color:#fff" placeholder="Link Logo Game">'+
+    '</div>'+
+    '<div id="nominal-'+i+'" style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px"></div>'+
+    '<button type="button" onclick="tambahNominal('+i+')" style="width:100%;background:rgba(71,85,105,0.5);border:1px solid #64748b;padding:12px;border-radius:12px;font-size:14px">+ Tambah Nominal</button>';
+    wrap.appendChild(gameDiv);
+
+    var nominalWrap = document.getElementById('nominal-'+i);
+    for(var j=0;j<game.products.length;j++){
+      var item = game.products[j];
+      var row = document.createElement('div');
+      row.style.background = 'rgba(30,41,59,0.5)';
+      row.style.padding = '16px';
+      row.style.borderRadius = '12px';
+      row.style.border = '1px solid #475569';
+      row.innerHTML = '<div style="display:flex;gap:12px;align-items:start;margin-bottom:12px">'+
+        '<input value="'+item.name+'" onchange="updateNominal('+i+','+j+',\'name\',this.value)" style="flex:1;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;font-size:14px;outline:none;color:#fff" placeholder="Nama Item">'+
+        '<button type="button" onclick="hapusNominal('+i+','+j+')" style="background:rgba(239,68,68,0.2);color:#f87171;padding:12px;border-radius:12px">X</button>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
+        '<div><label style="color:#94a3b8;font-size:12px;margin-bottom:4px;display:block">Harga Jual</label>'+
+        '<input value="'+item.harga+'" type="number" onchange="updateNominal('+i+','+j+',\'harga\',this.value)" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;font-size:14px;outline:none;color:#fff"></div>'+
+        '<div><label style="color:#94a3b8;font-size:12px;margin-bottom:4px;display:block">Harga Asli</label>'+
+        '<input value="'+(item.harga_asli||'')+'" type="number" onchange="updateNominal('+i+','+j+',\'harga_asli\',this.value)" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;font-size:14px;outline:none;color:#fff"></div>'+
+      '</div>';
+      nominalWrap.appendChild(row);
+    }
+  }
+}
+
+function tambahGame() {
+  var id = document.getElementById('newGameId').value.trim().toLowerCase().replace(/\s+/g, '');
+  var name = document.getElementById('newGameName').value.trim();
+  var icon = document.getElementById('newGameLogo').value.trim();
+  if(!id ||!name ||!icon) return showToast('ID, Nama & Logo wajib diisi', false);
+  for(var i=0;i<db.games.length;i++){ if(db.games[i].id === id) return showToast('ID Game udah ada', false); }
+  db.games.push({ id:id, name:name, icon:icon, products: [] });
+  document.getElementById('newGameId').value = '';
+  document.getElementById('newGameName').value = '';
+  document.getElementById('newGameLogo').value = '';
+  renderProduk();
+  showToast('Game ditambah. Jangan lupa Simpan!');
+}
+
+function hapusGame(i) {
+  if(!confirm('Hapus game '+db.games[i].name+'?')) return;
+  db.games.splice(i, 1);
+  renderProduk();
+  showToast('Game dihapus. Jangan lupa Simpan!');
+}
+
+function tambahNominal(i) {
+  var newId = 'item_' + Date.now();
+  db.games[i].products.push({ id: newId, name: "Item Baru", harga: 10000 });
+  renderProduk();
+  showToast('Nominal ditambah');
+}
+
+function hapusNominal(i, j) {
+  db.games[i].products.splice(j, 1);
+  renderProduk();
+  showToast('Nominal dihapus');
+}
+
+function updateGame(i, field, val) { db.games[i][field] = val; }
+function updateNominal(i, j, field, val) {
+  if (field === 'harga' || field === 'harga_asli') {
+    val = parseInt(v
