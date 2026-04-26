@@ -8,12 +8,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         body { font-family: 'Poppins', sans-serif; }
-       .admin-btn { transition: 0.2s; }
-       .admin-btn:hover { transform: scale(1.02); }
-       .admin-input { background: #334155; }
-       .admin-input:focus { outline: 2px solid #06b6d4; }
-       .notif-sukses { color: #4ade80; }
-       .notif-gagal { color: #f87171; }
+      .admin-btn { transition: 0.2s; }
+      .admin-btn:hover { transform: scale(1.02); }
+      .admin-input { background: #334155; }
+      .admin-input:focus { outline: 2px solid #06b6d4; }
+      .notif-sukses { color: #4ade80; }
+      .notif-gagal { color: #f87171; }
     </style>
 </head>
 <body class="bg-slate-900 text-white">
@@ -22,7 +22,6 @@
     <div id="loginBox" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm">
             <h1 class="text-2xl font-bold text-center mb-6 text-cyan-400">🔐 Admin Login</h1>
-            <p class="text-xs text-center mb-4 text-slate-400">IP Lu: <span id="ipText">Loading...</span></p>
             <input id="user" type="text" placeholder="Username"
                    class="w-full bg-slate-700 p-3 rounded-lg mb-3 outline-none focus:ring-2 focus:ring-cyan-400">
             <input id="pass" type="password" placeholder="Password"
@@ -57,7 +56,7 @@
             <!-- SETTING UMUM -->
             <div class="bg-slate-800 rounded-xl p-6 mb-6">
                 <h2 class="text-xl font-bold mb-4 border-l-4 border-cyan-400 pl-3">Setting Umum</h2>
-                
+
                 <label class="block mb-2 text-sm font-semibold">Status Toko</label>
                 <div class="flex gap-3 mb-4">
                     <button onclick="setToko(true)" id="btn-buka" class="flex-1 bg-slate-600 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn">🟢 BUKA</button>
@@ -95,7 +94,7 @@
                     <h2 class="text-xl font-bold border-l-4 border-yellow-400 pl-3">Kelola Order Masuk</h2>
                     <button onclick="loadOrders()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm admin-btn">🔄 Refresh</button>
                 </div>
-                
+
                 <div class="flex gap-2 mb-4">
                     <button onclick="filterOrder('all')" class="filter-btn bg-cyan-500 px-3 py-1 rounded-lg text-xs font-bold admin-btn">Semua</button>
                     <button onclick="filterOrder('Diproses')" class="filter-btn bg-slate-700 px-3 py-1 rounded-lg text-xs admin-btn">Diproses</button>
@@ -118,8 +117,7 @@
 <script>
 const CONFIG = {
   USER: "ownerjylie",
-  PASS: "jylie547",
-  WHITELIST_IP: ["175.158.55.141"]
+  PASS: "jylie547"
 };
 
 let db = { username_tele: '', toko_buka: true, games: [] };
@@ -132,25 +130,8 @@ const notif = (msg, sukses = true) => {
   setTimeout(() => el.style.display = 'none', 3000);
 };
 
-async function login() {
+function login() {
   const loginMsg = document.getElementById('loginMsg');
-  loginMsg.innerText = "Cek IP...";
-
-  try {
-    const ipRes = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipRes.json();
-    const userIP = ipData.ip;
-    document.getElementById('ipText').innerText = userIP;
-
-    if (!CONFIG.WHITELIST_IP.includes(userIP)) {
-      loginMsg.innerText = `Akses ditolak! IP ${userIP} ga terdaftar.`;
-      return;
-    }
-  } catch(e) {
-    loginMsg.innerText = 'Gagal cek IP. Coba refresh.';
-    return;
-  }
-
   const user = document.getElementById('user').value;
   const pass = document.getElementById('pass').value;
 
@@ -219,7 +200,7 @@ function renderProduk() {
         <div class="flex items-center gap-3">
           <img src="${game.icon}" class="w-10 h-10 rounded object-cover bg-slate-600">
           <div>
-            <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)" 
+            <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)"
                    class="font-bold bg-transparent text-white">
             <p class="text-xs text-slate-400">ID: ${game.id}</p>
           </div>
@@ -362,7 +343,7 @@ let CURRENT_FILTER = 'all';
 async function loadOrders() {
     const listEl = document.getElementById('order-list');
     listEl.innerHTML = '<p class="text-yellow-400 text-center py-8">Loading order...</p>';
-    
+
     try {
         const res = await fetch('./orders.json?' + Date.now());
         const data = await res.json();
@@ -387,7 +368,7 @@ function filterOrder(status) {
 function renderOrders() {
     const listEl = document.getElementById('order-list');
     let filtered = CURRENT_FILTER === 'all'? ALL_ORDERS : ALL_ORDERS.filter(o => o.status === CURRENT_FILTER);
-    
+
     if (filtered.length === 0) {
         listEl.innerHTML = '<p class="text-slate-500 text-center py-8">Ga ada order</p>';
         return;
@@ -398,7 +379,7 @@ function renderOrders() {
         const isSelesai = order.status === 'Selesai';
         const statusColor = isSelesai? 'bg-green-500/20 border-green-500' : 'bg-yellow-500/20 border-yellow-500';
         const badgeColor = isSelesai? 'bg-green-500' : 'bg-yellow-500';
-        
+
         const div = document.createElement('div');
         div.className = `bg-slate-900 border-l-4 ${statusColor} p-4 rounded-lg`;
         div.innerHTML = `
@@ -434,7 +415,7 @@ async function selesaiOrder(kode) {
         const res = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
         const file = await res.json();
         const content = JSON.parse(decodeURIComponent(escape(atob(file.content))));
-        
+
         const index = content.orders.findIndex(o => o.kode === kode);
         if (index === -1) return notif('Order ga ketemu', false);
         content.orders[index].status = 'Selesai';
@@ -456,4 +437,9 @@ async function selesaiOrder(kode) {
             throw new Error('Gagal update Github');
         }
     } catch(e) {
-        not
+        notif('❌ Error: ' + e.message, false);
+    }
+}
+</script>
+</body>
+                </html>
