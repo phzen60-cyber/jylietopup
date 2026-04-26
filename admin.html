@@ -48,15 +48,10 @@
                 <span class="text-lg font-bold">JylieTopup</span>
             </div>
             <nav class="space-y-1">
-                <a href="#" onclick="showPage('dashboard')" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <i class="ri-dashboard-line text-xl"></i> Dashboard
-                </a>
-                <a href="#" onclick="showPage('pesanan')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <i class="ri-shopping-bag-3-line text-xl"></i> Pesanan
-                </a>
-                <a href="#" onclick="showPage('produk')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <i class="ri-gamepad-line text-xl"></i> Produk
-                </a>
+                <a href="#" onclick="showPage('dashboard', this)" class="sidebar-link active...">
+<a href="#" onclick="showPage('pesanan', this)" class="sidebar-link ...">
+<a href="#" onclick="showPage('produk', this)" class="sidebar-link ...">
+<a href="#" onclick="showPage('setting', this)" class="sidebar-link ...">
                 <a href="#" onclick="showPage('setting')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
                     <i class="ri-settings-3-line text-xl"></i> Setting
                 </a>
@@ -205,12 +200,12 @@ const notif = (msg, sukses = true) => {
   setTimeout(() => el.style.display = 'none', 3000);
 };
 
-function showPage(page) {
+function showPage(page, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.getElementById('page-' + page).classList.remove('hidden');
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-  event.target.closest('a').classList.add('active');
-  document.getElementById('pageTitle').textContent = event.target.innerText.trim();
+  el.classList.add('active'); // PAKE PARAMETER 'el'
+  document.getElementById('pageTitle').textContent = el.innerText.trim();
   if (page === 'pesanan') loadOrders();
   if (page === 'produk') renderProduk();
 }
