@@ -153,12 +153,51 @@ function loadLocalSettings() {
   document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
 }
 
-function setToko(status) {
-  db.toko_buka = status;
-  document.getElementById('btn-buka').style.background = status? '#16a34a' : '#475569';
-  document.getElementById('btn-tutup').style.background =!status? '#dc2626' : '#475569';
-  document.getElementById('sttoko').innerHTML = status? '<span style="color:#4ade80">BUKA</span>' : '<span style="color:#f87171">TUTUP</span>';
-  notif(status? 'Toko dibuka' : 'Toko ditutup');
+async function setToko(status) {
+  try {
+    db.toko_buka = status;
+    document.getElementById('btn-buka').style.background = status? '#16a34a' : '#475569';
+    document.getElementById('btn-tutup').style.background =!status? '#dc2626' : '#475569';
+    document.getElementById('sttoko').innerHTML = status? '<span style="color:#4ade80">BUKA</span>' : '<span style="color:#f87171">TUTUP</span>';
+    notif(status? 'Toko dibuka...' : 'Toko ditutup...');
+
+    // AUTO-SAVE KE GITHUB LANGSUNG
+    var token = document.getElementById('gh-token').value;
+    var user = document.getElementById('gh-user').value;
+    var repo = document.getElementById('gh-repo').value;
+    if (!token ||!user ||!repo) return notif('Isi Setting GitHub dulu biar ke-save!', false);
+
+    var apiUrl = 'https://api.github.com/repos/'+user+'/'+repo+'/contents/db.json';
+    const getRes = await fetch(apiUrl, { 
+      headers: { 'Authorization': 'token '+token },
+      cache: 'no-store' 
+    });
+    
+    let fileSHA = null;
+    if (getRes.ok) {
+      const fileData = await getRes.json();
+      fileSHA = fileData.sha;
+    }
+
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
+    var body = { message: 'Update status toko: ' + (status? 'BUKA' : 'TUTUP'), content: content };
+    if(fileSHA) body.sha = fileSHA;
+
+    const updateRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { 'Authorization': 'token '+token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (updateRes.ok) {
+      notif(status? '✅ Toko BUKA! Vercel update 20 detik' : '✅ Toko TUTUP! Vercel update 20 detik');
+    } else {
+      throw new Error('Gagal update GitHub');
+    }
+  } catch(e) { 
+    console.log(e);
+    notif('❌ Gagal update status: ' + e.message, false);
+  }
 }
 
 function loadData() {
