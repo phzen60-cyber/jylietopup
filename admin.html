@@ -23,7 +23,6 @@
 .edit-harga:focus{background:#334155;border-radius:6px;border-bottom:1px solid #22d3ee}
 .bar{height:8px;background:#334155;border-radius:4px;overflow:hidden}
 .bar-fill{height:100%;background:linear-gradient(90deg,#22d3ee 0%,#3b82f6 100%)}
-.badge{padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700}
     </style>
 </head>
 <body>
@@ -148,6 +147,8 @@
     </div>
 
 <script>
+// ANTI-MATI: SEMUA DIBUNGKUS TRY-CATCH
+try {
 var CONFIG = { USER: "ownerjylie", PASS: "jylie547" };
 var db = { username_tele: '', nomor_wa: '', toko_buka: true, games: [] };
 var ALL_ORDERS = [];
@@ -155,18 +156,22 @@ var CURRENT_FILTER = 'all';
 var LAST_ORDER_COUNT = 0;
 
 document.getElementById('btnLogin').onclick = function() {
-  var user = document.getElementById('user').value.trim().toLowerCase();
-  var pass = document.getElementById('pass').value.trim();
-  var msg = document.getElementById('loginMsg');
-  if(user === CONFIG.USER && pass === CONFIG.PASS) {
-    document.getElementById('loginBox').style.display = 'none';
-    document.getElementById('adminBox').style.display = 'block';
-    loadData();
-    loadLocalSettings();
-    setTimeout(loadOrders, 1000);
-    setInterval(cekOrderBaru, 15000); // Cek order baru tiap 15 detik
-  } else {
-    msg.innerHTML = 'Username/Password salah!';
+  try {
+    var user = document.getElementById('user').value.trim().toLowerCase();
+    var pass = document.getElementById('pass').value.trim();
+    var msg = document.getElementById('loginMsg');
+    if(user === CONFIG.USER && pass === CONFIG.PASS) {
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('adminBox').style.display = 'block';
+      loadData(); // Ini kalo error, di-catch di dalem
+      loadLocalSettings();
+      setTimeout(function(){ try { loadOrders(); } catch(e){} }, 1000);
+      setInterval(function(){ try { cekOrderBaru(); } catch(e){} }, 15000);
+    } else {
+      msg.innerHTML = 'Username/Password salah!';
+    }
+  } catch(e) {
+    document.getElementById('loginMsg').innerHTML = 'Error: ' + e.message;
   }
 };
 
@@ -188,198 +193,209 @@ document.getElementById('filterSelesai').onclick = function() { filterOrder('Sel
 document.getElementById('btnSimpan').onclick = simpanSemua;
 
 function notif(msg, sukses) {
-  var el = document.getElementById('notif');
-  el.style.color = sukses===false? '#f87171' : '#4ade80';
-  el.innerHTML = msg;
-  setTimeout(function(){ el.innerHTML = '' }, 3000);
+  try {
+    var el = document.getElementById('notif');
+    el.style.color = sukses===false? '#f87171' : '#4ade80';
+    el.innerHTML = msg;
+    setTimeout(function(){ el.innerHTML = '' }, 3000);
+  } catch(e) {}
 }
 
 function loadLocalSettings() {
-  document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
-  document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
-  document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
-  document.getElementById('nomor-wa').value = localStorage.getItem('nomor_wa') || '';
+  try {
+    document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+    document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
+    document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+    document.getElementById('nomor-wa').value = localStorage.getItem('nomor_wa') || '';
+  } catch(e) {}
 }
 
 function setToko(status) {
-  db.toko_buka = status;
-  document.getElementById('btn-buka').style.background = status? '#16a34a' : '#475569';
-  document.getElementById('btn-tutup').style.background =!status? '#dc2626' : '#475569';
-  notif(status? 'Toko dibuka' : 'Toko ditutup');
+  try {
+    db.toko_buka = status;
+    document.getElementById('btn-buka').style.background = status? '#16a34a' : '#475569';
+    document.getElementById('btn-tutup').style.background =!status? '#dc2626' : '#475569';
+    notif(status? 'Toko dibuka' : 'Toko ditutup');
+  } catch(e) {}
 }
 
+// FIX UTAMA: FETCH ERROR GA BIKIN SCRIPT MATI
 function loadData() {
-  fetch('db.json?' + Date.now()).then(function(res){
-    return res.json();
-  }).then(function(data){
-    db = data;
-    document.getElementById('username-tele').value = db.username_tele || '';
-    document.getElementById('nomor-wa').value = db.nomor_wa || '';
-    setToko(db.toko_buka!== false);
-    renderProduk();
-  }).catch(function(e){
-    db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
-    notif('Gagal load db.json, bikin baru', false);
-    setToko(true);
-    renderProduk();
-  });
-}
-
-// FITUR 2: EDIT HARGA LANGSUNG + AUTO SAVE
-function renderProduk() {
-  var wrap = document.getElementById('produkList');
-  wrap.innerHTML = '';
-  if (db.games.length === 0) {
-    wrap.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:32px 0">Belum ada game. Tambah di atas.</p>';
-    return;
-  }
-  for(var i=0;i<db.games.length;i++){
-    var game = db.games[i];
-    var html = '<div style="background:#334155;border:1px solid #475569;border-radius:12px;padding:16px;margin-bottom:16px">'+
-      '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">'+
-        '<div style="display:flex;align-items:center;gap:16px">'+
-          '<img src="'+game.icon+'" style="width:56px;height:56px;border-radius:12px;object-fit:cover;background:#475569">'+
-          '<div>'+
-            '<input value="'+game.name+'" onchange="updateGame('+i+',\'name\',this.value)" style="font-weight:700;background:transparent;color:#fff;font-size:18px;border:0;outline:none">'+
-            '<p style="color:#94a3b8;font-size:12px;margin-top:4px">ID: '+game.id+'</p>'+
-          '</div>'+
-        '</div>'+
-        '<button type="button" onclick="hapusGame('+i+')" style="background:#ef4444;color:#fff;padding:8px 12px;border-radius:8px">Hapus</button>'+
-      '</div>'+
-      '<input value="'+game.icon+'" onchange="updateGame('+i+',\'icon\',this.value)" class="input" placeholder="Link Logo Game">'+
-      '<div id="nominal-'+i+'" style="margin:16px 0"></div>'+
-      '<button type="button" onclick="tambahNominal('+i+')" class="btn-gray" style="width:100%">+ Tambah Nominal</button>'+
-    '</div>';
-    wrap.innerHTML += html;
-
-    var nominalWrap = document.getElementById('nominal-'+i);
-    for(var j=0;j<game.products.length;j++){
-      var item = game.products[j];
-      var profit = (item.harga || 0) - (item.harga_asli || 0);
-      nominalWrap.innerHTML += '<div style="background:#1e293b;border:1px solid #475569;border-radius:8px;padding:12px;margin-bottom:8px">'+
-        '<div style="display:flex;gap:8px;margin-bottom:8px">'+
-          '<input value="'+item.name+'" onchange="updateNominal('+i+','+j+',\'name\',this.value)" class="input" style="flex:1;margin:0" placeholder="Nama Item">'+
-          '<button type="button" onclick="hapusNominal('+i+','+j+')" style="background:#ef4444;color:#fff;padding:12px;border-radius:8px">X</button>'+
-        '</div>'+
-        '<div class="grid3">'+
-          '<div><label style="color:#94a3b8;font-size:12px">Harga Jual</label><input value="'+item.harga+'" type="number" class="edit-harga" onblur="autoSaveHarga('+i+','+j+',\'harga\',this.value)" placeholder="Klik buat edit"></div>'+
-          '<div><label style="color:#94a3b8;font-size:12px">Harga Asli</label><input value="'+(item.harga_asli||'')+'" type="number" class="edit-harga" onblur="autoSaveHarga('+i+','+j+',\'harga_asli\',this.value)" placeholder="Modal lu"></div>'+
-          '<div><label style="color:#94a3b8;font-size:12px">Profit</label><div style="padding:4px;color:#4ade80;font-weight:700;font-size:16px">Rp '+profit.toLocaleString('id-ID')+'</div></div>'+
-        '</div>'+
-      '</div>';
-    }
-  }
-}
-
-// FITUR 2: AUTO SAVE PAS EDIT HARGA
-function autoSaveHarga(i, j, field, val) {
-  val = parseInt(val) || 0;
-  if (field === 'harga_asli' && val === 0) {
-    delete db.games[i].products[j].harga_asli;
-  } else {
-    db.games[i].products[j][field] = val;
-  }
-  renderProduk(); // Update tampilan profit
-  notif('Harga auto-save. Upload ke GitHub...');
-  simpanSemuaAuto();
-}
-
-function simpanSemuaAuto() {
-  var token = document.getElementById('gh-token').value;
-  var user = document.getElementById('gh-user').value;
-  var repo = document.getElementById('gh-repo').value;
-  if (!token ||!user ||!repo) return;
-
-  db.username_tele = document.getElementById('username-tele').value;
-  db.nomor_wa = document.getElementById('nomor-wa').value;
-  localStorage.setItem('nomor_wa', db.nomor_wa);
-
-  var content = btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
-  var apiUrl = 'https://api.github.com/repos/'+user+'/'+repo+'/contents/db.json';
-
-  fetch(apiUrl, { headers: { 'Authorization': 'token '+token } }).then(function(getRes){
-    return getRes.ok? getRes.json() : null;
-  }).then(function(fileData){
-    var body = { message: 'Auto update harga dari Admin Panel', content: content };
-    if(fileData && fileData.sha) body.sha = fileData.sha;
-    return fetch(apiUrl, {
-      method: 'PUT',
-      headers: { 'Authorization': 'token '+token, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+  try {
+    fetch('db.json?' + Date.now()).then(function(res){
+      if(!res.ok) throw new Error('db.json ga ada');
+      return res.json();
+    }).then(function(data){
+      db = data;
+      document.getElementById('username-tele').value = db.username_tele || '';
+      document.getElementById('nomor-wa').value = db.nomor_wa || '';
+      setToko(db.toko_buka!== false);
+      renderProduk();
+    }).catch(function(e){
+      // ERROR DI-CATCH, SCRIPT GA MATI
+      db = { username_tele: 'jyliestoreid', nomor_wa: '', toko_buka: true, games: [] };
+      notif('db.json belum ada, pake data kosong', false);
+      setToko(true);
+      renderProduk();
     });
-  }).then(function(updateRes){
-    if (updateRes.ok) {
-      notif('✅ Harga ke-save ke GitHub!');
+  } catch(e) {
+    // JAGA-JAGA KALO FETCH AJA ERROR
+    renderProduk();
+  }
+}
+
+function renderProduk() {
+  try {
+    var wrap = document.getElementById('produkList');
+    wrap.innerHTML = '';
+    if (db.games.length === 0) {
+      wrap.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:32px 0">Belum ada game. Tambah di atas.</p>';
+      return;
     }
-  }).catch(function(error){
-    notif('❌ Gagal auto-save', false);
-  });
+    for(var i=0;i<db.games.length;i++){
+      var game = db.games[i];
+      var html = '<div style="background:#334155;border:1px solid #475569;border-radius:12px;padding:16px;margin-bottom:16px">'+
+        '<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:16px">'+
+          '<div style="display:flex;align-items:center;gap:16px">'+
+            '<img src="'+game.icon+'" style="width:56px;height:56px;border-radius:12px;object-fit:cover;background:#475569">'+
+            '<div>'+
+              '<input value="'+game.name+'" onchange="updateGame('+i+',\'name\',this.value)" style="font-weight:700;background:transparent;color:#fff;font-size:18px;border:0;outline:none">'+
+              '<p style="color:#94a3b8;font-size:12px;margin-top:4px">ID: '+game.id+'</p>'+
+            '</div>'+
+          '</div>'+
+          '<button type="button" onclick="hapusGame('+i+')" style="background:#ef4444;color:#fff;padding:8px 12px;border-radius:8px">Hapus</button>'+
+        '</div>'+
+        '<input value="'+game.icon+'" onchange="updateGame('+i+',\'icon\',this.value)" class="input" placeholder="Link Logo Game">'+
+        '<div id="nominal-'+i+'" style="margin:16px 0"></div>'+
+        '<button type="button" onclick="tambahNominal('+i+')" class="btn-gray" style="width:100%">+ Tambah Nominal</button>'+
+      '</div>';
+      wrap.innerHTML += html;
+
+      var nominalWrap = document.getElementById('nominal-'+i);
+      for(var j=0;j<game.products.length;j++){
+        var item = game.products[j];
+        var profit = (item.harga || 0) - (item.harga_asli || 0);
+        nominalWrap.innerHTML += '<div style="background:#1e293b;border:1px solid #475569;border-radius:8px;padding:12px;margin-bottom:8px">'+
+          '<div style="display:flex;gap:8px;margin-bottom:8px">'+
+            '<input value="'+item.name+'" onchange="updateNominal('+i+','+j+',\'name\',this.value)" class="input" style="flex:1;margin:0" placeholder="Nama Item">'+
+            '<button type="button" onclick="hapusNominal('+i+','+j+')" style="background:#ef4444;color:#fff;padding:12px;border-radius:8px">X</button>'+
+          '</div>'+
+          '<div class="grid3">'+
+            '<div><label style="color:#94a3b8;font-size:12px">Harga Jual</label><input value="'+item.harga+'" type="number" class="edit-harga" onblur="autoSaveHarga('+i+','+j+',\'harga\',this.value)" placeholder="Klik buat edit"></div>'+
+            '<div><label style="color:#94a3b8;font-size:12px">Harga Asli</label><input value="'+(item.harga_asli||'')+'" type="number" class="edit-harga" onblur="autoSaveHarga('+i+','+j+',\'harga_asli\',this.value)" placeholder="Modal lu"></div>'+
+            '<div><label style="color:#94a3b8;font-size:12px">Profit</label><div style="padding:4px;color:#4ade80;font-weight:700;font-size:16px">Rp '+profit.toLocaleString('id-ID')+'</div></div>'+
+          '</div>'+
+        '</div>';
+      }
+    }
+  } catch(e) {}
 }
 
-function tambahGame() {
-  var id = document.getElementById('newGameId').value.trim().toLowerCase().replace(/\s+/g, '');
-  var name = document.getElementById('newGameName').value.trim();
-  var icon = document.getElementById('newGameLogo').value.trim();
-  if(!id ||!name ||!icon) return notif('ID, Nama & Logo wajib diisi', false);
-  for(var i=0;i<db.games.length;i++){ if(db.games[i].id === id) return notif('ID Game udah ada', false); }
-  db.games.push({ id:id, name:name, icon:icon, products: [] });
-  document.getElementById('newGameId').value = '';
-  document.getElementById('newGameName').value = '';
-  document.getElementById('newGameLogo').value = '';
-  renderProduk();
-  notif('Game ditambah. Jangan lupa Simpan!');
-}
-
-function hapusGame(i) {
-  if(!confirm('Hapus game '+db.games[i].name+'?')) return;
-  db.games.splice(i, 1);
-  renderProduk();
-  notif('Game dihapus. Jangan lupa Simpan!');
-}
-
-function tambahNominal(i) {
-  db.games[i].products.push({ id: 'item_' + Date.now(), name: "Item Baru", harga: 10000, harga_asli: 8000 });
-  renderProduk();
-  notif('Nominal ditambah');
-}
-
-function hapusNominal(i, j) {
-  db.games[i].products.splice(j, 1);
-  renderProduk();
-  notif('Nominal dihapus');
-}
-
-function updateGame(i, field, val) { db.games[i][field] = val; }
-function updateNominal(i, j, field, val) {
-  if (field === 'harga' || field === 'harga_asli') {
+function autoSaveHarga(i, j, field, val) {
+  try {
     val = parseInt(val) || 0;
     if (field === 'harga_asli' && val === 0) {
       delete db.games[i].products[j].harga_asli;
-      return;
+    } else {
+      db.games[i].products[j][field] = val;
     }
-  }
-  db.games[i].products[j][field] = val;
+    renderProduk();
+    notif('Harga auto-save...');
+    simpanSemuaAuto();
+  } catch(e) {}
+}
+
+function simpanSemuaAuto() {
+  try {
+    var token = document.getElementById('gh-token').value;
+    var user = document.getElementById('gh-user').value;
+    var repo = document.getElementById('gh-repo').value;
+    if (!token ||!user ||!repo) return;
+
+    db.username_tele = document.getElementById('username-tele').value;
+    db.nomor_wa = document.getElementById('nomor-wa').value;
+    localStorage.setItem('nomor_wa', db.nomor_wa);
+
+    var content = btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
+    var apiUrl = 'https://api.github.com/repos/'+user+'/'+repo+'/contents/db.json';
+
+    fetch(apiUrl, { headers: { 'Authorization': 'token '+token } }).then(function(getRes){
+      return getRes.ok? getRes.json() : null;
+    }).then(function(fileData){
+      var body = { message: 'Auto update harga', content: content };
+      if(fileData && fileData.sha) body.sha = fileData.sha;
+      return fetch(apiUrl, {
+        method: 'PUT',
+        headers: { 'Authorization': 'token '+token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+    }).then(function(updateRes){
+      if (updateRes.ok) notif('✅ Harga ke-save!');
+    }).catch(function(error){});
+  } catch(e) {}
+}
+
+function tambahGame() {
+  try {
+    var id = document.getElementById('newGameId').value.trim().toLowerCase().replace(/\s+/g, '');
+    var name = document.getElementById('newGameName').value.trim();
+    var icon = document.getElementById('newGameLogo').value.trim();
+    if(!id ||!name ||!icon) return notif('ID, Nama & Logo wajib diisi', false);
+    for(var i=0;i<db.games.length;i++){ if(db.games[i].id === id) return notif('ID Game udah ada', false); }
+    db.games.push({ id:id, name:name, icon:icon, products: [] });
+    document.getElementById('newGameId').value = '';
+    document.getElementById('newGameName').value = '';
+    document.getElementById('newGameLogo').value = '';
+    renderProduk();
+    notif('Game ditambah. Jangan lupa Simpan!');
+  } catch(e) {}
+}
+
+function hapusGame(i) {
+  try {
+    if(!confirm('Hapus game '+db.games[i].name+'?')) return;
+    db.games.splice(i, 1);
+    renderProduk();
+    notif('Game dihapus. Jangan lupa Simpan!');
+  } catch(e) {}
+}
+
+function tambahNominal(i) {
+  try {
+    db.games[i].products.push({ id: 'item_' + Date.now(), name: "Item Baru", harga: 10000, harga_asli: 8000 });
+    renderProduk();
+    notif('Nominal ditambah');
+  } catch(e) {}
+}
+
+function hapusNominal(i, j) {
+  try {
+    db.games[i].products.splice(j, 1);
+    renderProduk();
+    notif('Nominal dihapus');
+  } catch(e) {}
+}
+
+function updateGame(i, field, val) { try { db.games[i][field] = val; } catch(e) {} }
+function updateNominal(i, j, field, val) {
+  try {
+    if (field === 'harga' || field === 'harga_asli') {
+      val = parseInt(val) || 0;
+      if (field === 'harga_asli' && val === 0) {
+        delete db.games[i].products[j].harga_asli;
+        return;
+      }
+    }
+    db.games[i].products[j][field] = val;
+  } catch(e) {}
 }
 
 function simpanSemua() {
-  var token = document.getElementById('gh-token').value;
-  var user = document.getElementById('gh-user').value;
-  var repo = document.getElementById('gh-repo').value;
-  if (!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
-  localStorage.setItem('gh_token', token);
-  localStorage.setItem('gh_user', user);
-  localStorage.setItem('gh_repo', repo);
-  localStorage.setItem('nomor_wa', document.getElementById('nomor-wa').value);
-  notif('Menyimpan ke GitHub...');
-  db.username_tele = document.getElementById('username-tele').value;
-  db.nomor_wa = document.getElementById('nomor-wa').value;
-
-  var content = btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
-  var apiUrl = 'https://api.github.com/repos/'+user+'/'+repo+'/contents/db.json';
-
-  fetch(apiUrl, { headers: { 'Authorization': 'token '+token } }).then(function(getRes){
-    return getRes.ok? getRes.json() : null;
-  }).then(function(fileData){
-    var body = { message: 'Update db.json dari Admin Panel', content: content };
-    if(fileData && fileData.sha) body.sha = fileData.sha;
-    return fetch(ap
+  try {
+    var token = document.getElementById('gh-token').value;
+    var user = document.getElementById('gh-user').value;
+    var repo = document.getElementById('gh-repo').value;
+    if (!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
+    localStorage.setItem('gh_token', token);
+    localStorage.setItem('gh_user', user);
+    localStora
