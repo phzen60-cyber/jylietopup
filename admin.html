@@ -1,339 +1,331 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Admin Panel - Jylie Topup</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Admin JylieTopup</title>
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-body { font-family: 'Poppins', sans-serif; touch-action: manipulation; }
-* { -webkit-tap-highlight-color: transparent; }
-.admin-btn { transition: 0.2s; cursor: pointer; }
-.admin-btn:active { transform: scale(0.96); }
-.admin-input { background: #1e293b; border: 1px solid #334155; }
-.admin-input:focus { outline: 2px solid #06b6d4; border-color: #06b6d4; }
-.notif-sukses { color: #4ade80; }
-.notif-gagal { color: #f87171; }
-.sidebar-link { transition:.2s; cursor:pointer; user-select:none; }
-.sidebar-link:active { background: #334155; }
-.sidebar-link.active { background: #1e293b; border-left: 3px solid #06b6d4; }
-#sidebar { transform: translateX(-100%); transition: transform 0.3s; }
-#sidebar.open { transform: translateX(0); }
-@media (min-width: 768px) { #sidebar { transform: translateX(0); } }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#0f172a;color:#e2e8f0;font-family:sans-serif;touch-action:manipulation}
+button{cursor:pointer;border:0;font-family:inherit}
+.login{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:16px}
+.box{background:#1e293b;padding:24px;border-radius:12px;width:100%;max-width:360px;border:1px solid #334155}
+.input{width:100%;padding:12px;margin:8px 0;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#fff}
+.btn{width:100%;padding:12px;background:#06b6d4;color:#0f172a;font-weight:bold;border-radius:8px;margin-top:8px}
+.btn:active{background:#0891b2;transform:scale(.96)}
+.admin{display:none}
+.header{background:#1e293b;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155}
+.nav{display:flex;gap:8px;padding:16px;overflow-x:auto}
+.nav button{padding:10px 16px;background:#334155;border-radius:8px;white-space:nowrap;color:#e2e8f0}
+.nav button.active{background:#06b6d4;color:#0f172a;font-weight:bold}
+.page{padding:0 16px 16px;display:none}
+.page.show{display:block}
+.card{background:#1e293b;padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid #334155}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.stat{background:#1e293b;padding:16px;border-radius:12px;border:1px solid #334155}
+.stat p{font-size:12px;color:#94a3b8;margin-bottom:4px}
+.stat b{font-size:20px}
+.green{color:#4ade80}.yellow{color:#facc15}.cyan{color:#22d3ee}.red{color:#f87171}
+.btn2{flex:1;padding:12px;border-radius:8px;font-weight:bold;color:#fff}
+.buka{background:#16a34a}.tutup{background:#475569}
+.err{color:#f87171;text-align:center;margin-top:8px;font-size:14px}
+.sidebar{position:fixed;left:-100%;top:0;width:256px;height:100%;background:#1e293b;border-right:1px solid #334155;transition:.3s;z-index:50;padding:16px}
+.sidebar.open{left:0}
+.overlay{position:fixed;inset:0;background:#0008;z-index:40;display:none}
+.overlay.show{display:block}
+@media(min-width:768px){.sidebar{left:0}.main{margin-left:256px}.mob{display:none}}
 </style>
 </head>
-<body class="bg-slate-950 text-slate-200">
+<body>
 
-<!-- LOGIN -->
-<div id="loginBox" class="min-h-screen flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 w-full max-w-sm">
-        <div class="flex items-center justify-center gap-2 mb-6">
-            <i class="ri-flashlight-fill text-3xl text-cyan-400"></i>
-            <h1 class="text-2xl font-bold">Admin JylieTopup</h1>
-        </div>
-        <form onsubmit="return false">
-            <input id="user" type="text" placeholder="Username" class="w-full admin-input p-3 rounded-lg mb-3">
-            <input id="pass" type="password" placeholder="Password" class="w-full admin-input p-3 rounded-lg mb-3">
-            <button type="button" onclick="login()" class="w-full bg-cyan-500 active:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold admin-btn">Login</button>
-        </form>
-        <p id="loginMsg" class="text-red-400 text-sm mt-3 text-center"></p>
-    </div>
+<div id="login" class="login">
+  <div class="box">
+    <h1 style="text-align:center;margin-bottom:24px;font-size:24px"><i class="ri-flashlight-fill" style="color:#06b6d4"></i> Admin Jylie</h1>
+    <input id="u" class="input" placeholder="Username">
+    <input id="p" type="password" class="input" placeholder="Password">
+    <button type="button" onclick="masuk()" class="btn">LOGIN</button>
+    <p id="err" class="err"></p>
+  </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="adminBox" class="hidden">
-    <!-- OVERLAY HP -->
-    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+<div id="admin" class="admin">
+  <div id="overlay" class="overlay" onclick="toggle()"></div>
 
-    <div class="flex min-h-screen">
-        <!-- SIDEBAR -->
-        <div id="sidebar" class="w-64 bg-slate-900 border-r border-slate-800 p-4 fixed h-full z-50">
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center gap-3">
-                    <i class="ri-flashlight-fill text-2xl text-cyan-400"></i>
-                    <span class="text-lg font-bold">JylieTopup</span>
-                </div>
-                <button type="button" onclick="toggleSidebar()" class="md:hidden text-2xl"><i class="ri-close-line"></i></button>
-            </div>
-            <nav class="space-y-1">
-                <div onclick="gantiPage('dashboard', this); toggleSidebar();" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <i class="ri-dashboard-line text-xl"></i> Dashboard
-                </div>
-                <div onclick="gantiPage('pesanan', this); toggleSidebar();" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <i class="ri-shopping-bag-3-line text-xl"></i> Pesanan
-                </div>
-                <div onclick="gantiPage('produk', this); toggleSidebar();" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <i class="ri-gamepad-line text-xl"></i> Produk
-                </div>
-                <div onclick="gantiPage('setting', this); toggleSidebar();" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
-                    <i class="ri-settings-3-line text-xl"></i> Setting
-                </div>
-            </nav>
-            <button type="button" onclick="logout()" class="absolute bottom-4 left-4 right-4 bg-red-500/20 active:bg-red-500/30 text-red-400 py-2 rounded-lg text-sm admin-btn">
-                <i class="ri-logout-box-r-line"></i> Logout
-            </button>
-        </div>
-
-        <!-- MAIN -->
-        <div class="flex-1 md:ml-64 p-4 md:p-6">
-            <!-- TOPBAR HP -->
-            <div class="flex justify-between items-center mb-6 md:hidden">
-                <button type="button" onclick="toggleSidebar()" class="text-2xl p-2"><i class="ri-menu-line"></i></button>
-                <h1 class="text-xl font-bold" id="pageTitleMobile">Dashboard</h1>
-                <img src="https://i.pravatar.cc/32" class="w-8 h-8 rounded-full">
-            </div>
-
-            <div class="hidden md:flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-bold" id="pageTitle">Dashboard</h1>
-                <div class="flex items-center gap-3">
-                    <span class="text-sm text-slate-400">Admin</span>
-                    <img src="https://i.pravatar.cc/36" class="w-9 h-9 rounded-full">
-                </div>
-            </div>
-
-            <!-- PAGE: DASHBOARD -->
-            <div id="page-dashboard" class="page">
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
-                    <div class="bg-gradient-to-br from-green-500/20 to-slate-900 border border-slate-800 rounded-xl p-4 md:p-5">
-                        <div class="flex justify-between items-center mb-2 md:mb-3">
-                            <p class="text-xs md:text-sm text-slate-400">Pendapatan Hari Ini</p>
-                            <i class="ri-money-dollar-circle-line text-xl md:text-2xl text-green-500"></i>
-                        </div>
-                        <p class="text-lg md:text-2xl font-bold" id="todayIncome">Rp 0</p>
-                        <span class="text-xs text-green-500"><i class="ri-arrow-up-line"></i> Update realtime</span>
-                    </div>
-                    <div class="bg-gradient-to-br from-cyan-500/20 to-slate-900 border border-slate-800 rounded-xl p-4 md:p-5">
-                        <div class="flex justify-between items-center mb-2 md:mb-3">
-                            <p class="text-xs md:text-sm text-slate-400">Total Pesanan</p>
-                            <i class="ri-shopping-cart-2-line text-xl md:text-2xl text-cyan-500"></i>
-                        </div>
-                        <p class="text-lg md:text-2xl font-bold" id="totalOrder">0</p>
-                        <span class="text-xs text-cyan-500">Semua order</span>
-                    </div>
-                    <div class="bg-gradient-to-br from-yellow-500/20 to-slate-900 border border-slate-800 rounded-xl p-4 md:p-5">
-                        <div class="flex justify-between items-center mb-2 md:mb-3">
-                            <p class="text-xs md:text-sm text-slate-400">Order Pending</p>
-                            <i class="ri-time-line text-xl md:text-2xl text-yellow-500"></i>
-                        </div>
-                        <p class="text-lg md:text-2xl font-bold" id="pendingOrder">0</p>
-                        <span class="text-xs text-yellow-500">Butuh diproses</span>
-                    </div>
-                    <div class="bg-gradient-to-br from-purple-500/20 to-slate-900 border border-slate-800 rounded-xl p-4 md:p-5">
-                        <div class="flex justify-between items-center mb-2 md:mb-3">
-                            <p class="text-xs md:text-sm text-slate-400">Status Toko</p>
-                            <i class="ri-store-2-line text-xl md:text-2xl text-purple-500"></i>
-                        </div>
-                        <p class="text-lg md:text-2xl font-bold" id="statusToko">-</p>
-                        <span class="text-xs text-slate-400">Atur di Setting</span>
-                    </div>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <h2 class="text-lg font-bold mb-4">Pesanan Terbaru</h2>
-                    <div id="recentOrders" class="space-y-2">
-                        <p class="text-slate-500 text-center py-8">Belum ada data</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PAGE: PESANAN -->
-            <div id="page-pesanan" class="page hidden">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-lg font-bold">Kelola Order Masuk</h2>
-                        <button type="button" onclick="loadOrders()" class="bg-slate-800 active:bg-slate-700 px-4 py-2 rounded-lg text-sm admin-btn">
-                            <i class="ri-refresh-line"></i> Refresh
-                        </button>
-                    </div>
-                    <div class="flex gap-2 mb-4 overflow-x-auto">
-                        <button type="button" onclick="filterOrder('all', event)" class="filter-btn bg-cyan-500 px-3 py-1.5 rounded-lg text-xs font-bold admin-btn whitespace-nowrap">Semua</button>
-                        <button type="button" onclick="filterOrder('Diproses', event)" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn whitespace-nowrap">Diproses</button>
-                        <button type="button" onclick="filterOrder('Selesai', event)" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn whitespace-nowrap">Selesai</button>
-                    </div>
-                    <div id="order-list" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
-                        <p class="text-slate-500 text-center py-8">Klik Refresh buat load order</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PAGE: PRODUK -->
-            <div id="page-produk" class="page hidden">
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-4">
-                    <h2 class="text-lg font-bold mb-4">Tambah Game Baru</h2>
-                    <div class="grid grid-cols-1 gap-3">
-                        <input id="newGameId" type="text" placeholder="ID: freefire" class="admin-input p-3 rounded-lg">
-                        <input id="newGameName" type="text" placeholder="Nama: Free Fire" class="admin-input p-3 rounded-lg">
-                        <input id="newGameLogo" type="text" placeholder="Link Logo" class="admin-input p-3 rounded-lg">
-                    </div>
-                    <button type="button" onclick="tambahGame()" class="w-full mt-3 bg-cyan-500 active:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold admin-btn">+ Tambah Game</button>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                    <h2 class="text-lg font-bold mb-4">List Game & Produk</h2>
-                    <div id="produkList" class="space-y-4">Loading...</div>
-                </div>
-            </div>
-
-            <!-- PAGE: SETTING -->
-            <div id="page-setting" class="page hidden">
-                <div class="bg-slate-900 border border-yellow-500/50 rounded-xl p-5 mb-4">
-                    <h2 class="text-lg font-bold mb-4 border-l-4 border-yellow-400 pl-3">Setting GitHub - WAJIB ISI</h2>
-                    <input id="gh-token" type="password" placeholder="GitHub Token: ghp_xxx" class="w-full admin-input p-3 rounded-lg mb-2">
-                    <input id="gh-user" type="text" placeholder="Username: phzen60-cyber" class="w-full admin-input p-3 rounded-lg mb-2">
-                    <input id="gh-repo" type="text" placeholder="Repo: jylietopup" class="w-full admin-input p-3 rounded-lg mb-2">
-                    <p class="text-xs text-slate-400">Token disimpan di browser lu doang. Aman.</p>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-4">
-                    <h2 class="text-lg font-bold mb-4 border-l-4 border-cyan-400 pl-3">Setting Umum</h2>
-                    <label class="block mb-2 text-sm font-semibold">Status Toko</label>
-                    <div class="flex gap-3 mb-4">
-                        <button type="button" onclick="setToko(true)" id="btn-buka" class="flex-1 bg-slate-800 active:bg-green-700 py-3 rounded-lg font-bold admin-btn">🟢 BUKA</button>
-                        <button type="button" onclick="setToko(false)" id="btn-tutup" class="flex-1 bg-slate-800 active:bg-red-700 py-3 rounded-lg font-bold admin-btn">🔴 TUTUP</button>
-                    </div>
-                    <label class="block mb-2 text-sm font-semibold">Username Telegram CS</label>
-                    <input id="username-tele" type="text" placeholder="jyliestoreid" class="w-full admin-input p-3 rounded-lg">
-                </div>
-                <button type="button" onclick="simpanSemua()" class="w-full bg-green-500 active:bg-green-600 py-4 rounded-lg font-bold text-lg admin-btn">🔒 Simpan Semua Perubahan ke GitHub</button>
-                <p id="notif" class="text-center text-sm mt-3 hidden"></p>
-            </div>
-        </div>
+  <div id="sidebar" class="sidebar">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px">
+      <b style="font-size:18px"><i class="ri-flashlight-fill" style="color:#06b6d4"></i> JylieTopup</b>
+      <button type="button" onclick="toggle()" class="mob" style="font-size:24px;background:0;color:#fff">×</button>
     </div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <button type="button" onclick="hal('dash',this)" class="navbtn active" style="padding:12px;background:#0f172a;border-radius:8px;text-align:left;border-left:3px solid #06b6d4"><i class="ri-dashboard-line"></i> Dashboard</button>
+      <button type="button" onclick="hal('order',this)" class="navbtn" style="padding:12px;background:0;border-radius:8px;text-align:left;color:#e2e8f0"><i class="ri-shopping-bag-3-line"></i> Pesanan</button>
+      <button type="button" onclick="hal('produk',this)" class="navbtn" style="padding:12px;background:0;border-radius:8px;text-align:left;color:#e2e8f0"><i class="ri-gamepad-line"></i> Produk</button>
+      <button type="button" onclick="hal('set',this)" class="navbtn" style="padding:12px;background:0;border-radius:8px;text-align:left;color:#e2e8f0"><i class="ri-settings-3-line"></i> Setting</button>
+    </div>
+    <button type="button" onclick="keluar()" style="position:absolute;bottom:16px;left:16px;right:16px;background:#ef444420;color:#f87171;padding:10px;border-radius:8px"><i class="ri-logout-box-r-line"></i> Logout</button>
+  </div>
+
+  <div class="main">
+    <div class="header">
+      <button type="button" onclick="toggle()" class="mob" style="font-size:24px;background:0;color:#fff">☰</button>
+      <b id="title">Dashboard</b>
+      <img src="https://i.pravatar.cc/32" style="width:32px;height:32px;border-radius:50%">
+    </div>
+
+    <div class="nav">
+      <button type="button" onclick="hal('dash',this)" class="active">Dashboard</button>
+      <button type="button" onclick="hal('order',this)">Pesanan</button>
+      <button type="button" onclick="hal('produk',this)">Produk</button>
+      <button type="button" onclick="hal('set',this)">Setting</button>
+    </div>
+
+    <div id="dash" class="page show">
+      <div class="grid">
+        <div class="stat"><p>Pendapatan Hari Ini</p><b class="green" id="duit">Rp 0</b></div>
+        <div class="stat"><p>Total Pesanan</p><b class="cyan" id="total">0</b></div>
+        <div class="stat"><p>Order Pending</p><b class="yellow" id="pending">0</b></div>
+        <div class="stat"><p>Status Toko</p><b id="sttoko">-</b></div>
+      </div>
+      <div class="card"><b>Pesanan Terbaru</b><div id="recent" style="margin-top:12px;color:#64748b">Belum ada data</div></div>
+    </div>
+
+    <div id="order" class="page">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <b>Kelola Order</b>
+          <button type="button" onclick="loadOrder()" style="background:#334155;padding:8px 12px;border-radius:8px;color:#fff">🔄 Refresh</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;overflow-x:auto">
+          <button type="button" onclick="filterO('all',this)" class="fbtn" style="background:#06b6d4;color:#0f172a;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:bold">Semua</button>
+          <button type="button" onclick="filterO('Diproses',this)" class="fbtn" style="background:#334155;padding:6px 12px;border-radius:8px;font-size:12px;color:#fff">Diproses</button>
+          <button type="button" onclick="filterO('Selesai',this)" class="fbtn" style="background:#334155;padding:6px 12px;border-radius:8px;font-size:12px;color:#fff">Selesai</button>
+        </div>
+        <div id="listorder" style="color:#64748b">Klik Refresh buat load order</div>
+      </div>
+    </div>
+
+    <div id="produk" class="page">
+      <div class="card">
+        <b>Tambah Game</b>
+        <input id="gid" class="input" placeholder="ID: freefire">
+        <input id="gname" class="input" placeholder="Nama: Free Fire">
+        <input id="gicon" class="input" placeholder="Link Logo">
+        <button type="button" onclick="addGame()" class="btn">+ Tambah Game</button>
+      </div>
+      <div class="card"><b>List Game</b><div id="listgame" style="margin-top:12px;color:#64748b">Belum ada game</div></div>
+    </div>
+
+    <div id="set" class="page">
+      <div class="card" style="border:2px solid #eab308">
+        <b>Setting GitHub - WAJIB ISI</b>
+        <input id="gtoken" type="password" class="input" placeholder="Token: ghp_xxx">
+        <input id="guser" class="input" placeholder="Username: phzen60-cyber">
+        <input id="grepo" class="input" placeholder="Repo: jylietopup">
+      </div>
+      <div class="card">
+        <b>Setting Umum</b>
+        <p style="font-size:14px;margin:12px 0 8px">Status Toko</p>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button type="button" onclick="setToko(1)" id="buka" class="btn2 tutup">🟢 BUKA</button>
+          <button type="button" onclick="setToko(0)" id="tutup" class="btn2 tutup">🔴 TUTUP</button>
+        </div>
+        <input id="tele" class="input" placeholder="Username Telegram CS">
+      </div>
+      <button type="button" onclick="simpan()" class="btn" style="background:#16a34a">🔒 Simpan ke GitHub</button>
+      <p id="notif" style="text-align:center;margin-top:12px"></p>
+    </div>
+  </div>
 </div>
 
 <script>
-const CONFIG = { USER: "ownerjylie", PASS: "jylie547" };
-let db = { username_tele: '', toko_buka: true, games: [] };
-let ALL_ORDERS = [];
-let CURRENT_FILTER = 'all';
+var DB = {toko_buka:1,games:[],tele:''};
+var ORDERS = [];
+var FIL = 'all';
 
-const notif = (msg, sukses = true) => {
-  const el = document.getElementById('notif');
-  el.textContent = msg;
-  el.className = sukses? 'notif-sukses text-center text-sm mt-3' : 'notif-gagal text-center text-sm mt-3';
-  el.style.display = 'block';
-  setTimeout(() => el.style.display = 'none', 3000);
-};
-
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('hidden');
-}
-
-function login() {
-  const user = document.getElementById('user').value;
-  const pass = document.getElementById('pass').value;
-  if (user!== CONFIG.USER || pass!== CONFIG.PASS) {
-    document.getElementById('loginMsg').innerText = 'Username atau Password salah!';
-    return;
-  }
-  document.getElementById('loginBox').style.display = 'none';
-  document.getElementById('adminBox').style.display = 'block';
-  loadData();
-  loadLocalSettings();
-  loadOrders();
-}
-
-function logout() {
-  document.getElementById('adminBox').style.display = 'none';
-  document.getElementById('loginBox').style.display = 'flex';
-  document.getElementById('user').value = '';
-  document.getElementById('pass').value = '';
-  document.getElementById('loginMsg').innerText = '';
-}
-
-function gantiPage(page, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-  document.getElementById('page-' + page).classList.remove('hidden');
-  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('pageTitle').textContent = el.innerText.trim();
-  document.getElementById('pageTitleMobile').textContent = el.innerText.trim();
-  if (page === 'pesanan') loadOrders();
-  if (page === 'produk') renderProduk();
-}
-
-function loadLocalSettings() {
-  document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
-  document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
-  document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
-}
-
-function setToko(status) {
-  db.toko_buka = status;
-  document.getElementById('btn-buka').className = status? 'flex-1 bg-green-600 ring-4 ring-green-400/50 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-800 active:bg-green-700 py-3 rounded-lg font-bold admin-btn';
-  document.getElementById('btn-tutup').className =!status? 'flex-1 bg-red-600 ring-4 ring-red-400/50 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-800 active:bg-red-700 py-3 rounded-lg font-bold admin-btn';
-  document.getElementById('statusToko').textContent = status? 'BUKA' : 'TUTUP';
-  document.getElementById('statusToko').className = status? 'text-lg md:text-2xl font-bold text-green-500' : 'text-lg md:text-2xl font-bold text-red-500';
-}
-
-async function loadData() {
-  try {
-    const res = await fetch('db.json?' + Date.now());
-    db = await res.json();
-    document.getElementById('username-tele').value = db.username_tele || '';
-    setToko(db.toko_buka!== false);
-  } catch (e) {
-    db = { username_tele: 'jyliestoreid', toko_buka: true, games: [] };
-    setToko(true);
+function masuk(){
+  if(u.value=='ownerjylie'&&p.value=='jylie547'){
+    login.style.display='none';
+    admin.style.display='block';
+    loadData();
+    loadSet();
+    loadOrder();
+  }else{
+    err.innerText='Username/Password salah!';
   }
 }
-
-function renderProduk() {
-  const wrap = document.getElementById('produkList');
-  wrap.innerHTML = '';
-  if (db.games.length === 0) {
-    wrap.innerHTML = '<p class="text-slate-500 text-center">Belum ada game. Tambah di atas.</p>';
-    return;
-  }
-  db.games.forEach((game, gameIndex) => {
-    const gameDiv = document.createElement('div');
-    gameDiv.className = 'bg-slate-800 rounded-lg p-4 border border-slate-700';
-    gameDiv.innerHTML = `
-      <div class="flex justify-between items-center mb-3">
-        <div class="flex items-center gap-3">
-          <img src="${game.icon}" class="w-10 h-10 rounded object-cover bg-slate-700">
-          <div>
-            <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)" class="font-bold bg-transparent text-white w-full">
-            <p class="text-xs text-slate-500">ID: ${game.id}</p>
-          </div>
-        </div>
-        <button type="button" onclick="hapusGame(${gameIndex})" class="bg-red-500/20 active:bg-red-500/30 text-red-400 px-3 py-1 rounded text-sm admin-btn">Hapus</button>
-      </div>
-      <div class="mb-3">
-        <input value="${game.icon}" onchange="updateGame(${gameIndex}, 'icon', this.value)" class="admin-input text-xs w-full p-2 rounded" placeholder="Link Logo">
-      </div>
-      <div id="nominal-${gameIndex}" class="space-y-2 mb-3"></div>
-      <button type="button" onclick="tambahNominal(${gameIndex})" class="w-full bg-slate-700 active:bg-slate-600 py-2 rounded text-sm admin-btn">+ Tambah Nominal</button>
-    `;
-    wrap.appendChild(gameDiv);
-    const nominalWrap = document.getElementById(`nominal-${gameIndex}`);
-    game.products.forEach((item, itemIndex) => {
-      const row = document.createElement('div');
-      row.className = 'bg-slate-700/50 p-3 rounded';
-      row.innerHTML = `
-        <div class="flex gap-2 items-center mb-2">
-          <input value="${item.name}" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'name', this.value)" class="flex-1 admin-input p-2 rounded text-sm" placeholder="Nama Item">
-          <button type="button" onclick="hapusNominal(${gameIndex}, ${itemIndex})" class="bg-red-500/20 text-red-400 px-2 py-2 rounded text-sm admin-btn"><i class="ri-delete-bin-line"></i></button>
-        </div>
-        <div class="grid grid-cols-2 gap-2 items-center">
-          <input value="${item.harga}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga', this.value)" class="admin-input p-2 rounded text-sm" placeholder="Harga Jual">
-          <input value="${item.harga_asli || ''}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)" class="admin-input p-2 rounded text-sm" placeholder="Harga Asli">
-        </div>
-      `;
-      nominalWrap.appendChild(row);
-    });
+function keluar(){
+  admin.style.display='none';
+  login.style.display='flex';
+  u.value=p.value=err.innerText='';
+}
+function toggle(){
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('show');
+}
+function hal(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  if(el.classList.contains('navbtn')){
+    document.querySelectorAll('.navbtn').forEach(b=>{b.style.background='0';b.style.borderLeft='0'});
+    el.style.background='#0f172a';el.style.borderLeft='3px solid #06b6d4';
+  }else el.classList.add('active');
+  title.innerText=el.innerText.trim();
+  if(id=='produk')renderGame();
+  if(window.innerWidth<768)toggle();
+}
+function loadSet(){
+  gtoken.value=localStorage.gtoken||'';
+  guser.value=localStorage.guser||'';
+  grepo.value=localStorage.grepo||'';
+}
+function setToko(s){
+  DB.toko_buka=s;
+  buka.className=s?'btn2 buka':'btn2 tutup';
+  tutup.className=!s?'btn2 buka':'btn2 tutup';
+  sttoko.innerText=s?'BUKA':'TUTUP';
+  sttoko.className=s?'green':'red';
+}
+function loadData(){
+  fetch('db.json?'+Date.now()).then(r=>r.json()).then(d=>{
+    DB=d;
+    tele.value=DB.tele||'';
+    setToko(DB.toko_buka!==0);
+    renderGame();
+  }).catch(e=>{
+    DB={toko_buka:1,games:[],tele:'jyliestoreid'};
+    setToko(1);
   });
 }
-
-function tambahGame() {
-  const id = document.getElementById('newGameId').value.trim().toLowerCase().replace(/\s+/g, '');
-  const name = document.getElementById('newGameName').value.trim();
-  const icon = document.getElementById('newGameLogo').value.trim();
-  if (!id ||!name ||!icon) return notif('ID, Nama & Logo wajib diisi', false);
-  if (db.games.find(g => g.id === id)) return notif('ID Game udah ada', false);
-  db.games.push({ id, name, icon, products: [] });
-  document.getElementById('newGameId').value = '';
-  document.getElementById('newGameName').value = '';
-  document.getElementById('newGameLogo').value = '';
-  renderProduk();
-  notif('Game ditambah. Jangan lupa Simp
+function renderGame(){
+  listgame.innerHTML=DB.games.length?DB.games.map((g,i)=>`
+    <div style="background:#0f172a;padding:12px;border-radius:8px;margin-bottom:8px;border:1px solid #334155">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <img src="${g.icon}" style="width:40px;height:40px;border-radius:8px;object-fit:cover;background:#334155">
+          <div><b>${g.name}</b><br><small style="color:#94a3b8">ID: ${g.id}</small></div>
+        </div>
+        <button type="button" onclick="delGame(${i})" style="background:#ef444420;color:#f87171;padding:6px 12px;border-radius:6px">Hapus</button>
+      </div>
+      <input value="${g.icon}" onchange="DB.games[${i}].icon=this.value" class="input" style="font-size:12px;padding:8px" placeholder="Link Logo">
+      <div id="nom${i}" style="margin:8px 0"></div>
+      <button type="button" onclick="addNom(${i})" style="width:100%;background:#334155;padding:8px;border-radius:6px;color:#fff;font-size:14px">+ Tambah Nominal</button>
+    </div>
+  `).join(''):'<p style="color:#64748b;text-align:center">Belum ada game</p>';
+  DB.games.forEach((g,i)=>{
+    document.getElementById('nom'+i).innerHTML=g.products.map((p,j)=>`
+      <div style="background:#0f172a;padding:8px;border-radius:6px;margin-bottom:6px">
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <input value="${p.name}" onchange="DB.games[${i}].products[${j}].name=this.value" class="input" style="flex:1;padding:8px;font-size:14px" placeholder="Nama Item">
+          <button type="button" onclick="delNom(${i},${j})" style="background:#ef444420;color:#f87171;padding:8px;border-radius:6px">×</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <input value="${p.harga}" type="number" onchange="DB.games[${i}].products[${j}].harga=+this.value||0" class="input" style="padding:8px;font-size:14px" placeholder="Harga Jual">
+          <input value="${p.harga_asli||''}" type="number" onchange="DB.games[${i}].products[${j}].harga_asli=+this.value||0" class="input" style="padding:8px;font-size:14px" placeholder="Harga Asli">
+        </div>
+      </div>
+    `).join('');
+  });
+}
+function addGame(){
+  var id=gid.value.trim().toLowerCase();
+  var name=gname.value.trim();
+  var icon=gicon.value.trim();
+  if(!id||!name||!icon)return alert('Lengkapi semua!');
+  if(DB.games.find(g=>g.id==id))return alert('ID sudah ada!');
+  DB.games.push({id,name,icon,products:[]});
+  gid.value=gname.value=gicon.value='';
+  renderGame();
+}
+function delGame(i){
+  if(confirm('Hapus '+DB.games[i].name+'?')){
+    DB.games.splice(i,1);
+    renderGame();
+  }
+}
+function addNom(i){
+  DB.games[i].products.push({id:'item_'+Date.now(),name:"Item Baru",harga:10000});
+  renderGame();
+}
+function delNom(i,j){
+  DB.games[i].products.splice(j,1);
+  renderGame();
+}
+function simpan(){
+  var token=gtoken.value,user=guser.value,repo=grepo.value;
+  if(!token||!user||!repo)return alert('Isi Setting GitHub dulu!');
+  localStorage.gtoken=token;localStorage.guser=user;localStorage.grepo=repo;
+  notif.innerText='Menyimpan...';notif.className='green';
+  DB.tele=tele.value;
+  var content=btoa(unescape(encodeURIComponent(JSON.stringify(DB,null,2))));
+  var url=`https://api.github.com/repos/${user}/${repo}/contents/db.json`;
+  fetch(url,{headers:{'Authorization':'token '+token}}).then(r=>r.json()).then(f=>{
+    fetch(url,{
+      method:'PUT',
+      headers:{'Authorization':'token '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({message:'Update db.json',content:content,sha:f.sha})
+    }).then(r=>r.ok?notif.innerText='✅ Sukses!':notif.innerText='❌ Gagal');
+  });
+}
+function loadOrder(){
+  fetch('./orders.json?'+Date.now()).then(r=>r.json()).then(d=>{
+    ORDERS=d.orders.reverse();
+    var today=new Date().toISOString().split('T')[0];
+    var todayO=ORDERS.filter(o=>o.waktu.startsWith(today)&&o.status=='Selesai');
+    duit.innerText='Rp '+todayO.reduce((s,o)=>s+o.harga,0).toLocaleString('id-ID');
+    total.innerText=ORDERS.length;
+    pending.innerText=ORDERS.filter(o=>o.status=='Diproses').length;
+    recent.innerHTML=ORDERS.slice(0,3).map(o=>`
+      <div style="background:#0f172a;padding:12px;border-radius:8px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between">
+          <b style="font-size:14px">${o.kode}</b>
+          <span style="font-size:12px;padding:2px 8px;border-radius:12px;background:${o.status=='Selesai'?'#16a34a20':'#eab30820'};color:${o.status=='Selesai'?'#4ade80':'#facc15'}">${o.status}</span>
+        </div>
+        <p style="font-size:12px;color:#94a3b8;margin-top:4px">${o.game} - ${o.item}</p>
+      </div>
+    `).join('')||'<p style="color:#64748b;text-align:center">Belum ada order</p>';
+    renderO();
+  }).catch(e=>listorder.innerHTML='<p style="color:#f87171">Gagal load orders.json</p>');
+}
+function filterO(s,el){
+  FIL=s;
+  document.querySelectorAll('.fbtn').forEach(b=>{b.style.background='#334155';b.style.color='#fff';b.style.fontWeight='normal'});
+  el.style.background='#06b6d4';el.style.color='#0f172a';el.style.fontWeight='bold';
+  renderO();
+}
+function renderO(){
+  var f=FIL=='all'?ORDERS:ORDERS.filter(o=>o.status==FIL);
+  listorder.innerHTML=f.length?f.map(o=>`
+    <div style="background:#0f172a;padding:12px;border-radius:8px;margin-bottom:8px;border-left:3px solid ${o.status=='Selesai'?'#16a34a':'#eab308'}">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div><b>${o.kode}</b><br><small style="color:#94a3b8">${o.waktu}</small></div>
+        <span style="font-size:12px;padding:4px 12px;border-radius:12px;background:${o.status=='Selesai'?'#16a34a':'#eab308'};color:#0f172a;font-weight:bold">${o.status}</span>
+      </div>
+      <p style="font-size:14px"><b>${o.game}</b> - ${o.item}</p>
+      <p style="font-size:12px;color:#94a3b8">ID: ${o.playerId} | ${o.namaPengirim}</p>
+      <p style="color:#22d3ee;font-weight:bold;margin:4px 0">Rp${o.harga.toLocaleString('id-ID')}</p>
+      ${o.status!='Selesai'?`<button type="button" onclick="doneO('${o.kode}')" style="width:100%;background:#16a34a;padding:8px;border-radius:6px;color:#fff;font-weight:bold;margin-top:8px">✓ Tandai Selesai</button>`:''}
+    </div>
+  `).join(''):'<p style="color:#64748b;text-align:center">Ga ada order</p>';
+}
+function doneO(kode){
+  if(!confirm('Yakin udah kirim diamond untuk '+kode+'?'))return;
+  var token=gtoken.value,user=guser.value,repo=grepo.value;
+  if(!token||!user||!repo)return alert('Isi Setting GitHub dulu!');
+  var url=`https://api.github.com/repos/${user}/${repo}/contents/orders.json`;
+  fetch(url,{headers:{'Authorization':'token '+token}}).then(r=>r.json()).then(f=>{
+    var c=JSON.parse(decodeURIComponent(escape(atob(f.content))));
+    var i=c.orders.findIndex(o=>o.kode==kode);
+    if(i==-1)return alert('Order ga ketemu');
+    c.orders[i].status='Selesai';
+    fetch(url,{
+      method:'PUT',
+      headers:{'Authorization':'token '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({message:'Order '+kode+' selesai',content:btoa(unescape(encodeURIComponent(JSON.stringify(c,null,2)))),sha:f.sha})
+    }).then(r=>r.ok?loadOrder():alert('Gagal update'));
+  });
+}
+</script>
+</body>
+</html>
