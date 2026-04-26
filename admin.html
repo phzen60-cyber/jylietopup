@@ -47,12 +47,19 @@
                 <i class="ri-flashlight-fill text-2xl text-indigo-500"></i>
                 <span class="text-lg font-bold">JylieTopup</span>
             </div>
-            <nav class="space-y-1">
-                <a href="#" onclick="showPage('dashboard', this)" class="sidebar-link active...">
-<a href="#" onclick="showPage('pesanan', this)" class="sidebar-link ...">
-<a href="#" onclick="showPage('produk', this)" class="sidebar-link ...">
-<a href="#" onclick="showPage('setting', this)" class="sidebar-link ...">
-                
+            <nav></nav> class="space-y-1">
+                <a href="javascript:void(0)" onclick="showPage('dashboard', this)" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg">
+    <i class="ri-dashboard-line text-xl"></i> Dashboard
+</a>
+<a href="javascript:void(0)" onclick="showPage('pesanan', this)" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+    <i class="ri-shopping-bag-3-line text-xl"></i> Pesanan
+</a>
+<a href="javascript:void(0)" onclick="showPage('produk', this)" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+    <i class="ri-gamepad-line text-xl"></i> Produk
+</a>
+<a href="javascript:void(0)" onclick="showPage('setting', this)" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+    <i class="ri-settings-3-line text-xl"></i> Setting
+</a>
             </nav>
             <button onclick="logout()" class="absolute bottom-4 left-4 right-4 bg-red-500/20 hover:bg-red-500/30 text-red-400 py-2 rounded-lg text-sm admin-btn">
                 <i class="ri-logout-box-r-line"></i> Logout
@@ -202,7 +209,7 @@ function showPage(page, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.getElementById('page-' + page).classList.remove('hidden');
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-  el.classList.add('active'); // PAKE PARAMETER 'el'
+  el.classList.add('active');
   document.getElementById('pageTitle').textContent = el.innerText.trim();
   if (page === 'pesanan') loadOrders();
   if (page === 'produk') renderProduk();
