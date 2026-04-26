@@ -8,12 +8,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         body { font-family: 'Poppins', sans-serif; }
-        .admin-btn { transition: 0.2s; }
-        .admin-btn:hover { transform: scale(1.02); }
-        .admin-input { background: #334155; }
-        .admin-input:focus { outline: 2px solid #06b6d4; }
-        .notif-sukses { color: #4ade80; }
-        .notif-gagal { color: #f87171; }
+       .admin-btn { transition: 0.2s; }
+       .admin-btn:hover { transform: scale(1.02); }
+       .admin-input { background: #334155; }
+       .admin-input:focus { outline: 2px solid #06b6d4; }
+       .notif-sukses { color: #4ade80; }
+       .notif-gagal { color: #f87171; }
     </style>
 </head>
 <body class="bg-slate-900 text-white">
@@ -84,9 +84,27 @@
             </div>
 
             <!-- LIST GAME + PRODUK -->
-            <div class="bg-slate-800 rounded-xl p-6">
+            <div class="bg-slate-800 rounded-xl p-6 mb-6">
                 <h2 class="text-xl font-bold mb-4 border-l-4 border-cyan-400 pl-3">Kelola Game & Produk</h2>
                 <div id="produkList" class="space-y-4">Loading...</div>
+            </div>
+
+            <!-- KELOLA ORDER MASUK -->
+            <div class="bg-slate-800 rounded-xl p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold border-l-4 border-yellow-400 pl-3">Kelola Order Masuk</h2>
+                    <button onclick="loadOrders()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm admin-btn">🔄 Refresh</button>
+                </div>
+                
+                <div class="flex gap-2 mb-4">
+                    <button onclick="filterOrder('all')" class="filter-btn bg-cyan-500 px-3 py-1 rounded-lg text-xs font-bold admin-btn">Semua</button>
+                    <button onclick="filterOrder('Diproses')" class="filter-btn bg-slate-700 px-3 py-1 rounded-lg text-xs admin-btn">Diproses</button>
+                    <button onclick="filterOrder('Selesai')" class="filter-btn bg-slate-700 px-3 py-1 rounded-lg text-xs admin-btn">Selesai</button>
+                </div>
+
+                <div id="order-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                    <p class="text-slate-500 text-center py-8">Klik Refresh buat load order</p>
+                </div>
             </div>
 
             <!-- SIMPAN -->
@@ -145,6 +163,7 @@ async function login() {
   document.getElementById('adminBox').style.display = 'block';
   loadData();
   loadLocalSettings();
+  setTimeout(loadOrders, 1000);
 }
 
 function logout() {
@@ -163,9 +182,9 @@ function loadLocalSettings() {
 
 function setToko(status) {
   db.toko_buka = status;
-  document.getElementById('btn-buka').className = status ? 'flex-1 bg-green-600 ring-4 ring-green-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn';
-  document.getElementById('btn-tutup').className = !status ? 'flex-1 bg-red-600 ring-4 ring-red-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn';
-  notif(status ? 'Toko di-SET BUKA' : 'Toko di-SET TUTUP. Jangan lupa Simpan!');
+  document.getElementById('btn-buka').className = status? 'flex-1 bg-green-600 ring-4 ring-green-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn';
+  document.getElementById('btn-tutup').className =!status? 'flex-1 bg-red-600 ring-4 ring-red-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn';
+  notif(status? 'Toko di-SET BUKA' : 'Toko di-SET TUTUP. Jangan lupa Simpan!');
 }
 
 async function loadData() {
@@ -173,7 +192,7 @@ async function loadData() {
     const res = await fetch('db.json?' + Date.now());
     db = await res.json();
     document.getElementById('username-tele').value = db.username_tele || '';
-    setToko(db.toko_buka !== false);
+    setToko(db.toko_buka!== false);
     renderProduk();
   } catch (e) {
     db = { username_tele: 'jyliestoreid', toko_buka: true, games: [] };
@@ -335,6 +354,106 @@ async function simpanSemua() {
     notif('❌ Gagal: ' + error.message, false);
   }
 }
-</script>
-</body>
-    </html>
+
+// === KELOLA ORDER ===
+let ALL_ORDERS = [];
+let CURRENT_FILTER = 'all';
+
+async function loadOrders() {
+    const listEl = document.getElementById('order-list');
+    listEl.innerHTML = '<p class="text-yellow-400 text-center py-8">Loading order...</p>';
+    
+    try {
+        const res = await fetch('./orders.json?' + Date.now());
+        const data = await res.json();
+        ALL_ORDERS = data.orders.reverse();
+        renderOrders();
+    } catch(e) {
+        listEl.innerHTML = '<p class="text-red-400 text-center py-8">Gagal load orders.json. Upload file {"orders":[]} dulu ke repo</p>';
+    }
+}
+
+function filterOrder(status) {
+    CURRENT_FILTER = status;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-cyan-500');
+        btn.classList.add('bg-slate-700');
+    });
+    event.target.classList.remove('bg-slate-700');
+    event.target.classList.add('bg-cyan-500');
+    renderOrders();
+}
+
+function renderOrders() {
+    const listEl = document.getElementById('order-list');
+    let filtered = CURRENT_FILTER === 'all'? ALL_ORDERS : ALL_ORDERS.filter(o => o.status === CURRENT_FILTER);
+    
+    if (filtered.length === 0) {
+        listEl.innerHTML = '<p class="text-slate-500 text-center py-8">Ga ada order</p>';
+        return;
+    }
+
+    listEl.innerHTML = '';
+    filtered.forEach((order) => {
+        const isSelesai = order.status === 'Selesai';
+        const statusColor = isSelesai? 'bg-green-500/20 border-green-500' : 'bg-yellow-500/20 border-yellow-500';
+        const badgeColor = isSelesai? 'bg-green-500' : 'bg-yellow-500';
+        
+        const div = document.createElement('div');
+        div.className = `bg-slate-900 border-l-4 ${statusColor} p-4 rounded-lg`;
+        div.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <p class="font-bold text-base">${order.kode}</p>
+                    <p class="text-xs text-slate-400">${order.waktu}</p>
+                </div>
+                <span class="px-3 py-1 rounded-full text-xs font-bold ${badgeColor} text-slate-900">${order.status}</span>
+            </div>
+            <p class="text-sm"><b>${order.game}</b> - ${order.item}</p>
+            <p class="text-sm text-slate-400">ID: <code class="bg-slate-800 px-1 rounded">${order.playerId}</code> | ${order.namaPengirim}</p>
+            <p class="text-cyan-400 font-bold mt-1 text-lg">Rp${order.harga.toLocaleString('id-ID')}</p>
+            ${!isSelesai? `<button onclick="selesaiOrder('${order.kode}')" class="w-full mt-3 bg-green-500 hover:bg-green-600 py-2 rounded-lg font-bold text-sm admin-btn">✓ Tandai Selesai</button>` : ''}
+        `;
+        listEl.appendChild(div);
+    });
+}
+
+async function selesaiOrder(kode) {
+    if (!confirm(`Yakin udah kirim diamond untuk ${kode}?`)) return;
+
+    const token = document.getElementById('gh-token').value;
+    const owner = document.getElementById('gh-user').value;
+    const repo = document.getElementById('gh-repo').value;
+
+    if (!token ||!owner ||!repo) return notif('Isi Setting GitHub dulu!', false);
+
+    notif('Update status order...', true);
+
+    try {
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/orders.json`;
+        const res = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
+        const file = await res.json();
+        const content = JSON.parse(decodeURIComponent(escape(atob(file.content))));
+        
+        const index = content.orders.findIndex(o => o.kode === kode);
+        if (index === -1) return notif('Order ga ketemu', false);
+        content.orders[index].status = 'Selesai';
+
+        const updateRes = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: `Order ${kode} selesai`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+                sha: file.sha
+            })
+        });
+
+        if (updateRes.ok) {
+            notif('✅ Status jadi Selesai! User bisa cek di web');
+            loadOrders();
+        } else {
+            throw new Error('Gagal update Github');
+        }
+    } catch(e) {
+        not
