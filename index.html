@@ -16,13 +16,16 @@
     <header class="bg-slate-800 shadow-lg">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <h1 class="text-xl font-bold text-cyan-400">🎮 Jylie Topup</h1>
-            <a id="cs-button" href="#" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-sm">
-                CS
-            </a>
+            <div id="status-toko" class="text-sm font-bold"></div>
         </div>
     </header>
 
     <main class="container mx-auto px-4 py-8">
+        <div id="banner-tutup" class="hidden bg-red-600 text-center py-4 mb-6 rounded-lg">
+            <p class="text-xl font-bold">⛔ TOKO TUTUP SEMENTARA ⛔</p>
+            <p class="text-sm">Order akan diproses setelah toko buka kembali</p>
+        </div>
+
         <div id="main-menu">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold">TOP UP <span class="text-cyan-400">TERMURAH</span></h2>
@@ -82,8 +85,9 @@
         const productListEl = document.getElementById('product-list');
         const productTitleEl = document.getElementById('product-title');
         const backButton = document.getElementById('back-button');
-        const csButton = document.getElementById('cs-button');
         const statusText = document.getElementById('status-text');
+        const bannerTutup = document.getElementById('banner-tutup');
+        const statusTokoEl = document.getElementById('status-toko');
 
         const qrisModal = document.getElementById('qris-modal');
         const orderDetailEl = document.getElementById('order-detail');
@@ -113,7 +117,13 @@
                     throw new Error('harga.json kosong. Array "produk" ga ada.');
                 }
 
-                csButton.href = `https://wa.me/${db.nomor_wa}`;
+                if (db.toko_buka === false) {
+                    bannerTutup.classList.remove('hidden');
+                    statusTokoEl.innerHTML = '<span class="text-red-400">🔴 TUTUP</span>';
+                } else {
+                    statusTokoEl.innerHTML = '<span class="text-green-400">🟢 BUKA</span>';
+                }
+
                 renderGames();
             } catch (error) {
                 console.error('ERROR DETAIL:', error);
@@ -206,6 +216,11 @@
         }
 
         async function validateAndCheckout() {
+            if (db.toko_buka === false) {
+                alert('Toko sedang tutup bro. Coba lagi nanti ya');
+                return;
+            }
+
             const playerId = playerIdInput.value;
             const namaPengirim = namaPengirimInput.value.trim();
 
@@ -221,8 +236,6 @@
                 namaPengirimInput.focus();
                 return;
             }
-
-            const textWA = `Halo min, saya sudah transfer:\nKode: ${currentOrder.kode}\nGame: ${currentOrder.game}\nItem: ${currentOrder.item}\nID: ${playerId}\nNama: ${namaPengirim}\nTotal: Rp${currentOrder.harga.toLocaleString('id-ID')}`;
             
             const textTelegram = `<b>🔥 ORDER BARU MASUK</b>
 
@@ -236,7 +249,7 @@
 <b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
 
             await kirimKeTelegram(textTelegram);
-            window.open(`https://wa.me/${db.nomor_wa}?text=${encodeURIComponent(textWA)}`, '_blank');
+            alert('Order berhasil dikirim ke admin via Telegram. Tunggu konfirmasi ya!');
             closeQrisModal();
         }
 
