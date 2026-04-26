@@ -18,6 +18,11 @@
 .sidebar-link { transition:.2s; cursor:pointer; user-select:none; -webkit-tap-highlight-color: transparent; }
 .sidebar-link:hover,.sidebar-link.active { background: #1e293b; color: #e8eaf0; }
 .sidebar-link.active { border-left: 3px solid #6366f1; }
+#sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+#sidebar.open { transform: translateX(0); }
+@media (min-width: 768px) {
+  #sidebar { transform: translateX(0); }
+}
 </style>
 </head>
 <body class="bg-slate-950 text-slate-200">
@@ -38,24 +43,30 @@
 
 <!-- DASHBOARD -->
 <div id="adminBox" class="hidden">
+    <!-- OVERLAY HP -->
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
+
     <div class="flex min-h-screen">
         <!-- SIDEBAR -->
-        <div class="w-64 bg-slate-900 border-r border-slate-800 p-4 fixed h-full z-50">
-            <div class="flex items-center gap-3 mb-8">
-                <i class="ri-flashlight-fill text-2xl text-indigo-500"></i>
-                <span class="text-lg font-bold">JylieTopup</span>
+        <div id="sidebar" class="w-64 bg-slate-900 border-r border-slate-800 p-4 fixed h-full z-50">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <i class="ri-flashlight-fill text-2xl text-indigo-500"></i>
+                    <span class="text-lg font-bold">JylieTopup</span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-2xl"><i class="ri-close-line"></i></button>
             </div>
             <nav class="space-y-1">
-                <div onclick="gantiPage('dashboard', this)" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg">
+                <div onclick="gantiPage('dashboard', this); toggleSidebar();" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg">
                     <i class="ri-dashboard-line text-xl"></i> Dashboard
                 </div>
-                <div onclick="gantiPage('pesanan', this)" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+                <div onclick="gantiPage('pesanan', this); toggleSidebar();" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
                     <i class="ri-shopping-bag-3-line text-xl"></i> Pesanan
                 </div>
-                <div onclick="gantiPage('produk', this)" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+                <div onclick="gantiPage('produk', this); toggleSidebar();" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
                     <i class="ri-gamepad-line text-xl"></i> Produk
                 </div>
-                <div onclick="gantiPage('setting', this)" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+                <div onclick="gantiPage('setting', this); toggleSidebar();" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
                     <i class="ri-settings-3-line text-xl"></i> Setting
                 </div>
             </nav>
@@ -65,8 +76,15 @@
         </div>
 
         <!-- MAIN -->
-        <div class="ml-64 flex-1 p-6">
-            <div class="flex justify-between items-center mb-6">
+        <div class="flex-1 md:ml-64 p-4 md:p-6">
+            <!-- TOPBAR HP -->
+            <div class="flex justify-between items-center mb-6 md:hidden">
+                <button onclick="toggleSidebar()" class="text-2xl p-2"><i class="ri-menu-line"></i></button>
+                <h1 class="text-xl font-bold" id="pageTitleMobile">Dashboard</h1>
+                <div></div>
+            </div>
+
+            <div class="hidden md:flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-bold" id="pageTitle">Dashboard</h1>
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-slate-400">Admin</span>
@@ -76,40 +94,35 @@
 
             <!-- PAGE: DASHBOARD -->
             <div id="page-dashboard" class="page">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                        <div class="flex justify-between items-center mb-3">
-                            <p class="text-sm text-slate-400">Pendapatan Hari Ini</p>
-                            <i class="ri-money-dollar-circle-line text-2xl text-green-500"></i>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6">
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 md:p-5">
+                        <div class="flex justify-between items-center mb-2 md:mb-3">
+                            <p class="text-xs md:text-sm text-slate-400">Pendapatan Hari Ini</p>
+                            <i class="ri-money-dollar-circle-line text-xl md:text-2xl text-green-500"></i>
                         </div>
-                        <p class="text-2xl font-bold" id="todayIncome">Rp 0</p>
-                        <span class="text-xs text-green-500"><i class="ri-arrow-up-line"></i> Update realtime</span>
+                        <p class="text-lg md:text-2xl font-bold" id="todayIncome">Rp 0</p>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                        <div class="flex justify-between items-center mb-3">
-                            <p class="text-sm text-slate-400">Total Pesanan</p>
-                            <i class="ri-shopping-cart-2-line text-2xl text-indigo-500"></i>
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 md:p-5">
+                        <div class="flex justify-between items-center mb-2 md:mb-3">
+                            <p class="text-xs md:text-sm text-slate-400">Total Pesanan</p>
+                            <i class="ri-shopping-cart-2-line text-xl md:text-2xl text-indigo-500"></i>
                         </div>
-                        <p class="text-2xl font-bold" id="totalOrder">0</p>
-                        <span class="text-xs text-indigo-500">Semua order</span>
+                        <p class="text-lg md:text-2xl font-bold" id="totalOrder">0</p>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                        <div class="flex justify-between items-center mb-3">
-                            <p class="text-sm text-slate-400">Order Pending</p>
-                            <i class="ri-time-line text-2xl text-yellow-500"></i>
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 md:p-5">
+                        <div class="flex justify-between items-center mb-2 md:mb-3">
+                            <p class="text-xs md:text-sm text-slate-400">Order Pending</p>
+                            <i class="ri-time-line text-xl md:text-2xl text-yellow-500"></i>
                         </div>
-                        <p class="text-2xl font-bold" id="pendingOrder">0</p>
-                        <span class="text-xs text-yellow-500">Butuh diproses</span>
+                        <p class="text-lg md:text-2xl font-bold" id="pendingOrder">0</p>
                     </div>
-                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                        <div class="flex justify-between items-center mb-3">
-                            <p class="text-sm text-slate-400">Status Toko</p>
-                            <i class="ri-store-2-line text-2xl text-cyan-500"></i>
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 md:p-5">
+                        <div class="flex justify-between items-center mb-2 md:mb-3">
+                            <p class="text-xs md:text-sm text-slate-400">Status Toko</p>
+                            <i class="ri-store-2-line text-xl md:text-2xl text-cyan-500"></i>
                         </div>
-                        <p class="text-2xl font-bold" id="statusToko">-</p>
-                        <span class="text-xs text-slate-400">Atur di Setting</span>
+                        <p class="text-lg md:text-2xl font-bold" id="statusToko">-</p>
                     </div>
-                </div>
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5">
                     <h2 class="text-lg font-bold mb-4">Pesanan Terbaru</h2>
                     <div id="recentOrders" class="space-y-2">
@@ -127,10 +140,10 @@
                             <i class="ri-refresh-line"></i> Refresh
                         </button>
                     </div>
-                    <div class="flex gap-2 mb-4">
-                        <button onclick="filterOrder('all', this)" class="filter-btn bg-indigo-500 px-3 py-1.5 rounded-lg text-xs font-bold admin-btn">Semua</button>
-                        <button onclick="filterOrder('Diproses', this)" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn">Diproses</button>
-                        <button onclick="filterOrder('Selesai', this)" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn">Selesai</button>
+                    <div class="flex gap-2 mb-4 overflow-x-auto">
+                        <button onclick="filterOrder('all', this)" class="filter-btn bg-indigo-500 px-3 py-1.5 rounded-lg text-xs font-bold admin-btn whitespace-nowrap">Semua</button>
+                        <button onclick="filterOrder('Diproses', this)" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn whitespace-nowrap">Diproses</button>
+                        <button onclick="filterOrder('Selesai', this)" class="filter-btn bg-slate-800 px-3 py-1.5 rounded-lg text-xs admin-btn whitespace-nowrap">Selesai</button>
                     </div>
                     <div id="order-list" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                         <p class="text-slate-500 text-center py-8">Klik Refresh buat load order</p>
@@ -142,7 +155,7 @@
             <div id="page-produk" class="page hidden">
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-4">
                     <h2 class="text-lg font-bold mb-4">Tambah Game Baru</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="grid grid-cols-1 gap-3">
                         <input id="newGameId" type="text" placeholder="ID: freefire" class="admin-input p-3 rounded-lg">
                         <input id="newGameName" type="text" placeholder="Nama: Free Fire" class="admin-input p-3 rounded-lg">
                         <input id="newGameLogo" type="text" placeholder="Link Logo" class="admin-input p-3 rounded-lg">
@@ -195,6 +208,11 @@ const notif = (msg, sukses = true) => {
   setTimeout(() => el.style.display = 'none', 3000);
 };
 
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('hidden');
+}
+
 function login() {
   const user = document.getElementById('user').value;
   const pass = document.getElementById('pass').value;
@@ -223,6 +241,7 @@ function gantiPage(page, el) {
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('pageTitle').textContent = el.innerText.trim();
+  document.getElementById('pageTitleMobile').textContent = el.innerText.trim();
   if (page === 'pesanan') loadOrders();
   if (page === 'produk') renderProduk();
 }
@@ -238,7 +257,7 @@ function setToko(status) {
   document.getElementById('btn-buka').className = status? 'flex-1 bg-green-600 ring-4 ring-green-400/50 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-800 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn';
   document.getElementById('btn-tutup').className =!status? 'flex-1 bg-red-600 ring-4 ring-red-400/50 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-800 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn';
   document.getElementById('statusToko').textContent = status? 'BUKA' : 'TUTUP';
-  document.getElementById('statusToko').className = status? 'text-2xl font-bold text-green-500' : 'text-2xl font-bold text-red-500';
+  document.getElementById('statusToko').className = status? 'text-lg md:text-2xl font-bold text-green-500' : 'text-lg md:text-2xl font-bold text-red-500';
 }
 
 async function loadData() {
@@ -268,7 +287,7 @@ function renderProduk() {
         <div class="flex items-center gap-3">
           <img src="${game.icon}" class="w-10 h-10 rounded object-cover bg-slate-700">
           <div>
-            <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)" class="font-bold bg-transparent text-white">
+            <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)" class="font-bold bg-transparent text-white w-full">
             <p class="text-xs text-slate-500">ID: ${game.id}</p>
           </div>
         </div>
@@ -290,9 +309,9 @@ function renderProduk() {
           <input value="${item.name}" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'name', this.value)" class="flex-1 admin-input p-2 rounded text-sm" placeholder="Nama Item">
           <button onclick="hapusNominal(${gameIndex}, ${itemIndex})" class="bg-red-500/20 text-red-400 px-2 py-2 rounded text-sm admin-btn"><i class="ri-delete-bin-line"></i></button>
         </div>
-        <div class="flex gap-2 items-center">
-          <input value="${item.harga}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga', this.value)" class="w-1/2 admin-input p-2 rounded text-sm" placeholder="Harga Jual">
-          <input value="${item.harga_asli || ''}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)" class="w-1/2 admin-input p-2 rounded text-sm" placeholder="Harga Asli">
+        <div class="grid grid-cols-2 gap-2 items-center">
+          <input value="${item.harga}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga', this.value)" class="admin-input p-2 rounded text-sm" placeholder="Harga Jual">
+          <input value="${item.harga_asli || ''}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)" class="admin-input p-2 rounded text-sm" placeholder="Harga Asli">
         </div>
       `;
       nominalWrap.appendChild(row);
@@ -345,24 +364,4 @@ window.updateNominal = (i, j, field, val) => {
 }
 
 async function simpanSemua() {
-  const token = document.getElementById('gh-token').value;
-  const user = document.getElementById('gh-user').value;
-  const repo = document.getElementById('gh-repo').value;
-  if (!token ||!user ||!repo) return notif('Isi Setting GitHub dulu!', false);
-  localStorage.setItem('gh_token', token);
-  localStorage.setItem('gh_user', user);
-  localStorage.setItem('gh_repo', repo);
-  notif('Menyimpan ke GitHub...', true);
-  db.username_tele = document.getElementById('username-tele').value;
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(db, null, 2))));
-  const apiUrl = `https://api.github.com/repos/${user}/${repo}/contents/db.json`;
-  try {
-    let fileSHA = null;
-    const getRes = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
-    if (getRes.ok) fileSHA = (await getRes.json()).sha;
-    const updateRes = await fetch(apiUrl, {
-      method: 'PUT',
-      headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: 'Update db.json dari Admin Panel', content: content, sha: fileSHA })
-    });
-    if (updateRes.ok) notif('✅ Suk
+  const token = document.getElemen
