@@ -30,13 +30,12 @@
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold">TOP UP <span class="text-cyan-400">TERMURAH</span></h2>
                 <p class="text-slate-400 mt-2">Proses cepat 5 menit. Harga paling murah se-Indonesia.</p>
-                        </div>
+            </div>
             
             <h3 class="text-xl font-semibold mb-4 border-l-4 border-cyan-400 pl-3">PILIH GAME</h3>
             <div id="game-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
                 <p class="text-slate-400 col-span-full text-center">Memuat game...</p>
             </div>
-
         </div>
 
         <div id="product-list-container" class="mt-10 hidden">
@@ -59,12 +58,10 @@
             </div>
 
             <label class="block mb-2 text-sm font-semibold">ID Game / UID</label>
-            <input id="player-id" type="number" placeholder="Masukkan 8-12 digit ID"
-                   class="w-full bg-slate-700 p-3 rounded-lg mb-1 outline-none focus:ring-2 focus:ring-cyan-400">
+            <input id="player-id" type="number" placeholder="Masukkan 8-12 digit ID" class="w-full bg-slate-700 p-3 rounded-lg mb-1 outline-none focus:ring-2 focus:ring-cyan-400">
 
             <label class="block mb-2 text-sm font-semibold mt-3">Nama Rekening Pengirim</label>
-            <input id="nama-pengirim" type="text" placeholder="Contoh: Budi Santoso"
-                   class="w-full bg-slate-700 p-3 rounded-lg mb-1 outline-none focus:ring-2 focus:ring-cyan-400">
+            <input id="nama-pengirim" type="text" placeholder="Contoh: Budi Santoso" class="w-full bg-slate-700 p-3 rounded-lg mb-1 outline-none focus:ring-2 focus:ring-cyan-400">
             <p id="id-error" class="text-red-400 text-xs mb-3 hidden"></p>
 
             <p class="text-sm text-center mb-3 mt-4">Scan QRIS untuk bayar:</p>
@@ -74,6 +71,35 @@
                 <button id="cancel-btn" class="flex-1 bg-slate-600 hover:bg-slate-500 py-3 rounded-lg font-bold">Batal</button>
                 <button id="confirm-btn" class="flex-1 bg-cyan-500 hover:bg-cyan-600 text-slate-900 py-3 rounded-lg font-bold">Saya Sudah Bayar</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL SUKSES -->
+    <div id="sukses-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm text-center border-2 border-yellow-500">
+            <div class="text-6xl mb-4">⏳</div>
+            <h3 class="text-xl font-bold mb-2 text-yellow-400">Pembayaran Diproses</h3>
+            
+            <p class="text-slate-300 text-sm mb-4">
+                Order kamu udah masuk ke admin.<br>
+                Silakan tunggu 1-5 menit, diamond otomatis masuk setelah pembayaran dikonfirmasi.
+            </p>
+
+            <div class="bg-slate-700 p-3 rounded-lg mb-4">
+                <p class="text-slate-400 text-xs">Kode Order Kamu:</p>
+                <p id="kode-sukses" class="font-bold text-cyan-400 text-lg"></p>
+            </div>
+
+            <p class="text-xs text-slate-400 mb-4">
+                Jangan tutup halaman ini. Kalo >10 menit belum masuk, chat CS ya
+            </p>
+
+            <a id="cs-tele-modal" href="#" target="_blank" class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-bold mb-2">
+                💬 Hubungi CS Telegram
+            </a>
+            <button onclick="closeSuksesModal()" class="w-full bg-slate-600 hover:bg-slate-500 py-3 rounded-lg font-bold">
+                Oke, Ngerti
+            </button>
         </div>
     </div>
 
@@ -87,7 +113,6 @@
         const productListEl = document.getElementById('product-list');
         const productTitleEl = document.getElementById('product-title');
         const backButton = document.getElementById('back-button');
-        const statusText = document.getElementById('status-text');
         const bannerTutup = document.getElementById('banner-tutup');
         const statusTokoEl = document.getElementById('status-toko');
 
@@ -99,19 +124,10 @@
         const cancelBtn = document.getElementById('cancel-btn');
         const confirmBtn = document.getElementById('confirm-btn');
         const kodeUnikEl = document.getElementById('kode-unik');
+        
         const suksesModal = document.getElementById('sukses-modal');
-const kodeSuksesEl = document.getElementById('kode-sukses');
-
-function closeSuksesModal() {
-    suksesModal.classList.add('hidden');
-    suksesModal.classList.remove('flex');
-}
-
-function showSuksesModal(kode) {
-    kodeSuksesEl.textContent = kode;
-    suksesModal.classList.remove('hidden');
-    suksesModal.classList.add('flex');
-}
+        const kodeSuksesEl = document.getElementById('kode-sukses');
+        const csTeleModal = document.getElementById('cs-tele-modal');
 
         let db = {};
         let currentOrder = {};
@@ -120,16 +136,28 @@ function showSuksesModal(kode) {
             return 'JYLIE-' + Math.random().toString(36).substring(2, 8).toUpperCase();
         }
 
+        function closeSuksesModal() {
+            suksesModal.classList.add('hidden');
+            suksesModal.classList.remove('flex');
+        }
+
+        function showSuksesModal(kode) {
+            kodeSuksesEl.textContent = kode;
+            csTeleModal.href = `https://t.me/${db.username_tele}`;
+            suksesModal.classList.remove('hidden');
+            suksesModal.classList.add('flex');
+        }
+
         async function loadData() {
+            gameListEl.innerHTML = '<p class="text-yellow-400 col-span-full text-center">Loading...</p>';
             try {
-                const response = await fetch('harga.json?v=' + Date.now());
-                if (!response.ok) throw new Error('File harga.json tidak ditemukan');
+                const response = await fetch('./db.json?v=' + Date.now());
+                if (!response.ok) throw new Error('File db.json tidak ditemukan: ' + response.status);
                 
-                const text = await response.text();
-                db = JSON.parse(text);
+                db = await response.json();
                 
-                if (!db.produk || db.produk.length === 0) {
-                    throw new Error('harga.json kosong. Array "produk" ga ada.');
+                if (!db.games || db.games.length === 0) {
+                    throw new Error('db.json kosong. Array "games" ga ada.');
                 }
 
                 if (db.toko_buka === false) {
@@ -142,22 +170,22 @@ function showSuksesModal(kode) {
                 renderGames();
             } catch (error) {
                 console.error('ERROR DETAIL:', error);
-                statusText.innerHTML = `<span class="text-red-500">Gagal: ${error.message}</span>`;
+                gameListEl.innerHTML = `<p class="text-red-500 col-span-full text-center">Gagal: ${error.message}</p>`;
             }
         }
 
         function renderGames() {
             gameListEl.innerHTML = '';
-            if (!db.produk || db.produk.length === 0) {
+            if (!db.games || db.games.length === 0) {
                  gameListEl.innerHTML = `<p class="text-yellow-500 col-span-full text-center">Belum ada produk</p>`;
                  return;
             }
-            db.produk.forEach(game => {
+            db.games.forEach(game => {
                 const card = document.createElement('div');
                 card.className = 'game-card bg-slate-800 rounded-lg p-4 text-center cursor-pointer transition-transform duration-300';
                 card.innerHTML = `
-                    <img src="${game.logo}" alt="${game.nama}" class="w-16 h-16 mx-auto rounded-lg mb-2 object-cover bg-slate-700">
-                    <p class="font-semibold text-sm">${game.nama}</p>
+                    <img src="${game.icon}" alt="${game.name}" class="w-16 h-16 mx-auto rounded-lg mb-2 object-cover bg-slate-700">
+                    <p class="font-semibold text-sm">${game.name}</p>
                 `;
                 card.addEventListener('click', () => showProducts(game));
                 gameListEl.appendChild(card);
@@ -167,38 +195,17 @@ function showSuksesModal(kode) {
         function showProducts(game) {
             mainMenuEl.classList.add('hidden');
             productListContainerEl.classList.remove('hidden');
-            productTitleEl.textContent = game.nama;
+            productTitleEl.textContent = game.name;
             productListEl.innerHTML = '';
 
-            const nominalList = game.nominal;
+            const nominalList = game.products;
 
             nominalList.forEach(item => {
-                let badgeDiskon = '';
-                let hargaTampil = `<p class="text-cyan-400 font-bold text-lg">Rp${item.harga.toLocaleString('id-ID')}</p>`;
-                
-                if (item.harga_asli && item.harga_asli > item.harga) {
-                    const persen = Math.round((item.harga_asli - item.harga) / item.harga_asli * 100);
-                    const hemat = item.harga_asli - item.harga;
-                    
-                    badgeDiskon = `
-                        <div class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg rounded-tr-lg">
-                            ${persen}% OFF
-                        </div>`;
-                        
-                    hargaTampil = `
-                        <div class="mt-1">
-                            <p class="text-gray-400 line-through text-xs">Rp${item.harga_asli.toLocaleString('id-ID')}</p>
-                            <p class="text-cyan-400 font-bold text-lg">Rp${item.harga.toLocaleString('id-ID')}</p>
-                            <p class="text-green-400 text-xs">Hemat Rp${hemat.toLocaleString('id-ID')}</p>
-                        </div>`;
-                }
-
                 const card = document.createElement('div');
                 card.className = 'bg-slate-800 p-3 rounded-lg relative overflow-hidden hover:scale-105 duration-200';
                 card.innerHTML = `
-                    ${badgeDiskon}
                     <p class="font-bold text-white">${item.name}</p>
-                    ${hargaTampil}
+                    <p class="text-cyan-400 font-bold text-lg mt-1">Rp${item.harga.toLocaleString('id-ID')}</p>
                     <button class="bg-cyan-500 hover:bg-cyan-600 w-full mt-3 py-2 rounded font-bold text-slate-900">
                         Beli
                     </button>
@@ -211,10 +218,10 @@ function showSuksesModal(kode) {
 
         function openQrisModal(game, item) {
             const kodeUnik = generateKodeUnik();
-            currentOrder = { game: game.nama, item: item.name, harga: item.harga, kode: kodeUnik };
+            currentOrder = { game: game.name, item: item.name, harga: item.harga, kode: kodeUnik };
             kodeUnikEl.textContent = kodeUnik;
             orderDetailEl.innerHTML = `
-                <p><span class="text-slate-400">Game:</span> ${game.nama}</p>
+                <p><span class="text-slate-400">Game:</span> ${game.name}</p>
                 <p><span class="text-slate-400">Item:</span> ${item.name}</p>
                 <p><span class="text-slate-400">Harga:</span> <span class="text-cyan-400 font-bold">Rp${item.harga.toLocaleString('id-ID')}</span></p>
             `;
@@ -231,33 +238,34 @@ function showSuksesModal(kode) {
         }
 
         async function validateAndCheckout() {
-    if (db.toko_buka === false) {
-        alert('Toko sedang tutup bro. Coba lagi nanti ya');
-        return;
-    }
+            if (db.toko_buka === false) {
+                alert('Toko sedang tutup bro. Coba lagi nanti ya');
+                return;
+            }
 
-    const playerId = playerIdInput.value;
-    const namaPengirim = namaPengirimInput.value.trim();
+            const playerId = playerIdInput.value;
+            const namaPengirim = namaPengirimInput.value.trim();
 
-    if (!/^\d{8,12}$/.test(playerId)) {
-        idError.textContent = 'ID harus 8-12 angka!';
-        idError.classList.remove('hidden');
-        playerIdInput.focus();
-        return;
-    }
-    if (namaPengirim.length < 3) {
-        idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
-        idError.classList.remove('hidden');
-        namaPengirimInput.focus();
-        return;
-    }
-    
-    const textTelegram = `<b>🔥 ORDER BARU MASUK</b>\n\n<b>Kode:</b> <code>${currentOrder.kode}</code>\n<b>Game:</b> ${currentOrder.game}\n<b>Item:</b> ${currentOrder.item}\n<b>ID Player:</b> <code>${playerId}</code>\n<b>Nama:</b> ${namaPengirim}\n<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}\n\n<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
+            if (!/^\d{8,12}$/.test(playerId)) {
+                idError.textContent = 'ID harus 8-12 angka!';
+                idError.classList.remove('hidden');
+                playerIdInput.focus();
+                return;
+            }
+            if (namaPengirim.length < 3) {
+                idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
+                idError.classList.remove('hidden');
+                namaPengirimInput.focus();
+                return;
+            }
+            
+            const textTelegram = `<b>🔥 ORDER BARU MASUK</b>\n\n<b>Kode:</b> <code>${currentOrder.kode}</code>\n<b>Game:</b> ${currentOrder.game}\n<b>Item:</b> ${currentOrder.item}\n<b>ID Player:</b> <code>${playerId}</code>\n<b>Nama:</b> ${namaPengirim}\n<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}\n\n<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
 
-    await kirimKeTelegram(textTelegram);
-    closeQrisModal();
-    showSuksesModal(currentOrder.kode); // Ganti alert() jelek jadi modal cakep
+            await kirimKeTelegram(textTelegram);
+            closeQrisModal();
+            showSuksesModal(currentOrder.kode);
         }
+        
         async function kirimKeTelegram(text) {
             const FOTO_URL = "https://i.ibb.co/n8wKXrzR/IMG-20260426-WA0012.jpg";
             const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
@@ -292,71 +300,7 @@ function showSuksesModal(kode) {
         playerIdInput.addEventListener('input', () => idError.classList.add('hidden'));
         namaPengirimInput.addEventListener('input', () => idError.classList.add('hidden'));
 
-        loadData();
-    
-        <!-- MODAL QRIS -->
-    <div id="qris-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
-        <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold">Selesaikan Pembayaran</h3>
-                <button onclick="closeQrisModal()" class="text-slate-400 hover:text-white">&times;</button>
-            </div>
-            <img id="qris-img" src="" alt="QRIS" class="w-full rounded-lg mb-4">
-            <div class="bg-slate-700 p-3 rounded-lg mb-4">
-                <p class="text-sm text-slate-400">Total Bayar:</p>
-                <p id="total-bayar" class="text-2xl font-bold text-cyan-400"></p>
-            </div>
-            <div class="space-y-3 mb-4">
-                <input type="text" id="playerIdInput" placeholder="Masukkan ID Player" class="w-full bg-slate-700 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                <input type="text" id="namaPengirimInput" placeholder="Nama Pengirim/Rekening" class="w-full bg-slate-700 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
-                <p id="id-error" class="text-red-500 text-sm hidden"></p>
-            </div>
-            <button id="confirmBtn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 rounded-lg">Saya Sudah Bayar</button>
-        </div>
-    </div>
-
-    <!-- MODAL SUKSES -->
-    <div id="sukses-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
-        <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm text-center border-2 border-yellow-500">
-            <div class="text-6xl mb-4">⏳</div>
-            <h3 class="text-xl font-bold mb-2 text-yellow-400">Pembayaran Diproses</h3>
-            
-            <p class="text-slate-300 text-sm mb-4">
-                Order kamu udah masuk ke admin.<br>
-                Silakan tunggu 1-5 menit, diamond otomatis masuk setelah pembayaran dikonfirmasi.
-            </p>
-
-            <div class="bg-slate-700 p-3 rounded-lg mb-4">
-                <p class="text-slate-400 text-xs">Kode Order Kamu:</p>
-                <p id="kode-sukses" class="font-bold text-cyan-400 text-lg"></p>
-            </div>
-
-            <p class="text-xs text-slate-400 mb-4">
-                Jangan tutup halaman ini. Kalo >10 menit belum masuk, chat CS ya
-            </p>
-
-            <a id="cs-tele-modal" href="#" target="_blank" class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-bold mb-2">
-                💬 Hubungi CS Telegram
-            </a>
-            <button onclick="closeSuksesModal()" class="w-full bg-slate-600 hover:bg-slate-500 py-3 rounded-lg font-bold">
-                Oke, Ngerti
-            </button>
-        </div>
-    </div>
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
 </body>
-
-<script>
-    const TELEGRAM_BOT_TOKEN = 'ISI_TOKEN_LU';
-    const TELEGRAM_CHAT_ID = 'ISI_CHAT_ID_LU';
-
-    let db = {};
-    let currentOrder = {};
-    
-    const qrisModal = document.getElementById('qris-modal');
-    const qrisImg = document.getElementById('qris-img');
-    const totalBayarEl = document.getElementById('total-bayar');
-    const playerIdInput = document.getElementById('playerIdInput');
-    const namaPengirimInput = document.getElementById('namaPengirimInput');
-    const idError = document.getElementById('id-error');
-    const confirmBtn = document.getElementById('confirmBtn');
-    const kodeUnikEl = document.getElementById('kode-unik
+</html>
