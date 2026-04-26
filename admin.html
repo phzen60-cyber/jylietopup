@@ -8,16 +8,14 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-     .glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
-     .admin-btn { transition: all 0.2s ease; }
-     .admin-btn:active { transform: scale(0.98); }
-     .admin-input { background: #1e293b; border: 1px solid #334155; }
-     .admin-input:focus { outline: none; border-color: #06b6d4; box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); }
-     .notif-sukses { color: #4ade80; }
-     .notif-gagal { color: #f87171; }
-     .menu-active { background: linear-gradient(90deg, #06b6d4, #0891b2); color: #0f172a; font-weight: 700; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    .glass { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.1); }
+    .admin-btn { transition: all 0.2s ease; }
+    .admin-btn:active { transform: scale(0.98); }
+    .admin-input { background: #1e293b; border: 1px solid #334155; }
+    .admin-input:focus { outline: none; border-color: #06b6d4; box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); }
+    .notif-sukses { color: #4ade80; }
+    .notif-gagal { color: #f87171; }
+    .menu-active { background: linear-gradient(90deg, #06b6d4, #0891b2); color: #0f172a; font-weight: 700; }
     </style>
 </head>
 <body class="bg-slate-950 text-white">
@@ -44,15 +42,14 @@
                 <button onclick="logout()" class="bg-red-500/20 text-red-400 px-4 py-2 rounded-lg text-sm">Logout</button>
             </div>
             <div class="flex gap-2 mt-4 overflow-x-auto pb-2">
-                <button onclick="showSection('dashboard', this)" class="menu-tab menu-active px-4 py-2 rounded-lg text-sm whitespace-nowrap">Dashboard</button>
-                <button onclick="showSection('game', this)" class="menu-tab bg-slate-800 px-4 py-2 rounded-lg text-sm whitespace-nowrap">Game</button>
-                <button onclick="showSection('order', this)" class="menu-tab bg-slate-800 px-4 py-2 rounded-lg text-sm whitespace-nowrap">Order</button>
-                <button onclick="showSection('setting', this)" class="menu-tab bg-slate-800 px-4 py-2 rounded-lg text-sm whitespace-nowrap">Setting</button>
+                <button onclick="showSection('dashboard')" class="menu-tab menu-active px-4 py-2 rounded-lg text-sm whitespace-nowrap">Dashboard</button>
+                <button onclick="showSection('game')" class="menu-tab bg-slate-800 px-4 py-2 rounded-lg text-sm whitespace-nowrap">Game</button>
+                <button onclick="showSection('order')" class="menu-tab bg-slate-800 px-4 py-2 rounded-lg text-sm whitespace-nowrap">Order</button>
+                <button onclick="showSection('setting')" class="menu-tab bg-slate-800 px-4 py-2 rounded-lg text-sm whitespace-nowrap">Setting</button>
             </div>
         </header>
 
         <main class="p-4 md:p-6">
-            <!-- SECTION: DASHBOARD -->
             <section id="section-dashboard" class="space-y-5">
                 <h2 class="text-2xl font-extrabold">Dashboard</h2>
                 <div class="grid grid-cols-2 gap-4">
@@ -70,7 +67,6 @@
                 </div>
             </section>
 
-            <!-- SECTION: GAME -->
             <section id="section-game" class="hidden space-y-5">
                 <h2 class="text-2xl font-extrabold">Kelola Game & Produk</h2>
                 <div class="glass rounded-xl p-4">
@@ -83,7 +79,6 @@
                 <div id="produkList" class="space-y-3"></div>
             </section>
 
-            <!-- SECTION: ORDER -->
             <section id="section-order" class="hidden space-y-5">
                 <div class="flex justify-between items-center">
                     <h2 class="text-2xl font-extrabold">Kelola Order</h2>
@@ -97,7 +92,6 @@
                 <div id="order-list" class="space-y-3"></div>
             </section>
 
-            <!-- SECTION: SETTING -->
             <section id="section-setting" class="hidden space-y-5">
                 <h2 class="text-2xl font-extrabold">Setting</h2>
                 <div class="glass rounded-xl p-4 border-2 border-yellow-500/30">
@@ -134,30 +128,31 @@ function notif(msg, sukses = true) {
   setTimeout(() => el.textContent = '', 3000);
 }
 
-function showSection(id, btn) {
+function showSection(id) {
   document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
   document.getElementById('section-' + id).classList.remove('hidden');
   document.querySelectorAll('.menu-tab').forEach(b => {
     b.classList.remove('menu-active');
     b.classList.add('bg-slate-800');
   });
-  btn.classList.add('menu-active');
-  btn.classList.remove('bg-slate-800');
+  event.target.classList.add('menu-active');
+  event.target.classList.remove('bg-slate-800');
 }
 
 function login() {
   const loginMsg = document.getElementById('loginMsg');
-  const user = document.getElementById('user').value;
-  const pass = document.getElementById('pass').value;
-  if(user!== CONFIG.USER || pass!== CONFIG.PASS) {
+  const user = document.getElementById('user').value.trim();
+  const pass = document.getElementById('pass').value.trim();
+
+  if(user === CONFIG.USER && pass === CONFIG.PASS) {
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('adminBox').style.display = 'block';
+    loadData();
+    loadLocalSettings();
+    loadOrders();
+  } else {
     loginMsg.innerText = 'Username atau Password salah!';
-    return;
   }
-  document.getElementById('loginBox').style.display = 'none';
-  document.getElementById('adminBox').style.display = 'block';
-  loadData();
-  loadLocalSettings();
-  loadOrders();
 }
 
 function logout() {
@@ -234,7 +229,7 @@ function renderProduk() {
         </div>
         <div class="grid grid-cols-2 gap-2">
           <input value="${item.harga}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga', this.value)" class="admin-input p-2 rounded text-xs" placeholder="Harga">
-          <input value="${item.harga_asli || ''}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)" class="admin-input p-2 rounded text-xs" placeholder="Harga Coret">
+          <input value="${item.harga_asli || ''}" type="number" onchange="updateNominal(${gameIndex}, ${itemIndex}, 'harga_asli', this.value)" class="admin-input p-2 rounded text-xs" placeholder="Coret">
         </div>
       `;
       nominalWrap.appendChild(row);
@@ -382,4 +377,8 @@ async function selesaiOrder(kode) {
     if (!token ||!owner ||!repo) return notif('Isi Setting GitHub dulu!', false);
     notif('Update status order...', true);
     try {
-        const apiUrl = `https://api.github.com/repos/${owner
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/orders.json`;
+        const res = await fetch(apiUrl, { headers: { 'Authorization': `token ${token}` } });
+        const file = await res.json();
+        const content = JSON.parse(decodeURIComponent(escape(atob(file.content))));
+        const index = c
