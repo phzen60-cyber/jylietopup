@@ -5,7 +5,7 @@
     {
       "id": "ff",
       "name": "Free Fire",
-      "icon": "https://static.mocin.vip/cdn/game/freefire.jpg",
+      "icon": "https://static.mocin.vip/cdn/game/ff.png",
       "products": [
         {"id": "ff_5", "name": "5 Diamonds", "harga": 900, "harga_asli": 1000},
         {"id": "ff_12", "name": "12 Diamonds", "harga": 2000, "harga_asli": 3000},
