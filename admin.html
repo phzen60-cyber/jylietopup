@@ -15,7 +15,7 @@
 .admin-input:focus { outline: 2px solid #6366f1; border-color: #6366f1; }
 .notif-sukses { color: #4ade80; }
 .notif-gagal { color: #f87171; }
-.sidebar-link { transition:.2s; cursor:pointer; }
+.sidebar-link { transition:.2s; cursor:pointer; user-select:none; }
 .sidebar-link:hover,.sidebar-link.active { background: #1e293b; color: #e8eaf0; }
 .sidebar-link.active { border-left: 3px solid #6366f1; }
 </style>
@@ -40,24 +40,24 @@
 <div id="adminBox" class="hidden">
     <div class="flex min-h-screen">
         <!-- SIDEBAR -->
-        <div class="w-64 bg-slate-900 border-r border-slate-800 p-4 fixed h-full" id="sidebar">
+        <div class="w-64 bg-slate-900 border-r border-slate-800 p-4 fixed h-full z-50" id="sidebar">
             <div class="flex items-center gap-3 mb-8">
                 <i class="ri-flashlight-fill text-2xl text-indigo-500"></i>
                 <span class="text-lg font-bold">JylieTopup</span>
             </div>
             <nav class="space-y-1">
-                <a data-page="dashboard" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg">
+                <div data-page="dashboard" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-lg">
                     <i class="ri-dashboard-line text-xl"></i> Dashboard
-                </a>
-                <a data-page="pesanan" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+                </div>
+                <div data-page="pesanan" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
                     <i class="ri-shopping-bag-3-line text-xl"></i> Pesanan
-                </a>
-                <a data-page="produk" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+                </div>
+                <div data-page="produk" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
                     <i class="ri-gamepad-line text-xl"></i> Produk
-                </a>
-                <a data-page="setting" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
+                </div>
+                <div data-page="setting" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg">
                     <i class="ri-settings-3-line text-xl"></i> Setting
-                </a>
+                </div>
             </nav>
             <button onclick="logout()" class="absolute bottom-4 left-4 right-4 bg-red-500/20 hover:bg-red-500/30 text-red-400 py-2 rounded-lg text-sm admin-btn">
                 <i class="ri-logout-box-r-line"></i> Logout
@@ -187,15 +187,14 @@ let db = { username_tele: '', toko_buka: true, games: [] };
 let ALL_ORDERS = [];
 let CURRENT_FILTER = 'all';
 
-// EVENT SIDEBAR - INI KUNCINYA
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.sidebar-link').forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const page = this.getAttribute('data-page');
-      showPage(page, this);
-    });
-  });
+// EVENT SIDEBAR - UDAH 100% ANTI GAGAL
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('.sidebar-link');
+  if (link) {
+    e.preventDefault();
+    const page = link.getAttribute('data-page');
+    showPage(page, link);
+  }
 });
 
 const notif = (msg, sukses = true) => {
@@ -283,7 +282,6 @@ function renderProduk() {
             <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)" class="font-bold bg-transparent text-white">
             <p class="text-xs text-slate-500">ID: ${game.id}</p>
           </div>
-        </div>
         <button onclick="hapusGame(${gameIndex})" class="bg-red-500/20 hover:bg-red-500/30 text-red-400 px-3 py-1 rounded text-sm admin-btn">Hapus</button>
       </div>
       <div class="mb-3">
@@ -374,4 +372,4 @@ async function simpanSemua() {
     if (getRes.ok) fileSHA = (await getRes.json()).sha;
     const updateRes = await fetch(apiUrl, {
       method: 'PUT',
-      headers: { 'Aut
+      headers: { 'Authorization': `token ${token}`, 'Content-Ty
