@@ -4,239 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
     <title>Admin Panel - Jylie Topup</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-        *{font-family:'Poppins',sans-serif;-webkit-tap-highlight-color:transparent}
-        body{background:#0f172a!important}
-     .glass{background:rgba(30,41,59,0.8)!important;backdrop-filter:blur(12px)!important;border:1px solid rgba(51,65,85,0.5)!important}
-     .admin-btn{transition:all.2s!important}
-     .admin-btn:active{transform:scale(.97)!important}
-     .card-hover{transition:all.3s!important}
-     .card-hover:hover{transform:translateY(-2px)!important;box-shadow:0 20px 25px -5px rgba(0,0,0,0.3)!important}
-     .toast{position:fixed;top:20px;right:20px;z-index:9999;animation:slideIn.3s}
-        @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
-     .spinner{border:3px solid #334155;border-top:3px solid #06b6d4;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite}
-        @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        *{font-family:'Poppins',sans-serif;-webkit-tap-highlight-color:transparent;box-sizing:border-box;margin:0;padding:0}
+        body{background:#0f172a;color:#fff;position:relative;z-index:1}
+      .glass{background:rgba(30,41,59,0.8);backdrop-filter:blur(12px);border:1px solid rgba(51,65,85,0.5)}
+      button{cursor:pointer;border:0;position:relative;z-index:9999!important;pointer-events:auto!important}
+      input{position:relative;z-index:9999!important;pointer-events:auto!important}
+      .admin-btn:active{transform:scale(.97)}
     </style>
 </head>
-<body class="text-white">
+<body>
 
     <!-- LOGIN -->
-    <div id="loginBox" class="min-h-screen flex items-center justify-center p-4" style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%)">
-        <div class="glass rounded-2xl p-8 w-full max-w-sm card-hover">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center" style="background:linear-gradient(135deg,#22d3ee 0%,#3b82f6 100%)">
-                    <i class="ri-shield-keyhole-fill text-3xl" style="color:#0f172a"></i>
+    <div id="loginBox" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);position:relative;z-index:10">
+        <div class="glass" style="border-radius:16px;padding:32px;width:100%;max-width:384px">
+            <div style="text-align:center;margin-bottom:32px">
+                <div style="width:64px;height:64px;background:linear-gradient(135deg,#22d3ee 0%,#3b82f6 100%);border-radius:16px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="#0f172a"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
                 </div>
-                <h1 class="text-2xl font-bold">Admin JylieTopup</h1>
-                <p style="color:#94a3b8" class="text-sm mt-1">Masuk ke dashboard</p>
+                <h1 style="font-size:24px;font-weight:700">Admin JylieTopup</h1>
+                <p style="color:#94a3b8;font-size:14px;margin-top:4px">Masuk ke dashboard</p>
             </div>
-            <div class="space-y-4">
-                <div class="relative">
-                    <i class="ri-user-line absolute left-3 top-3.5" style="color:#94a3b8"></i>
-                    <input id="user" type="text" placeholder="Username" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px 12px 12px 40px;border-radius:12px;outline:none;color:#fff">
-                </div>
-                <div class="relative">
-                    <i class="ri-lock-line absolute left-3 top-3.5" style="color:#94a3b8"></i>
-                    <input id="pass" type="password" placeholder="Password" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px 12px 12px 40px;border-radius:12px;outline:none;color:#fff">
-                </div>
-                <button type="button" onclick="cekLogin()" style="width:100%;background:linear-gradient(90deg,#06b6d4 0%,#3b82f6 100%);color:#0f172a;padding:12px;border-radius:12px;font-weight:700;border:0;cursor:pointer" class="admin-btn flex items-center justify-center gap-2">
-                    <i class="ri-login-box-line"></i> Login
+            <div style="display:flex;flex-direction:column;gap:16px">
+                <input id="user" type="text" placeholder="Username" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px 12px 12px 40px;border-radius:12px;outline:none;color:#fff">
+                <input id="pass" type="password" placeholder="Password" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px 12px 40px;border-radius:12px;outline:none;color:#fff">
+                <button type="button" onclick="cekLogin()" style="width:100%;background:linear-gradient(90deg,#06b6d4 0%,#3b82f6 100%);color:#0f172a;padding:12px;border-radius:12px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px">
+                    Login
                 </button>
-                <p id="loginMsg" style="color:#f87171" class="text-sm text-center h-5"></p>
+                <p id="loginMsg" style="color:#f87171;font-size:14px;text-align:center;height:20px"></p>
             </div>
         </div>
     </div>
 
     <!-- DASHBOARD -->
     <div id="adminBox" style="display:none">
-        <header class="glass shadow-2xl sticky top-0" style="z-index:50">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center" style="max-width:1200px">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,#22d3ee 0%,#3b82f6 100%)">
-                        <i class="ri-gamepad-line text-xl" style="color:#0f172a"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold">JylieTopup</h1>
-                        <p style="color:#94a3b8" class="text-xs">Admin Panel</p>
-                    </div>
-                <button type="button" onclick="logout()" style="background:rgba(239,68,68,0.2);color:#f87171;padding:8px 16px;border-radius:12px;font-size:14px;border:0;cursor:pointer" class="admin-btn flex items-center gap-2">
-                    <i class="ri-logout-box-line"></i> Logout
-                </button>
-            </div>
-        </header>
-
-        <main class="container mx-auto px-4 py-8" style="max-width:1200px">
-            <!-- STATS -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="glass rounded-2xl p-5 card-hover">
-                    <div class="flex justify-between items-start mb-2">
-                        <p style="color:#94a3b8" class="text-sm">Pendapatan</p>
-                        <i class="ri-money-dollar-circle-line text-xl" style="color:#4ade80"></i>
-                    </div>
-                    <b class="text-2xl" style="color:#4ade80" id="duit">Rp 0</b>
-                </div>
-                <div class="glass rounded-2xl p-5 card-hover">
-                    <div class="flex justify-between items-start mb-2">
-                        <p style="color:#94a3b8" class="text-sm">Total Order</p>
-                        <i class="ri-shopping-bag-3-line text-xl" style="color:#22d3ee"></i>
-                    </div>
-                    <b class="text-2xl" style="color:#22d3ee" id="total">0</b>
-                </div>
-                <div class="glass rounded-2xl p-5 card-hover">
-                    <div class="flex justify-between items-start mb-2">
-                        <p style="color:#94a3b8" class="text-sm">Pending</p>
-                        <i class="ri-time-line text-xl" style="color:#facc15"></i>
-                    </div>
-                    <b class="text-2xl" style="color:#facc15" id="pending">0</b>
-                </div>
-                <div class="glass rounded-2xl p-5 card-hover">
-                    <div class="flex justify-between items-start mb-2">
-                        <p style="color:#94a3b8" class="text-sm">Status Toko</p>
-                        <i class="ri-store-2-line text-xl" style="color:#22d3ee"></i>
-                    </div>
-                    <b class="text-2xl" id="sttoko">-</b>
-                </div>
-            </div>
-
-            <!-- SETTING GITHUB -->
-            <div class="glass rounded-2xl p-6 mb-6 card-hover border-2" style="border-color:rgba(234,179,8,0.3)">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(234,179,8,0.2)">
-                        <i class="ri-github-fill text-2xl" style="color:#facc15"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-bold">Setting GitHub</h2>
-                        <p style="color:#94a3b8" class="text-sm">Wajib isi buat simpan data</p>
-                    </div>
-                </div>
-                <div class="grid md:grid-cols-3 gap-3">
-                    <input id="gh-token" type="password" placeholder="Token: ghp_xxx" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
-                    <input id="gh-user" type="text" placeholder="Username: phzen60-cyber" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
-                    <input id="gh-repo" type="text" placeholder="Repo: jylietopup" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
-                </div>
-            </div>
-
-            <!-- SETTING UMUM -->
-            <div class="glass rounded-2xl p-6 mb-6 card-hover">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(6,182,212,0.2)">
-                        <i class="ri-settings-3-line text-2xl" style="color:#22d3ee"></i>
-                    </div>
-                    <h2 class="text-xl font-bold">Setting Umum</h2>
-                </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block mb-2 text-sm font-semibold" style="color:#cbd5e1">Status Toko</label>
-                        <div class="flex gap-3">
-                            <button type="button" onclick="setToko(true)" id="btn-buka" style="flex:1;background:#475569;padding:12px;border-radius:12px;font-weight:700;border:0;cursor:pointer" class="admin-btn flex items-center justify-center gap-2">
-                                <i class="ri-checkbox-circle-line"></i> BUKA
-                            </button>
-                            <button type="button" onclick="setToko(false)" id="btn-tutup" style="flex:1;background:#475569;padding:12px;border-radius:12px;font-weight:700;border:0;cursor:pointer" class="admin-btn flex items-center justify-center gap-2">
-                                <i class="ri-close-circle-line"></i> TUTUP
-                            </button>
-                        </div>
-                    <div>
-                        <label class="block mb-2 text-sm font-semibold" style="color:#cbd5e1">Username Telegram CS</label>
-                        <input id="username-tele" type="text" placeholder="jyliestoreid" style="width:100%;background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAMBAH GAME -->
-            <div class="glass rounded-2xl p-6 mb-6 card-hover">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(168,85,247,0.2)">
-                        <i class="ri-gamepad-line text-2xl" style="color:#a855f7"></i>
-                    </div>
-                    <h2 class="text-xl font-bold">Tambah Game Baru</h2>
-                </div>
-                <div class="grid md:grid-cols-3 gap-3 mb-3">
-                    <input id="newGameId" type="text" placeholder="ID: freefire" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
-                    <input id="newGameName" type="text" placeholder="Nama: Free Fire" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
-                    <input id="newGameLogo" type="text" placeholder="Link Logo" style="background:rgba(51,65,85,0.5);border:1px solid #475569;padding:12px;border-radius:12px;outline:none;color:#fff">
-                </div>
-                <button type="button" onclick="tambahGame()" style="width:100%;background:linear-gradient(90deg,#a855f7 0%,#ec4899 100%);color:#fff;padding:12px;border-radius:12px;font-weight:700;border:0;cursor:pointer" class="admin-btn flex items-center justify-center gap-2">
-                    <i class="ri-add-circle-line"></i> Tambah Game
-                </button>
-            </div>
-
-            <!-- LIST GAME -->
-            <div class="glass rounded-2xl p-6 mb-6 card-hover">
-                <div class="flex items-center gap-3 mb-5">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(59,130,246,0.2)">
-                        <i class="ri-list-check-2 text-2xl" style="color:#3b82f6"></i>
-                    </div>
-                    <h2 class="text-xl font-bold">Kelola Game & Produk</h2>
-                </div>
-                <div id="produkList" class="space-y-4">Loading...</div>
-            </div>
-
-            <!-- ORDER -->
-            <div class="glass rounded-2xl p-6 mb-6 card-hover">
-                <div class="flex justify-between items-center mb-5">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background:rgba(249,115,22,0.2)">
-                            <i class="ri-file-list-3-line text-2xl" style="color:#f97316"></i>
-                        </div>
-                        <h2 class="text-xl font-bold">Kelola Order</h2>
-                    </div>
-                    <button type="button" onclick="loadOrders()" style="background:#475569;padding:8px 16px;border-radius:12px;font-size:14px;border:0;cursor:pointer" class="admin-btn flex items-center gap-2">
-                        <i class="ri-refresh-line"></i> Refresh
-                    </button>
-                </div>
-                <div class="flex gap-2 mb-4 overflow-x-auto">
-                    <button type="button" onclick="filterOrder('all')" class="filter-btn" style="background:#06b6d4;color:#0f172a;padding:8px 16px;border-radius:12px;font-size:14px;font-weight:700;border:0;cursor:pointer;white-space:nowrap">Semua</button>
-                    <button type="button" onclick="filterOrder('Diproses')" class="filter-btn" style="background:#475569;padding:8px 16px;border-radius:12px;font-size:14px;border:0;cursor:pointer;white-space:nowrap">Diproses</button>
-                    <button type="button" onclick="filterOrder('Selesai')" class="filter-btn" style="background:#475569;padding:8px 16px;border-radius:12px;font-size:14px;border:0;cursor:pointer;white-space:nowrap">Selesai</button>
-                </div>
-                <div id="order-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
-                    <p style="color:#64748b" class="text-center py-8">Klik Refresh buat load order</p>
-                </div>
-            </div>
-
-            <!-- SIMPAN -->
-            <button type="button" onclick="simpanSemua()" style="width:100%;background:linear-gradient(90deg,#22c55e 0%,#10b981 100%);padding:16px;border-radius:12px;font-weight:700;font-size:18px;border:0;cursor:pointer;box-shadow:0 10px 15px -3px rgba(34,197,94,0.2)" class="admin-btn flex items-center justify-center gap-2">
-                <i class="ri-save-line"></i> Simpan ke GitHub
-            </button>
-        </main>
+        <div style="padding:32px;text-align:center">
+            <h1 style="font-size:32px;font-weight:700;color:#4ade80">LOGIN BERHASIL BRO! 🔥</h1>
+            <p style="color:#94a3b8;margin-top:8px">Tombol bisa di-klik kan? Kalo ini muncul berarti dah bener.</p>
+            <button type="button" onclick="logout()" style="margin-top:24px;background:#ef4444;color:#fff;padding:12px 24px;border-radius:12px;font-weight:700">Logout Test</button>
+        </div>
     </div>
 
-    <div id="toast"></div>
-
 <script>
-const CONFIG = {
-  USER: "ownerjylie",
-  PASS: "jylie547"
-};
-
-let db = { username_tele: '', toko_buka: true, games: [] };
-
-function showToast(msg, sukses = true) {
-  const toast = document.createElement('div');
-  toast.className = 'toast glass rounded-xl p-4 flex items-center gap-3';
-  toast.style.borderLeft = sukses? '4px solid #4ade80' : '4px solid #f87171';
-  toast.innerHTML = `<i class="ri-${sukses? 'checkbox-circle' : 'error-warning'}-line text-2xl" style="color:${sukses? '#4ade80' : '#f87171'}"></i><span>${msg}</span>`;
-  document.getElementById('toast').appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
+// DEBUG: PASTIIN JS JALAN
+alert('JS NYALA BRO ✅\n\nKalo popup ini muncul, tombol login pasti bisa di-klik.\n\nKlik OK terus coba login.');
 
 function cekLogin() {
+  alert('TOMBOL KE-KLIK! Function jalan!');
   var user = document.getElementById('user').value.trim().toLowerCase();
   var pass = document.getElementById('pass').value.trim();
   var msg = document.getElementById('loginMsg');
-
-  if(user === CONFIG.USER && pass === CONFIG.PASS) {
+  
+  if(user === 'ownerjylie' && pass === 'jylie547') {
     alert('LOGIN SUKSES BRO!');
     document.getElementById('loginBox').style.display = 'none';
     document.getElementById('adminBox').style.display = 'block';
-    loadData();
-    loadLocalSettings();
-    setTimeout(loadOrders, 1000);
   } else {
-    msg.innerHTML = 'Username/Password salah!';
+    msg.innerHTML = 'Username/Password salah! Kamu ketik: ' + user;
   }
 }
 
@@ -247,90 +72,6 @@ function logout() {
   document.getElementById('pass').value = '';
   document.getElementById('loginMsg').innerHTML = '';
 }
-
-function loadLocalSettings() {
-  document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
-  document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
-  document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
-}
-
-function setToko(status) {
-  db.toko_buka = status;
-  var buka = document.getElementById('btn-buka');
-  var tutup = document.getElementById('btn-tutup');
-  if(status){
-    buka.style.background = '#16a34a';
-    buka.style.boxShadow = '0 0 4px rgba(74,222,128,0.5)';
-    tutup.style.background = '#475569';
-    tutup.style.boxShadow = 'none';
-    document.getElementById('sttoko').innerHTML = '<span style="color:#4ade80">BUKA</span>';
-  } else {
-    tutup.style.background = '#dc2626';
-    tutup.style.boxShadow = '0 0 0 4px rgba(248,113,0.5)';
-    buka.style.background = '#475569';
-    buka.style.boxShadow = 'none';
-    document.getElementById('sttoko').innerHTML = '<span style="color:#f87171">TUTUP</span>';
-  }
-  showToast(status? 'Toko dibuka' : 'Toko ditutup');
-}
-
-async function loadData() {
-  try {
-    const res = await fetch('db.json?' + Date.now());
-    db = await res.json();
-    document.getElementById('username-tele').value = db.username_tele || '';
-    setToko(db.toko_buka!== false);
-    renderProduk();
-  } catch (e) {
-    db = { username_tele: 'jyliestoreid', toko_buka: true, games: [] };
-    showToast('Gagal load db.json, bikin baru', false);
-    setToko(true);
-    renderProduk();
-  }
-}
-
-function renderProduk() {
-  const wrap = document.getElementById('produkList');
-  wrap.innerHTML = '';
-
-  if (db.games.length === 0) {
-    wrap.innerHTML = '<p style="color:#94a3b8" class="text-center py-8">Belum ada game. Tambah di atas.</p>';
-    return;
-  }
-
-  db.games.forEach((game, gameIndex) => {
-    const gameDiv = document.createElement('div');
-    gameDiv.style.background = 'rgba(51,65,85,0.5)';
-    gameDiv.style.border = '1px solid #475569';
-    gameDiv.style.borderRadius = '12px';
-    gameDiv.style.padding = '20px';
-    gameDiv.innerHTML = `
-      <div class="flex justify-between items-start mb-4">
-        <div class="flex items-center gap-4">
-          <img src="${game.icon}" style="width:56px;height:56px;border-radius:12px;object-fit:cover;background:#475569;border:2px solid #64748b">
-          <div>
-            <input value="${game.name}" onchange="updateGame(${gameIndex}, 'name', this.value)" style="font-weight:700;background:transparent;color:#fff;font-size:18px;outline:none;border:0">
-            <p style="color:#94a3b8" class="text-xs mt-1">ID: ${game.id}</p>
-          </div>
-        <button type="button" onclick="hapusGame(${gameIndex})" style="background:rgba(239,68,68,0.2);color:#f87171;padding:8px 12px;border-radius:12px;border:0;cursor:pointer" class="admin-btn"><i class="ri-delete-bin-line"></i></button>
-      </div>
-      <div class="mb-4">
-        <input value="${game.icon}" onchange="updateGame(${gameIndex}, 'icon', this.value)" style="background:rgba(30,41,59,0.5);border:1px solid #475569;font-size:12px;width:100%;padding:12px;border-radius:12px;outline:none;color:#fff" placeholder="Link Logo Game">
-      </div>
-      <div id="nominal-${gameIndex}" class="space-y-3 mb-4"></div>
-      <button type="button" onclick="tambahNominal(${gameIndex})" style="width:100%;background:rgba(71,85,105,0.5);border:1px solid #64748b;padding:12px;border-radius:12px;font-size:14px;border:0;cursor:pointer" class="admin-btn flex items-center justify-center gap-2">
-        <i class="ri-add-line"></i> Tambah Nominal
-      </button>
-    `;
-    wrap.appendChild(gameDiv);
-
-    const nominalWrap = document.getElementById(`nominal-${gameIndex}`);
-    game.products.forEach((item, itemIndex) => {
-      const row = document.createElement('div');
-      row.style.background = 'rgba(30,41,59,0.5)';
-      row.style.padding = '16px';
-      row.style.borderRadius = '12px';
-      row.style.border = '1px solid #475569';
-      row.innerHTML = `
-        <div class="flex gap-3 items-start mb-3">
-          <input valu
+</script>
+</body>
+</html>
