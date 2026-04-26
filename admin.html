@@ -57,6 +57,13 @@
             <!-- SETTING UMUM -->
             <div class="bg-slate-800 rounded-xl p-6 mb-6">
                 <h2 class="text-xl font-bold mb-4 border-l-4 border-cyan-400 pl-3">Setting Umum</h2>
+                
+                <label class="block mb-2 text-sm font-semibold">Status Toko</label>
+                <div class="flex gap-3 mb-4">
+                    <button onclick="setToko(true)" id="btn-buka" class="flex-1 bg-slate-600 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn">🟢 BUKA</button>
+                    <button onclick="setToko(false)" id="btn-tutup" class="flex-1 bg-slate-600 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn">🔴 TUTUP</button>
+                </div>
+
                 <label class="block mb-2 text-sm font-semibold">Nomor WhatsApp CS</label>
                 <input id="nomor-wa" type="text" placeholder="62895336789308"
                        class="w-full admin-input p-3 rounded-lg mb-3">
@@ -92,12 +99,12 @@
 
 <script>
 const CONFIG = {
-  USER: "ownerjylie", // GANTI username lu
-  PASS: "jylie547", // GANTI password lu
-  WHITELIST_IP: ["175.158.55.141"] // GANTI IP lu dari whatismyip.com
+  USER: "ownerjylie",
+  PASS: "jylie547",
+  WHITELIST_IP: ["175.158.55.141"]
 };
 
-let db = { nomor_wa: '', produk: [] };
+let db = { nomor_wa: '', toko_buka: true, produk: [] };
 
 const notif = (msg, sukses = true) => {
   const el = document.getElementById('notif');
@@ -154,15 +161,24 @@ function loadLocalSettings() {
   document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
 }
 
+function setToko(status) {
+  db.toko_buka = status;
+  document.getElementById('btn-buka').className = status ? 'flex-1 bg-green-600 ring-4 ring-green-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-green-700 py-3 rounded-lg font-bold admin-btn';
+  document.getElementById('btn-tutup').className = !status ? 'flex-1 bg-red-600 ring-4 ring-red-400 py-3 rounded-lg font-bold admin-btn' : 'flex-1 bg-slate-600 hover:bg-red-700 py-3 rounded-lg font-bold admin-btn';
+  notif(status ? 'Toko di-SET BUKA' : 'Toko di-SET TUTUP. Jangan lupa Simpan!');
+}
+
 async function loadData() {
   try {
     const res = await fetch('harga.json?' + Date.now());
     db = await res.json();
     document.getElementById('nomor-wa').value = db.nomor_wa || '';
+    setToko(db.toko_buka !== false);
     renderProduk();
   } catch (e) {
-    db = { nomor_wa: '62895336789308', produk: [] };
+    db = { nomor_wa: '62895336789308', toko_buka: true, produk: [] };
     notif('Gagal load harga.json, bikin baru', false);
+    setToko(true);
     renderProduk();
   }
 }
