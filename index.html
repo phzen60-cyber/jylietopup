@@ -201,14 +201,29 @@
             const nominalList = game.products;
 
             nominalList.forEach(item => {
+                let badgeDiskon = '';
+                let hargaTampil = `<p class="text-cyan-400 font-bold text-lg mt-1">Rp${item.harga.toLocaleString('id-ID')}</p>`;
+                
+                if (item.harga_asli && item.harga_asli > item.harga) {
+                    const persen = Math.round((item.harga_asli - item.harga) / item.harga_asli * 100);
+                    const hemat = item.harga_asli - item.harga;
+                    
+                    badgeDiskon = `<div class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg rounded-tr-lg">${persen}% OFF</div>`;
+                    hargaTampil = `
+                        <div class="mt-1">
+                            <p class="text-gray-400 line-through text-xs">Rp${item.harga_asli.toLocaleString('id-ID')}</p>
+                            <p class="text-cyan-400 font-bold text-lg">Rp${item.harga.toLocaleString('id-ID')}</p>
+                            <p class="text-green-400 text-xs">Hemat Rp${hemat.toLocaleString('id-ID')}</p>
+                        </div>`;
+                }
+
                 const card = document.createElement('div');
                 card.className = 'bg-slate-800 p-3 rounded-lg relative overflow-hidden hover:scale-105 duration-200';
                 card.innerHTML = `
+                    ${badgeDiskon}
                     <p class="font-bold text-white">${item.name}</p>
-                    <p class="text-cyan-400 font-bold text-lg mt-1">Rp${item.harga.toLocaleString('id-ID')}</p>
-                    <button class="bg-cyan-500 hover:bg-cyan-600 w-full mt-3 py-2 rounded font-bold text-slate-900">
-                        Beli
-                    </button>
+                    ${hargaTampil}
+                    <button class="bg-cyan-500 hover:bg-cyan-600 w-full mt-3 py-2 rounded font-bold text-slate-900">Beli</button>
                 `;
                 
                 card.querySelector('button').addEventListener('click', () => openQrisModal(game, item));
