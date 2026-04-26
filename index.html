@@ -291,34 +291,70 @@ function showSuksesModal(kode) {
         namaPengirimInput.addEventListener('input', () => idError.classList.add('hidden'));
 
         loadData();
-    </script>
-    <!-- MODAL SUKSES -->
-<div id="sukses-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
-    <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm text-center border-2 border-yellow-500">
-        <div class="text-6xl mb-4">⏳</div>
-        <h3 class="text-xl font-bold mb-2 text-yellow-400">Pembayaran Diproses</h3>
-        
-        <p class="text-slate-300 text-sm mb-4">
-            Order kamu udah masuk ke admin.<br>
-            Silakan tunggu 1-5 menit, diamond otomatis masuk setelah pembayaran dikonfirmasi.
-        </p>
-
-        <div class="bg-slate-700 p-3 rounded-lg mb-4">
-            <p class="text-slate-400 text-xs">Kode Order Kamu:</p>
-            <p id="kode-sukses" class="font-bold text-cyan-400 text-lg"></p>
+    
+        <!-- MODAL QRIS -->
+    <div id="qris-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Selesaikan Pembayaran</h3>
+                <button onclick="closeQrisModal()" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+            <img id="qris-img" src="" alt="QRIS" class="w-full rounded-lg mb-4">
+            <div class="bg-slate-700 p-3 rounded-lg mb-4">
+                <p class="text-sm text-slate-400">Total Bayar:</p>
+                <p id="total-bayar" class="text-2xl font-bold text-cyan-400"></p>
+            </div>
+            <div class="space-y-3 mb-4">
+                <input type="text" id="playerIdInput" placeholder="Masukkan ID Player" class="w-full bg-slate-700 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <input type="text" id="namaPengirimInput" placeholder="Nama Pengirim/Rekening" class="w-full bg-slate-700 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <p id="id-error" class="text-red-500 text-sm hidden"></p>
+            </div>
+            <button id="confirmBtn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 rounded-lg">Saya Sudah Bayar</button>
         </div>
-
-        <p class="text-xs text-slate-400 mb-4">
-            Jangan tutup halaman ini. Kalo >10 menit belum masuk, chat CS ya
-        </p>
-
-        <a id="cs-tele-modal" href="#" target="_blank" class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-bold mb-2">
-            💬 Hubungi CS Telegram
-        </a>
-        <button onclick="closeSuksesModal()" class="w-full bg-slate-600 hover:bg-slate-500 py-3 rounded-lg font-bold">
-            Oke, Ngerti
-        </button>
     </div>
-</div>
+
+    <!-- MODAL SUKSES -->
+    <div id="sukses-modal" class="modal fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-800 rounded-xl p-6 w-full max-w-sm text-center border-2 border-yellow-500">
+            <div class="text-6xl mb-4">⏳</div>
+            <h3 class="text-xl font-bold mb-2 text-yellow-400">Pembayaran Diproses</h3>
+            
+            <p class="text-slate-300 text-sm mb-4">
+                Order kamu udah masuk ke admin.<br>
+                Silakan tunggu 1-5 menit, diamond otomatis masuk setelah pembayaran dikonfirmasi.
+            </p>
+
+            <div class="bg-slate-700 p-3 rounded-lg mb-4">
+                <p class="text-slate-400 text-xs">Kode Order Kamu:</p>
+                <p id="kode-sukses" class="font-bold text-cyan-400 text-lg"></p>
+            </div>
+
+            <p class="text-xs text-slate-400 mb-4">
+                Jangan tutup halaman ini. Kalo >10 menit belum masuk, chat CS ya
+            </p>
+
+            <a id="cs-tele-modal" href="#" target="_blank" class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-bold mb-2">
+                💬 Hubungi CS Telegram
+            </a>
+            <button onclick="closeSuksesModal()" class="w-full bg-slate-600 hover:bg-slate-500 py-3 rounded-lg font-bold">
+                Oke, Ngerti
+            </button>
+        </div>
+    </div>
 </body>
-    </html>
+
+<script>
+    const TELEGRAM_BOT_TOKEN = 'ISI_TOKEN_LU';
+    const TELEGRAM_CHAT_ID = 'ISI_CHAT_ID_LU';
+
+    let db = {};
+    let currentOrder = {};
+    
+    const qrisModal = document.getElementById('qris-modal');
+    const qrisImg = document.getElementById('qris-img');
+    const totalBayarEl = document.getElementById('total-bayar');
+    const playerIdInput = document.getElementById('playerIdInput');
+    const namaPengirimInput = document.getElementById('namaPengirimInput');
+    const idError = document.getElementById('id-error');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const kodeUnikEl = document.getElementById('kode-unik
