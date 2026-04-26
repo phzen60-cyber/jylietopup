@@ -140,26 +140,52 @@
         }
 
         function showProducts(game) {
-            mainMenuEl.classList.add('hidden');
-            productListContainerEl.classList.remove('hidden');
-            productTitleEl.textContent = `Top Up ${game.nama}`;
-            productListEl.innerHTML = '';
+  mainMenuEl.classList.add('hidden');
+  productListContainerEl.classList.remove('hidden');
+  productTitleEl.textContent = game.nama;
+  productListEl.innerHTML = '';
 
-            game.nominal.forEach(item => {
-                const productCard = document.createElement('div');
-                productCard.className = 'bg-slate-800 rounded-lg p-4 flex flex-col justify-between';
-                productCard.innerHTML = `
-                    <div>
-                        <p class="font-bold">${item.nama}</p>
-                        <p class="text-cyan-400 font-semibold my-2">Rp${item.harga.toLocaleString('id-ID')}</p>
-                    </div>
-                    <button class="beli-btn block text-center w-full bg-cyan-500 hover:bg-cyan-600 text-slate-900 font-bold py-2 px-4 rounded-lg text-sm mt-2">
-                        Beli
-                    </button>
-                `;
-                productCard.querySelector('.beli-btn').addEventListener('click', () => openQrisModal(game, item));
-                productListEl.appendChild(productCard);
-            });
+  // Ambil list nominal dari game yg diklik
+  const nominalList = game.nominal;
+
+  nominalList.forEach(item => {
+    let badgeDiskon = '';
+    let hargaTampil = `<p class="text-cyan-400 font-bold text-lg">Rp${item.harga.toLocaleString('id-ID')}</p>`;
+    
+    // Cek diskon
+    if (item.harga_asli && item.harga_asli > item.harga) {
+      const persen = Math.round((item.harga_asli - item.harga) / item.harga_asli * 100);
+      const hemat = item.harga_asli - item.harga;
+      
+      badgeDiskon = `
+        <div class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg rounded-tr-lg">
+          ${persen}% OFF
+        </div>`;
+        
+      hargaTampil = `
+        <div class="mt-1">
+          <p class="text-gray-400 line-through text-xs">Rp${item.harga_asli.toLocaleString('id-ID')}</p>
+          <p class="text-cyan-400 font-bold text-lg">Rp${item.harga.toLocaleString('id-ID')}</p>
+          <p class="text-green-400 text-xs">Hemat Rp${hemat.toLocaleString('id-ID')}</p>
+        </div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'bg-gray-800 p-3 rounded-lg relative overflow-hidden hover:scale-105 duration-200';
+    card.innerHTML = `
+      ${badgeDiskon}
+      <p class="font-bold text-white">${item.name}</p>
+      ${hargaTampil}
+      <button class="bg-cyan-500 hover:bg-cyan-600 w-full mt-3 py-2 rounded font-bold text-gray-900">
+        Beli
+      </button>
+    `;
+    
+    // Pas klik Beli, jalanin fungsi checkout lu
+    card.querySelector('button').addEventListener('click', () => beli(item.name, item.harga));
+    productListEl.appendChild(card);
+  });
+        });
         }
 
         function openQrisModal(game, item) {
