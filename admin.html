@@ -144,15 +144,19 @@ var ORDERS = [];
 var FIL = 'all';
 
 function masuk(){
-  if(u.value=='ownerjylie'&&p.value=='jylie547'){
+  var user = u.value.trim().toLowerCase(); // hapus spasi + kecilin semua
+  var pass = p.value.trim();
+  
+  if(user=='ownerjylie' && pass=='jylie547'){
     login.style.display='none';
     admin.style.display='block';
     loadData();
     loadSet();
     loadOrder();
   }else{
-    err.innerText='Username/Password salah!';
+    err.innerText='Username/Password salah! Coba: '+user+' / '+pass; // buat debug
   }
+}
 }
 function keluar(){
   admin.style.display='none';
