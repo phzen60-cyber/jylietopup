@@ -30,7 +30,8 @@
         {
           "id": "ff_140",
           "name": "140 Diamonds",
-          "harga": 19000
+          "harga": 19000,
+          "harga_asli": 20000
         },
         {
           "id": "ff_355",
