@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jylie Topup - Topup Game Murah & Instant</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <style>
         * { font-family: 'Poppins', sans-serif; }
         body {
@@ -15,27 +16,27 @@
                 radial-gradient(at 80% 70%, #7c3aed 0px, transparent 50%),
                 radial-gradient(at 50% 50%, #0ea5e9 0px, transparent 50%);
         }
-      .glass {
+     .glass {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-      .card-hover {
+     .card-hover {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-      .card-hover:hover {
+     .card-hover:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 20px 40px -10px rgba(6, 182, 212, 0.4);
         }
-      .product-hover {
+     .product-hover {
             transition: all 0.2s;
         }
-      .product-hover:hover {
+     .product-hover:hover {
             transform: scale(1.05);
             border-color: #06b6d4;
             box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
         }
-      .product-selected {
+     .product-selected {
             background: linear-gradient(135deg, #0891b2, #06b6d4)!important;
             border-color: #22d3ee!important;
             transform: scale(1.05);
@@ -45,22 +46,22 @@
             0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); }
             50% { box-shadow: 0 0 40px rgba(6, 182, 212, 0.8); }
         }
-      .glow-btn { animation: pulse-glow 2s infinite; }
+     .glow-btn { animation: pulse-glow 2s infinite; }
         @keyframes blink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
-      .sale-badge { animation: blink 1.5s infinite; }
+     .sale-badge { animation: blink 1.5s infinite; }
         @keyframes shimmer {
             0% { background-position: -1000px 0; }
             100% { background-position: 1000px 0; }
         }
-      .shimmer {
+     .shimmer {
             background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
             background-size: 1000px 100%;
             animation: shimmer 2s infinite;
         }
-      .toast {
+     .toast {
             animation: slideIn 0.3s, fadeOut 0.3s 2.7s;
         }
         @keyframes slideIn {
@@ -71,7 +72,140 @@
             from { opacity: 1; }
             to { opacity: 0; }
         }
-      .modal { backdrop-filter: blur(8px); }
+     .modal { backdrop-filter: blur(8px); }
+
+        /* === BANNER JYLIE BARU === */
+       .banner-jylie {
+          background: linear-gradient(90deg, #4c1d95, #7c3aed, #4c1d95);
+          padding: 25px 0;
+          position: relative;
+          overflow: hidden;
+          min-height: 280px;
+        }
+       .petir-bg {
+          position: absolute;
+          top: 0; left: 0;
+          width: 100%; height: 100%;
+          z-index: 1;
+          opacity: 0.4;
+          pointer-events: none;
+        }
+       .banner-content {
+          max-width: 1200px;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: relative;
+          z-index: 2;
+          padding: 0 20px;
+        }
+       .char-left,.char-right {
+          width: 160px;
+          height: auto;
+          animation: float 3s ease-in-out infinite;
+          filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+        }
+       .char-right { animation-delay: 1.5s; }
+        @keyframes float {
+          0%, 100% { transform: translateY(0) rotate(-2deg); }
+          50% { transform: translateY(-12px) rotate(2deg); }
+        }
+       .text-tengah {
+          text-align: center;
+          color: white;
+          text-shadow: 3px 3px 6px rgba(0,0,0,0.6);
+        }
+       .text-tengah h1 {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: 3.2rem;
+          letter-spacing: 4px;
+          margin: 0;
+          line-height: 1;
+        }
+       .logo-banner {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          margin: 8px 0;
+        }
+       .logo-banner span {
+          font-size: 2.8rem;
+          font-weight: 900;
+          font-style: italic;
+          background: linear-gradient(45deg, #fff, #e9d5ff);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+       .logo-mini {
+          width: 55px;
+          animation: spin 8s linear infinite;
+        }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+       .text-tengah p {
+          background: #1e1b4b;
+          display: inline-block;
+          padding: 6px 24px;
+          border-radius: 8px;
+          font-weight: 700;
+          margin: 12px 0;
+          font-size: 0.9rem;
+          border: 2px solid #a78bfa;
+        }
+       .btn-promo {
+          background: linear-gradient(45deg, #fbbf24, #f59e0b);
+          color: #1e1b4b;
+          border: none;
+          padding: 14px 35px;
+          border-radius: 50px;
+          font-weight: 900;
+          font-size: 1.1rem;
+          margin-top: 12px;
+          cursor: pointer;
+          animation: pulse 2s infinite;
+          box-shadow: 0 4px 20px rgba(251, 191, 36, 0.5);
+          transition: 0.3s;
+        }
+       .btn-promo:hover {
+          transform: scale(1.08);
+          box-shadow: 0 6px 30px rgba(251, 191, 36, 0.8);
+        }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+       .stars {
+          position: absolute;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background-image:
+            radial-gradient(2px 2px at 20px 30px, #e9d5ff, transparent),
+            radial-gradient(2px 2px at 80px 80px, #fff, transparent),
+            radial-gradient(3px 3px at 160px 40px, #c4b5fd, transparent);
+          background-repeat: repeat;
+          background-size: 250px 120px;
+          animation: sparkle 5s linear infinite;
+          opacity: 0.5;
+          z-index: 1;
+        }
+        @keyframes sparkle {
+          from { background-position: 0 0; }
+          to { background-position: 250px 120px; }
+        }
+        @media (max-width: 768px) {
+         .banner-jylie { min-height: 220px; padding: 15px 0; }
+         .char-left,.char-right { width: 90px; }
+         .text-tengah h1 { font-size: 2rem; letter-spacing: 2px; }
+         .logo-banner span { font-size: 1.7rem; }
+         .logo-mini { width: 40px; }
+         .text-tengah p { font-size: 0.7rem; padding: 4px 16px; }
+         .btn-promo { padding: 10px 25px; font-size: 0.9rem; }
+         .char-left { margin-left: -15px; }
+         .char-right { margin-right: -15px; }
+        }
     </style>
 </head>
 <body class="text-white min-h-screen pb-20">
@@ -83,6 +217,33 @@
             <p class="text-slate-300">Admin lagi turu dulu. Balik lagi besok ya bro!</p>
         </div>
     </div>
+
+    <!-- BANNER JYLIE BARU -->
+    <section class="banner-jylie">
+      <lottie-player
+        class="petir-bg"
+        src="https://assets5.lottiefiles.com/packages/lf20_kcsr6fcp.json"
+        background="transparent"
+        speed="0.5"
+        loop
+        autoplay>
+      </lottie-player>
+
+      <div class="banner-content">
+        <img src="alok.png" alt="Alok FF" class="char-left">
+        <div class="text-tengah">
+          <h1>WELCOME TO</h1>
+          <div class="logo-banner">
+            <img src="logo-jylie.png" alt="JYLIE TOPUP" class="logo-mini">
+            <span>JYLIE TOPUP</span>
+          </div>
+          <p>TEMPAT TOPUP PALING HOKI!</p>
+          <button class="btn-promo" onclick="document.getElementById('game-list').scrollIntoView({behavior:'smooth'})">CEK PROMO ⚡</button>
+        </div>
+        <img src="hayato.png" alt="Hayato FF" class="char-right">
+      </div>
+      <div class="stars"></div>
+    </section>
 
     <!-- HEADER -->
     <header class="glass sticky top-0 z-50">
@@ -315,100 +476,4 @@
                 btn.className = 'product-hover glass p-4 rounded-xl text-left relative';
                 btn.onclick = () => openQrisModal(SELECTED_GAME, product);
                 btn.innerHTML = `
-                    ${isDiskon? `<div class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold sale-badge">-${persen}%</div>` : ''}
-                    <p class="font-semibold text-sm mb-1">${product.name}</p>
-                    <p class="text-cyan-400 font-bold">Rp ${product.harga.toLocaleString('id-ID')}</p>
-                    ${isDiskon? `<p class="text-xs text-slate-500 line-through">Rp ${product.harga_asli.toLocaleString('id-ID')}</p>
-                                 <p class="text-xs text-green-400">Hemat Rp${hemat.toLocaleString('id-ID')}</p>` : ''}
-                `;
-                gridEl.appendChild(btn);
-            });
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function openQrisModal(game, item) {
-            if (DB.toko_buka === false) {
-                showToast('Toko sedang tutup bro');
-                return;
-            }
-
-            const kodeUnik = generateKodeUnik();
-            currentOrder = { game: game.name, item: item.name, harga: item.harga, kode: kodeUnik };
-            document.getElementById('kode-unik').textContent = kodeUnik;
-            document.getElementById('order-detail').innerHTML = `
-                <p><span class="text-slate-400">Game:</span> ${game.name}</p>
-                <p><span class="text-slate-400">Item:</span> ${item.name}</p>
-                <p><span class="text-slate-400">Harga:</span> <span class="text-cyan-400 font-bold">Rp${item.harga.toLocaleString('id-ID')}</span></p>
-            `;
-            document.getElementById('player-id').value = '';
-            document.getElementById('nama-pengirim').value = '';
-            document.getElementById('id-error').classList.add('hidden');
-            document.getElementById('qris-modal').classList.remove('hidden');
-            document.getElementById('qris-modal').classList.add('flex');
-        }
-
-        function closeQrisModal() {
-            document.getElementById('qris-modal').classList.add('hidden');
-            document.getElementById('qris-modal').classList.remove('flex');
-        }
-
-        async function validateAndCheckout() {
-            const playerId = document.getElementById('player-id').value;
-            const namaPengirim = document.getElementById('nama-pengirim').value.trim();
-            const idError = document.getElementById('id-error');
-
-            if (!/^\d{8,12}$/.test(playerId)) {
-                idError.textContent = 'ID harus 8-12 angka!';
-                idError.classList.remove('hidden');
-                document.getElementById('player-id').focus();
-                return;
-            }
-            if (namaPengirim.length < 3) {
-                idError.textContent = 'Nama pengirim wajib diisi minimal 3 huruf!';
-                idError.classList.remove('hidden');
-                document.getElementById('nama-pengirim').focus();
-                return;
-            }
-
-            const textTelegram = `<b>🔥 ORDER BARU MASUK</b>\n\n<b>Kode:</b> <code>${currentOrder.kode}</code>\n<b>Game:</b> ${currentOrder.game}\n<b>Item:</b> ${currentOrder.item}\n<b>ID Player:</b> <code>${playerId}</code>\n<b>Nama:</b> ${namaPengirim}\n<b>Total:</b> Rp${currentOrder.harga.toLocaleString('id-ID')}\n\n<b>Cek mutasi pake berita:</b> <code>${currentOrder.kode}</code>`;
-
-            await kirimKeTelegram(textTelegram);
-            closeQrisModal();
-            showSuksesModal(currentOrder.kode);
-        }
-
-        async function kirimKeTelegram(text) {
-            const FOTO_URL = "https://i.ibb.co/n8wKXrzR/IMG-20260426-WA0012.jpg";
-            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
-
-            const formData = new FormData();
-            formData.append('chat_id', TELEGRAM_CHAT_ID);
-            formData.append('photo', FOTO_URL);
-            formData.append('caption', text);
-            formData.append('parse_mode', 'HTML');
-
-            try {
-                await fetch(url, { method: 'POST', body: formData });
-            } catch (error) {
-                console.error("Gagal kirim ke Telegram:", error);
-            }
-        }
-
-        function backToGames() {
-            document.getElementById('product-section').classList.add('hidden');
-            document.getElementById('game-list').classList.remove('hidden');
-            SELECTED_GAME = null;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        document.getElementById('cancel-btn').onclick = closeQrisModal;
-        document.getElementById('confirm-btn').onclick = validateAndCheckout;
-        document.getElementById('qris-modal').onclick = (e) => { if (e.target.id === 'qris-modal') closeQrisModal(); };
-        document.getElementById('player-id').oninput = () => document.getElementById('id-error').classList.add('hidden');
-        document.getElementById('nama-pengirim').oninput = () => document.getElementById('id-error').classList.add('hidden');
-
-        init();
-    </script>
-</body>
-</html>
+                    ${isDiskon? `<div class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full f
